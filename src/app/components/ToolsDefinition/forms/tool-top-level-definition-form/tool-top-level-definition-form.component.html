@@ -1,0 +1,65 @@
+<form [formGroup]="toolTopLevelDefinitionForm" (ngSubmit)="submitForm()">
+    <h1>
+        <mat-icon>{{toolId == null ? "add" : "edit"}}</mat-icon>
+        {{toolId == null ? "הוספת" : "עריכת"}} כלי
+    </h1>
+
+    <button
+        color="warn"
+        class="close"
+        (click)="toolId = null; toolTopLevelDefinitionForm.reset()"
+        type="reset" mat-mini-fab
+        *ngIf="toolId != null"
+    >
+        <mat-icon >close</mat-icon>
+    </button>
+
+
+    <mat-form-field>
+        <mat-label> שם כלי </mat-label>
+        <input matInput type="text" placeholder="שם כלי" formControlName="ToolTopLevelDefinitionName">
+        <mat-error *ngIf="toolTopLevelDefinitionForm.get('ToolTopLevelDefinitionName').hasError('required')">
+            יש להזין שם כלי
+        </mat-error>
+        <mat-error *ngIf="toolTopLevelDefinitionForm.get('ToolTopLevelDefinitionName').hasError('minlength')">
+            יש להזין לפחות 2 תווים
+        </mat-error>
+        <mat-error *ngIf="toolTopLevelDefinitionForm.get('ToolTopLevelDefinitionName').hasError('maxlength')">
+            יש להזין עד 50 תווים
+        </mat-error>
+        <mat-error *ngIf="toolTopLevelDefinitionForm.get('ToolTopLevelDefinitionName').hasError('pattern')">
+            יש להזין רק אותיות בעברית או אנגלית
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> טכנולוגיה </mat-label>
+        <mat-select placeholder=" טכנולוגיה " formControlName="TechID">
+            <mat-option *ngFor="let technology of toolsDefinitionService.technologies" [value]="technology.TechnologyID">
+                {{technology.TechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> תת טכנולוגיה </mat-label>
+        <mat-select placeholder=" תת טכנולוגיה " formControlName="SubTechID">
+            <mat-option *ngFor="let subTechnology of subTechnologies" [value]="subTechnology.SubTechnologyID">
+                {{subTechnology.SubTechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> מס' נוהל </mat-label>
+        <mat-select placeholder=" מס' נוהל " formControlName="IsoProcedureID">
+            <mat-option *ngFor="let isoProcedure of toolsDefinitionService.isoProcedure" [value]="isoProcedure.IsoProcedureID">
+                {{isoProcedure.MCode}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <button type="submit" mat-raised-button color="primary" [disabled]="!toolTopLevelDefinitionForm.valid">
+        שמירה
+    </button>
+</form>

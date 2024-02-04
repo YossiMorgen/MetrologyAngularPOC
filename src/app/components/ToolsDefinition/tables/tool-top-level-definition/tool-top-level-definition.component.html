@@ -1,0 +1,49 @@
+<div class="width50percent">
+    <table>
+        <tr>
+            <th>
+                נוהל
+            </th>
+            <th>
+                שם כלי
+            </th>
+            <th>
+                תת טכנולוגיה
+            </th>
+            <th>
+                טכנולוגיה
+            </th>
+            <th>
+                פעולות
+            </th>
+        </tr>
+        <tr *ngFor="let tool of toolTopLevelDefinitions">
+            <td>
+                {{tool.IsoProcedure.MCode}}
+            </td>
+            <td>
+                {{tool.ToolTopLevelDefinitionName}}
+            </td>
+            <td>
+                {{tool.SubTechnology?.SubTechnologyName}}
+            </td>
+            <td>
+                {{tool.SubTechnology?.Technology?.TechnologyName}}
+            </td>
+            
+            <td>
+                <button mat-mini-fab color="danger" (click)="changeToolId(tool.ToolTopLevelDefinitionID)">
+                    <mat-icon>
+                        edit
+                    </mat-icon>
+                </button>
+                <button mat-mini-fab color="warn" (click)="deleteToolTopLevelDefinition(tool.ToolTopLevelDefinitionID)">
+                    <mat-icon>
+                        delete
+                    </mat-icon>
+                </button>
+            </td>
+        </tr>
+    </table>
+    <app-tool-top-level-definition-form [toolId]="toolId"></app-tool-top-level-definition-form>
+</div>

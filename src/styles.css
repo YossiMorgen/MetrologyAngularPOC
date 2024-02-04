@@ -1,1 +1,67 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;}
+a{
+    text-decoration: none;
+}
+
+*{
+    --width50percentGap: 40px;
+}
+
+table{
+    border-collapse: collapse;
+    min-width: fit-content;
+    direction: rtl;
+
+}
+
+th, td{
+    text-align: left;
+    padding: 8px;
+    direction: rtl;
+}
+
+tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+/* tr:has(td){
+    cursor: pointer;
+} */
+
+.width50percent{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: var(--width50percentGap); 
+    gap: var(--width50percentGap);   
+}
+
+.width50percent:nth-child(){
+    min-width: fit-content;
+}
+
+form{
+    width: 50%;
+    position: relative;
+}
+
+mat-form-field{
+    width: 100%;
+}
+
+mat-toolbar > a{
+    margin-left: 5px;
+}
+
+a.active{
+    font-weight: bolder;
+    box-shadow: 0 2.5px 5px 0 #000000;
+}
+
+tr button ~ button{
+    margin-right: 5px;
+}

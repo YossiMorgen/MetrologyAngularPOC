@@ -1,0 +1,29 @@
+<div class="width50percent">
+    <table dir="rtl">
+        <tr>
+            <th> טכנולוגיה </th>
+            <th> M-Code</th>
+            <th>פעולות </th>
+        </tr>
+        <tr *ngFor="let technology of technologies">
+            <td>{{technology.TechnologyName}}</td>
+            <td>{{technology.MCode}}</td>
+            <td>
+                <button mat-mini-fab color="danger" (click)="changeToolId(technology.TechnologyID)">
+                    <mat-icon>  
+                        edit
+                    </mat-icon>
+                </button>
+                
+                <button mat-mini-fab color="warn" (click)="deleteTechnology(technology.TechnologyID)">
+                    <mat-icon>  
+                        delete
+                    </mat-icon>
+                </button>
+            </td>
+        </tr>
+    </table>
+    
+    <app-technology-form [toolId]="toolId"></app-technology-form>
+    
+</div>

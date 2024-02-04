@@ -1,0 +1,53 @@
+<form [formGroup]="technologyForm" (ngSubmit)="submitForm()">
+    <h1>
+        <mat-icon>{{toolId == null ? "add" : "edit"}}</mat-icon>
+         טכנולוגיה
+    </h1>
+
+    <button 
+        color="warn" 
+        class="close" 
+        (click)="toolId = null; technologyForm.reset()" 
+        type="reset" mat-mini-fab 
+        *ngIf="toolId != null"
+    >
+        <mat-icon >close</mat-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-label> שם טכנולוגיה </mat-label>
+        <input matInput type="text" placeholder="שם טכנולוגיה" formControlName="TechnologyName">
+        <mat-error *ngIf="technologyForm.get('TechnologyName').hasError('required')">
+            יש להזין שם טכנולוגיה
+        </mat-error>
+        <mat-error *ngIf="technologyForm.get('TechnologyName').hasError('minlength')">
+            יש להזין לפחות 2 תווים
+        </mat-error>
+        <mat-error *ngIf="technologyForm.get('TechnologyName').hasError('maxlength')">
+            יש להזין עד 50 תווים
+        </mat-error>
+        <mat-error *ngIf="technologyForm.get('TechnologyName').hasError('pattern')">
+            יש להזין רק אותיות בעברית או אנגלית
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> MCode </mat-label>
+        <input matInput type="text" placeholder="MCode" formControlName="MCode">
+        <mat-error *ngIf="technologyForm.get('MCode').hasError('required')">
+            יש להזין m-code
+        </mat-error>
+        <mat-error *ngIf="technologyForm.get('MCode').hasError('min')">
+            יש להזין מספר חיובי
+        </mat-error>
+    </mat-form-field>
+    
+    <button 
+        type="submit" 
+        mat-raised-button 
+        color="primary"  
+        [disabled]="!technologyForm.valid"
+    >
+        שמור
+    </button>
+</form>

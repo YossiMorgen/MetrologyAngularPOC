@@ -1,0 +1,114 @@
+<form [formGroup]="toolMeasurementLevelDefinitionForm" (ngSubmit)="submitForm()">
+    <h1>
+        <mat-icon>{{toolId == null ? "add" : "edit"}}</mat-icon>
+        {{toolId == null ? "הוספת" : "עריכת"}} כלי
+    </h1>
+
+    <button
+        color="warn"
+        class="close"
+        (click)="toolId = null; toolMeasurementLevelDefinitionForm.reset()"
+        type="reset" mat-mini-fab
+        *ngIf="toolId != null"
+    >
+        <mat-icon >close</mat-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-label> טכנולוגיה </mat-label>
+        <mat-select placeholder=" טכנולוגיה " formControlName="TechID">
+            <mat-option *ngFor="let technology of toolsDefinitionService.technologies" [value]="technology.TechnologyID">
+                {{technology.TechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> תת טכנולוגיה </mat-label>
+        <mat-select placeholder=" תת טכנולוגיה " formControlName="SubTechID">
+            <mat-option *ngFor="let subTechnology of subTechnologies" [value]="subTechnology.SubTechnologyID">
+                {{subTechnology.SubTechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> שם כלי </mat-label>
+        <mat-select placeholder=" שם כלי " formControlName="ToolTopLevelDefinitionID">
+            <mat-option *ngFor="let toolTopLevel of toolTopLevels" [value]="toolTopLevel.ToolTopLevelDefinitionID">
+                {{toolTopLevel.ToolTopLevelDefinitionName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> MCode </mat-label>
+        <input matInput type="text" placeholder="m-code" formControlName="MCode">
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('MCode').hasError('required')">
+            יש להזין m-code
+        </mat-error>
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('MCode').hasError('min')">
+            יש להזין מספר חיובי
+        </mat-error>
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('MCode').hasError('pattern')">
+            יש להזין מספרים בלבד
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>  יחידת מידה  </mat-label>
+        <mat-select placeholder=" יחידת מידה " formControlName="ValueUnitID">
+            <mat-option *ngFor="let measurementUnit of toolsDefinitionService.measurementUnits" [value]="measurementUnit.MeasurementUnitsID">
+                {{measurementUnit.Symbol}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field>
+        <mat-label> ערך מינימלי </mat-label>
+        <input matInput type="number" placeholder=" ערך מינימלי " formControlName="ValueMin">
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMin').hasError('required')">
+            יש להזין ערך מינימלי
+        </mat-error>
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMin').hasError('min')">
+            ערך מינימלי חייב להיות גדול מ-0
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> ערך מקסימלי </mat-label>
+        <input matInput type="number" placeholder="ערך מקסימלי" formControlName="ValueMax">
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMax').hasError('required')">
+            יש להזין ערך מקסימלי
+        </mat-error>
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMax').hasError('min')">
+            ערך מקסימלי חייב להיות גדול מ-0
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> יחידת אי ודאות </mat-label>
+        <mat-select placeholder=" יחידת אי ודאות " formControlName="UncertaintyUnitID">
+            <mat-option *ngFor="let uncertaintyUnit of toolsDefinitionService.measurementUnits" [value]="uncertaintyUnit.MeasurementUnitsID">
+                {{uncertaintyUnit.Symbol}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> ערך אי ודאות </mat-label>
+        <input matInput type="number" placeholder="ערך אי ודאות" formControlName="UncertaintyDelta">
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('UncertaintyDelta').hasError('required')">
+            יש להזין ערך אי ודאות
+        </mat-error>
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('UncertaintyDelta').hasError('min')">
+            ערך אי ודאות חייב להיות גדול מ-0
+        </mat-error>
+    </mat-form-field>
+
+    <button type="submit" mat-raised-button color="primary" [disabled]="!toolMeasurementLevelDefinitionForm.valid">
+        שמירה
+    </button>
+</form>
+
+    

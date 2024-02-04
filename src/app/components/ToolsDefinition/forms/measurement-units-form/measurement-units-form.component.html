@@ -1,0 +1,39 @@
+<form [formGroup]="measurementUnitsForm" (ngSubmit)="submitForm()">
+    <h1>
+        <mat-icon>{{toolId == null ? "add" : "edit"}}</mat-icon>
+        {{toolId == null ? "הוספת" : "עריכת"}} יחידת מידה
+    </h1>
+
+    <button
+        color="warn"
+        class="close"
+        (click)="toolId = null; measurementUnitsForm.reset()"
+        type="reset" mat-mini-fab
+        *ngIf="toolId != null"
+    >
+        <mat-icon >close</mat-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-label> שם </mat-label>
+        <input matInput type="text" placeholder="שם" formControlName="Symbol">
+        <mat-error *ngIf="measurementUnitsForm.get('Symbol').hasError('required')">
+            יש להזין שם
+        </mat-error>
+        <mat-error *ngIf="measurementUnitsForm.get('Symbol').hasError('minlength')">
+            יש להזין לפחות תוו אחד
+        </mat-error>
+        <mat-error *ngIf="measurementUnitsForm.get('Symbol').hasError('maxlength')">
+            יש להזין עד 20 תווים
+        </mat-error>
+    </mat-form-field>
+
+    <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="!measurementUnitsForm.valid"
+    >
+        שמור
+    </button>
+</form>

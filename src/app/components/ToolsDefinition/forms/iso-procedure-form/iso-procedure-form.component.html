@@ -1,0 +1,44 @@
+<form [formGroup]="isoProcedureForm" (ngSubmit)="submitForm()">
+    <h1>
+        <mat-icon>{{toolId == null ? "add" : "edit"}}</mat-icon>
+        {{toolId == null ? "הוספת" : "עריכת"}} נוהל
+    </h1>
+
+    <button
+        color="warn"
+        class="close"
+        (click)="toolId = null; isoProcedureForm.reset()"
+        type="reset" mat-mini-fab
+        *ngIf="toolId != null"
+    >
+        <mat-icon >close</mat-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-label> MCode </mat-label>
+        <input matInput type="text" placeholder="MCode" formControlName="MCode">
+        <mat-error *ngIf="isoProcedureForm.get('MCode').hasError('required')">
+            יש להזין m-code
+        </mat-error>
+        <mat-error *ngIf="isoProcedureForm.get('MCode').hasError('min')">
+            יש להזין מספר חיובי
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> תיאור </mat-label>
+        <input matInput type="text" placeholder="תיאור" formControlName="CertificateText">
+        <mat-error *ngIf="isoProcedureForm.get('CertificateText').hasError('required')">
+            יש להזין תיאור
+        </mat-error>
+    </mat-form-field>
+
+    <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="!isoProcedureForm.valid"
+    >
+        שמור
+    </button>
+</form>

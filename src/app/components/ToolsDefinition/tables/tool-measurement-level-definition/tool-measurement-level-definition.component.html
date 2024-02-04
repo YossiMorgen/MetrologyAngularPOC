@@ -1,0 +1,61 @@
+<div class="width50percent">
+    <table>
+        <tr>
+            <th>
+                נוהל
+            </th>
+            <th>
+                תחום מדידה
+            </th>
+            <th>
+                אי וודאות
+            </th>
+            <th>
+                שם כלי
+            </th>
+            <th>
+                תת טכנולוגיה
+            </th>
+            <th>
+                טכנולוגיה
+            </th>
+            <th>
+                פעולות
+            </th>
+        </tr>
+        <tr *ngFor="let tool of toolMeasurementLevelDefinition">
+            <td>
+                {{tool.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
+            </td>
+            <td>
+                {{tool.ValueMin+' - '+tool.ValueMax + ':' + tool.ValueUnit?.Symbol}}
+            </td>
+            <td>
+                {{tool.UncertaintyDelta + ' ' + tool.UncertaintyUnit?.Symbol}}
+            </td>
+            <td>
+                {{tool.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}
+            </td>
+            <td>
+                {{tool.ToolTopLevelDefinition?.SubTechnology?.SubTechnologyName}}
+            </td>
+            <td>
+                {{tool.ToolTopLevelDefinition?.SubTechnology?.Technology?.TechnologyName}}
+            </td>
+            <td>
+                <button mat-mini-fab color="danger" (click)="changeToolId(tool.ToolMeasurementLevelDefinitionID)">
+                    <mat-icon>
+                        edit
+                    </mat-icon>
+                </button>
+                <button mat-mini-fab color="warn" (click)="deleteToolMeasurementLevelDefinition(tool.ToolMeasurementLevelDefinitionID)">
+                    <mat-icon>
+                        delete
+                    </mat-icon>
+                </button>
+            </td>
+        </tr>
+    </table>
+
+    <app-tool-measurement-level-definition-form [toolId]="toolId"></app-tool-measurement-level-definition-form>
+</div>

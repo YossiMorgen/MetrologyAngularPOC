@@ -1,0 +1,52 @@
+<div class="width50percent">
+    <table>
+        <tr>
+            <th>
+                נוהל
+            </th>
+            <th>
+                גודל כלי 
+            </th>
+            <th>
+                תחום מדידה
+            </th>
+            <th>
+                אי וודאות
+            </th>
+            <th>
+                שם כלי
+            </th>
+            <th>
+                תת טכנולוגיה
+            </th>
+            <th>
+                טכנולוגיה
+            </th>
+        </tr>
+        <tr *ngFor="let tool of toolLowLevelDefinitions">
+            <td>
+                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
+            </td>
+            <td>
+                {{tool.ToolLowLevelDefinitionName}}
+            </td>
+            <td>
+                {{tool.ToolMeasurementLevelDefinition?.ValueMin + ' - ' + tool.ToolMeasurementLevelDefinition?.ValueMax + ' - ' + tool.ToolMeasurementLevelDefinition?.ValueUnit?.Symbol}}
+            </td>
+            <td>
+                {{tool.ToolMeasurementLevelDefinition?.UncertaintyDelta + ' ' + tool.ToolMeasurementLevelDefinition?.UncertaintyUnit?.Symbol}}
+            </td>
+            <td>
+                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}
+            </td>
+            <td>
+                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.SubTechnologyName}}
+            </td>
+            <td>
+                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.TechnologyName}}
+            </td>
+        </tr>
+    </table>
+
+
+</div>
