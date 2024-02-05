@@ -2,12 +2,16 @@
     <table>
         <tr>
             <th> נוהל </th>
+            <th> תיאור מילולי לתעודה</th>
+            <th> קובץ וורד </th>
             <th> תיאור </th>
             <th> פעולות </th>
         </tr>
         <tr *ngFor="let procedure of isoProcedures">
             <td> {{procedure.MCode}}</td>
             <td> {{procedure.CertificateText}} </td>
+            <td> {{"נוהל: " + procedure.MCode}}</td>
+            <td> {{procedure.Description}}</td>
             <td>
                 <button mat-mini-fab color="danger" (click)="changeToolId(procedure.IsoProcedureID)">
                     <mat-icon>

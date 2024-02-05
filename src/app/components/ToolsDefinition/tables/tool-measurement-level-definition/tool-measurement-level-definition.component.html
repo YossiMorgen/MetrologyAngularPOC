@@ -20,6 +20,9 @@
                 טכנולוגיה
             </th>
             <th>
+                MCode
+            </th>
+            <th>
                 פעולות
             </th>
         </tr>
@@ -28,7 +31,7 @@
                 {{tool.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
             </td>
             <td>
-                {{tool.ValueMin+' - '+tool.ValueMax + ':' + tool.ValueUnit?.Symbol}}
+                {{(tool.ValueMin != tool.ValueMax && tool.ValueMin+' - ')+tool.ValueMax + ' ' + tool.ValueUnit?.Symbol}}
             </td>
             <td>
                 {{tool.UncertaintyDelta + ' ' + tool.UncertaintyUnit?.Symbol}}
@@ -41,6 +44,14 @@
             </td>
             <td>
                 {{tool.ToolTopLevelDefinition?.SubTechnology?.Technology?.TechnologyName}}
+            </td>
+            <td>
+                {{
+                    tool.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + '.' + 
+                    tool.ToolTopLevelDefinition?.SubTechnology?.MCode + '.' + 
+                    tool.ToolTopLevelDefinition?.IsoProcedure?.MCode + '.' + 
+                    tool.MCode
+                }}
             </td>
             <td>
                 <button mat-mini-fab color="danger" (click)="changeToolId(tool.ToolMeasurementLevelDefinitionID)">

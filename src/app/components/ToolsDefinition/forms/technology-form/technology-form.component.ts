@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { ToastService } from 'angular-toastify';
 import { Technology } from 'src/app/models/toolDefinitionModels/technology';
 import { ToolsDefinitionService } from 'src/app/services/tools-definition.service';
@@ -9,14 +9,19 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
   templateUrl: './technology-form.component.html',
   styleUrls: ['./technology-form.component.css']
 })
-export class TechnologyFormComponent implements OnChanges {
+export class TechnologyFormComponent implements OnChanges, OnInit {
   @Input() public toolId: number = null;
+  @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
 
   constructor(
     private toolsDefinitionService: ToolsDefinitionService,
     private formBuilder : FormBuilder,
     private toastService: ToastService
   ) { }
+
+  ngOnInit(): void {
+      this.technologyForm.controls.MCode.setValue(null);
+  }
 
   ngOnChanges(): void {
     console.log(this.toolId);
@@ -31,7 +36,7 @@ export class TechnologyFormComponent implements OnChanges {
   }
 
   public technologyForm = this.formBuilder.group({
-    TechnologyName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u0590-\u05FF\u200f\u200e]*$')]],
+    TechnologyName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')]],
     MCode: [0, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]*$')]]
   });
 
@@ -50,7 +55,7 @@ export class TechnologyFormComponent implements OnChanges {
       }
       
       this.toolsDefinitionService.dataSubject.next(true);
-      this.technologyForm.reset();
+      this.formDirective.resetForm();
       this.toolId = null;
     } catch (error: any) {
       this.toastService.error(error);

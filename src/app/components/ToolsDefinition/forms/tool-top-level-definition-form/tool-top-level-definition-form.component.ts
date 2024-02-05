@@ -1,6 +1,7 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { ToastService } from 'angular-toastify';
+import { SubTechnology } from 'src/app/models/toolDefinitionModels/sub-technology';
 import { ToolTopLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-top-level-definition';
 import { ToolsDefinitionService } from 'src/app/services/tools-definition.service';
 
@@ -11,7 +12,8 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
 })
 export class ToolTopLevelDefinitionFormComponent implements OnChanges, OnInit {
   @Input() public toolId: number = null;
-  subTechnologies = this.toolsDefinitionService.subTechnologies;
+  subTechnologies: SubTechnology[];
+  @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
 
   constructor(
     public toolsDefinitionService: ToolsDefinitionService,
@@ -26,10 +28,20 @@ export class ToolTopLevelDefinitionFormComponent implements OnChanges, OnInit {
 
     this.toolTopLevelDefinitionForm.controls.TechID.valueChanges.subscribe((value) => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies.filter(subTech => subTech.TechID === +value);
-      if(this.subTechnologies.length === 0 && value !== 0){
+      
+      if(this.subTechnologies.length === 0 && value){
         this.toastService.error('לא קיימות תת טכנולוגיות תחת טכנולוגיה זו');
       }
     });
+
+    this.toolTopLevelDefinitionForm.controls.SubTechID.valueChanges.subscribe((value) => {
+      this.toolTopLevelDefinitionForm.controls.TechID.setValue(
+        this.toolsDefinitionService.subTechnologies.find(subTech => subTech.SubTechnologyID === +value)?.TechID
+      );
+    });
+    
+    this.subTechnologies = this.toolsDefinitionService.subTechnologies;
+
   }
 
   ngOnChanges(): void {
@@ -41,20 +53,25 @@ export class ToolTopLevelDefinitionFormComponent implements OnChanges, OnInit {
         ToolTopLevelDefinitionName: tool.ToolTopLevelDefinitionName,
         TechID: tool.SubTechnology?.TechID || 0,
         SubTechID: tool.SubTechID,
-        IsoProcedureID: tool.IsoProcedureID
+        IsoProcedureID: tool.IsoProcedureID,
       });
     }
   }
 
   public toolTopLevelDefinitionForm = this.formBuilder.group({
-    ToolTopLevelDefinitionName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u0590-\u05FF\u200f\u200e]*$')]],
+    ToolTopLevelDefinitionName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')]],
     TechID:[0],
     SubTechID: [0, [Validators.required]],
-    IsoProcedureID: [0, [Validators.required]]
+    IsoProcedureID: [0, [Validators.required]],
   });
 
   async submitForm(){
-    const newTool = new ToolTopLevelDefinition(this.toolTopLevelDefinitionForm.value.ToolTopLevelDefinitionName, +this.toolTopLevelDefinitionForm.value.SubTechID, +this.toolTopLevelDefinitionForm.value.IsoProcedureID);
+    const newTool = new ToolTopLevelDefinition(
+      this.toolTopLevelDefinitionForm.value.ToolTopLevelDefinitionName, 
+      +this.toolTopLevelDefinitionForm.value.SubTechID, 
+      +this.toolTopLevelDefinitionForm.value.IsoProcedureID, 
+    );
+
     if(this.toolId){
       await this.toolsDefinitionService.updateToolDefinition(newTool, this.toolId);
       this.toolsDefinitionService.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions.map(tool => tool.ToolTopLevelDefinitionID === this.toolId ? newTool : tool);
@@ -68,9 +85,11 @@ export class ToolTopLevelDefinitionFormComponent implements OnChanges, OnInit {
 
     newTool.SubTechnology = this.toolsDefinitionService.subTechnologies.find(subTech => subTech.SubTechnologyID === newTool.SubTechID);
     newTool.IsoProcedure = this.toolsDefinitionService.isoProcedure.find(iso => iso.IsoProcedureID === newTool.IsoProcedureID);
-    this.toolsDefinitionService.dataSubject.next(true);
-    this.toolTopLevelDefinitionForm.reset();
     this.toolId = null;
+    this.toolsDefinitionService.dataSubject.next(true);
+    this.formDirective.resetForm();
+    
+    this.subTechnologies = this.toolsDefinitionService.subTechnologies;
   }
 
 }

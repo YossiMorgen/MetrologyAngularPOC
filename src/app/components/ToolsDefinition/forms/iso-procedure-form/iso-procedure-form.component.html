@@ -23,14 +23,24 @@
         <mat-error *ngIf="isoProcedureForm.get('MCode').hasError('min')">
             יש להזין מספר חיובי
         </mat-error>
+        <mat-error *ngIf="isoProcedureForm.get('MCode').hasError('pattern')">
+            יש להזין ספרות בלבד
+        </mat-error>
     </mat-form-field>
+    
+    <!-- <mat-form-field>
+        <mat-label> קישור לוורד </mat-label>
+        <input matInput type="text" placeholder="קישור לוורד" formControlName="WordFileLink">
+
+    </mat-form-field> -->
 
     <mat-form-field>
-        <mat-label> תיאור </mat-label>
-        <input matInput type="text" placeholder="תיאור" formControlName="CertificateText">
-        <mat-error *ngIf="isoProcedureForm.get('CertificateText').hasError('required')">
-            יש להזין תיאור
-        </mat-error>
+        <mat-label> תיאור מילולי לתעודה </mat-label>
+        <input matInput type="text" placeholder="תיאור מילולי לתעודה" formControlName="CertificateText">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label> תיאור נוהל </mat-label>
+        <input matInput type="text" placeholder="תיאור נוהל" formControlName="Description">
     </mat-form-field>
 
     <button

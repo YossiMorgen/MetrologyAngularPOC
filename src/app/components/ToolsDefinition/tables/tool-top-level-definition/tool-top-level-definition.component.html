@@ -19,7 +19,7 @@
         </tr>
         <tr *ngFor="let tool of toolTopLevelDefinitions">
             <td>
-                {{tool.IsoProcedure.MCode}}
+                {{tool.SubTechnology?.Technology?.MCode + "." + tool.SubTechnology?.MCode + "." + tool.IsoProcedure.MCode}}
             </td>
             <td>
                 {{tool.ToolTopLevelDefinitionName}}

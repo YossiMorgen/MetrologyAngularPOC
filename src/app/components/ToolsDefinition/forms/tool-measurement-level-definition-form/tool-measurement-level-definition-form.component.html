@@ -73,6 +73,12 @@
         <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMin').hasError('min')">
             ערך מינימלי חייב להיות גדול מ-0
         </mat-error>
+        <!-- <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMin').hasError('max')">
+            ערך מינימלי חייב להיות קטן מערך מקסימלי
+        </mat-error> -->
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMin').hasError('pattern')">
+            יש להזין מספרים בלבד עד ארבעה ספרות לאחר הנקודה
+        </mat-error>
     </mat-form-field>
 
     <mat-form-field>
@@ -83,6 +89,9 @@
         </mat-error>
         <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMax').hasError('min')">
             ערך מקסימלי חייב להיות גדול מ-0
+        </mat-error>
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMax').hasError('pattern')">
+            יש להזין מספרים בלבד עד ארבעה ספרות לאחר הנקודה
         </mat-error>
     </mat-form-field>
 
@@ -103,6 +112,9 @@
         </mat-error>
         <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('UncertaintyDelta').hasError('min')">
             ערך אי ודאות חייב להיות גדול מ-0
+        </mat-error>
+        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('UncertaintyDelta').hasError('pattern')">
+            יש להזין מספרים בלבד עד ארבעה ספרות לאחר הנקודה
         </mat-error>
     </mat-form-field>
 

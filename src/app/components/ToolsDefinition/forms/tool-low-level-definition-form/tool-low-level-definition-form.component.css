@@ -1,0 +1,7 @@
+.close{
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    margin-bottom: 10px;
+}

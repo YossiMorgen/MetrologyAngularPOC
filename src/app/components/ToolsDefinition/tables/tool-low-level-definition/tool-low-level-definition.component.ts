@@ -17,9 +17,7 @@ export class ToolLowLevelDefinitionComponent implements OnInit {
 
   public toolId: number = null;
 
-  ngOnInit(): void {
-    console.log(this.toolsDefinitionService.toolLowLevelDefinition);
-    
+  ngOnInit(): void {    
     this.toolsDefinitionService.dataSubject.subscribe(() => {
         this.toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinition;
     });

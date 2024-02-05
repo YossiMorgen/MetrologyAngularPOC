@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { ToastService } from 'angular-toastify';
 import { MeasurementUnits } from 'src/app/models/toolDefinitionModels/measurement-units';
 import { ToolsDefinitionService } from 'src/app/services/tools-definition.service';
@@ -11,6 +11,7 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
 })
 export class MeasurementUnitsFormComponent implements OnChanges {
   @Input() public toolId: number = null;
+  @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
 
   constructor(
     private toolsDefinitionService: ToolsDefinitionService,
@@ -18,47 +19,40 @@ export class MeasurementUnitsFormComponent implements OnChanges {
     private toastService: ToastService
   ) { }
 
-  ngOnChanges(): void {
-    console.log(this.toolId);
-    console.log(this.toolsDefinitionService.measurementUnits);
-    
-    
+  ngOnChanges(): void {    
     if(this.toolId){
       const tool = this.toolsDefinitionService.measurementUnits.find(tool => tool.MeasurementUnitsID === this.toolId);
       console.log(tool);
       
       this.measurementUnitsForm.setValue({
-        MeasurementUnitsID: tool.MeasurementUnitsID,
         Symbol: tool.Symbol,
       });
     }
   }
 
   public measurementUnitsForm = this.formBuilder.group({
-    MeasurementUnitsID: [0, [Validators.required]],
     Symbol: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]],
   });
 
   async submitForm() {
     try {
       const newMeasurementUnits = new MeasurementUnits(
-        +this.measurementUnitsForm.value.MeasurementUnitsID,
         this.measurementUnitsForm.value.Symbol,
       );
 
       if(this.toolId){
         await this.toolsDefinitionService.updateToolDefinition(newMeasurementUnits, this.toolId);
         this.toolsDefinitionService.measurementUnits = this.toolsDefinitionService.measurementUnits.map(measurementUnits => measurementUnits.MeasurementUnitsID === this.toolId ? newMeasurementUnits : measurementUnits);
-        this.toastService.success('היחידות נמדדו בהצלחה');
+        this.toastService.success("יחידת המידה עודכנה בהצלחה");
       } else{
         const id = await this.toolsDefinitionService.createToolDefinition(newMeasurementUnits);
         newMeasurementUnits.MeasurementUnitsID = id;
         this.toolsDefinitionService.measurementUnits.push(newMeasurementUnits);
-        this.toastService.success('היחידות נוצרו בהצלחה');
+        this.toastService.success("יחידת המידה התווספה בהצלחה");
       }
 
       this.toolsDefinitionService.dataSubject.next(true);
-      this.measurementUnitsForm.reset();
+      this.formDirective.resetForm();
       this.toolId = null;
     } catch (error) {
       this.toastService.error('אירעה שגיאה');

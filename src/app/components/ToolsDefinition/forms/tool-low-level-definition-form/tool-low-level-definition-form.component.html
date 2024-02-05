@@ -1,1 +1,112 @@
-<p>tool-low-level-definition-form works!</p>
+<form [formGroup]="toolLowLevelDefinitionForm" (ngSubmit)="submitForm()">
+    <h1>
+        <mat-icon>{{toolId == null ? "add" : "edit"}}</mat-icon>
+        {{toolId == null ? "הוספת" : "עריכת"}} כלי
+    </h1>
+
+    <button
+        color="warn"
+        class="close"
+        (click)="toolId = null; toolLowLevelDefinitionForm.reset()"
+        type="reset" mat-mini-fab
+        *ngIf="toolId != null"
+    >
+        <mat-icon >close</mat-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-label> טכנולוגיה </mat-label>
+        <mat-select placeholder=" טכנולוגיה " formControlName="TechID">
+            <mat-option *ngFor="let technology of toolsDefinitionService.technologies" [value]="technology.TechnologyID">
+                {{technology.TechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> תת טכנולוגיה </mat-label>
+        <mat-select placeholder=" תת טכנולוגיה " formControlName="SubTechID">
+            <mat-option *ngFor="let subTechnology of subTechnologies" [value]="subTechnology.SubTechnologyID">
+                {{subTechnology.SubTechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> שם כלי </mat-label>
+        <mat-select placeholder=" שם כלי " formControlName="ToolTopLevelDefinitionID">
+            <mat-option *ngFor="let toolTopLevel of toolTopLevels" [value]="toolTopLevel.ToolTopLevelDefinitionID">
+                {{toolTopLevel.ToolTopLevelDefinitionName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> תחום מדידה </mat-label>
+        <mat-select placeholder=" תחום מדידה " formControlName="ToolMeasurementLevelDefinitionID">
+            <mat-option *ngFor="let toolMeasurementLevel of toolMeasurementLevels" [value]="toolMeasurementLevel.ToolMeasurementLevelDefinitionID">
+                {{toolMeasurementLevel.ValueUnit?.Symbol + " " + toolMeasurementLevel.ValueMax + "-" + toolMeasurementLevel.ValueMin}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> MCode </mat-label>
+        <input matInput type="text" placeholder="m-code" formControlName="MCode">
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('MCode').hasError('required')">
+            יש להזין m-code
+        </mat-error>
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('MCode').hasError('min')">
+            יש להזין מספר חיובי
+        </mat-error>
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('MCode').hasError('pattern')">
+            יש להזין מספרים בלבד
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>  יחידת מידה  </mat-label>
+        <mat-select placeholder=" יחידת מידה " formControlName="ValueUnitID">
+            <mat-option *ngFor="let valueUnit of toolsDefinitionService.measurementUnits" [value]="valueUnit.MeasurementUnitsID">
+                {{valueUnit.Symbol}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> ערך מינימלי </mat-label>
+        <input matInput type="number" placeholder="ערך מינימלי" formControlName="ValueMin">
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('ValueMin').hasError('required')">
+            יש להזין ערך מינימלי
+        </mat-error>
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('ValueMin').hasError('min')">
+            יש להזין מספר חיובי
+        </mat-error>
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('ValueMin').hasError('pattern')">
+            יש להזין מספרים בלבד עד ארבעה ספרות אחרי הנקודה
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> ערך מקסימלי </mat-label>
+        <input matInput type="number" placeholder="ערך מקסימלי" formControlName="ValueMax">
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('ValueMax').hasError('required')">
+            יש להזין ערך מקסימלי
+        </mat-error>
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('ValueMax').hasError('min')">
+            יש להזין מספר חיובי
+        </mat-error>
+        <mat-error *ngIf="toolLowLevelDefinitionForm.get('ValueMax').hasError('pattern')">
+            יש להזין מספרים בלבד עד ארבעה ספרות אחרי הנקודה
+        </mat-error>
+    </mat-form-field>
+    
+    <button 
+        type="submit" 
+        mat-raised-button
+        color="primary"
+        [disabled]="!toolLowLevelDefinitionForm.valid"
+    >
+        שמירה
+    </button>
+</form>

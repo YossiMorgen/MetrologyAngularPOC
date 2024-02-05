@@ -1,0 +1,10 @@
+mat-toolbar{
+    height: fit-content;
+}
+a{
+    margin-top: 10px;
+}
+a:has( .gif){
+    width: fit-content;
+    height: fit-content;
+}

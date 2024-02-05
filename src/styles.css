@@ -6,9 +6,9 @@ a{
     text-decoration: none;
 }
 
-*{
+/* *{
     --width50percentGap: 40px;
-}
+} */
 
 table{
     border-collapse: collapse;
@@ -18,8 +18,9 @@ table{
 }
 
 th, td{
-    text-align: left;
     padding: 8px;
+    direction: rtl;
+    text-align: right; 
     direction: rtl;
 }
 
@@ -36,8 +37,11 @@ tr:nth-child(even){
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: var(--width50percentGap); 
-    gap: var(--width50percentGap);   
+    padding: var(20px); 
+}
+
+.width50percent > *:nth-child(1){
+    margin-left: 100px;
 }
 
 .width50percent:nth-child(){
