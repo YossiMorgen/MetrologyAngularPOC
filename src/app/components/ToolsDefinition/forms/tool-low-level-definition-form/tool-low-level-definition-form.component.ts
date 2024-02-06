@@ -67,6 +67,8 @@ export class ToolLowLevelDefinitionFormComponent implements OnChanges, OnInit {
 
     this.toolLowLevelDefinitionForm.controls.ToolMeasurementLevelDefinitionID.valueChanges.subscribe(value =>{
       const tool = this.toolsDefinitionService.toolMeasurementLevelDefinition.find(tool => tool.ToolMeasurementLevelDefinitionID === +value);
+      console.log(tool);
+      
       this.toolLowLevelDefinitionForm.controls.ToolTopLevelDefinitionID.setValue(tool.ToolTopLevelDefinitionID);
       this.toolLowLevelDefinitionForm.controls.SubTechID.setValue(tool.ToolTopLevelDefinition?.SubTechID);
       this.toolLowLevelDefinitionForm.controls.TechID.setValue(tool.ToolTopLevelDefinition?.SubTechnology?.TechID);

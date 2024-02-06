@@ -96,7 +96,7 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
   public toolMeasurementLevelDefinitionForm = this.formBuilder.group({
     TechID:[0],
     SubTechID: [0],
-    ToolTopLevelDefinitionID: [0],
+    ToolTopLevelDefinitionID: [0, [Validators.required]],
     ValueUnitID: [0, [Validators.required]],
     ValueMin: [1.0000, [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{0,1})?$'), Validators.min(0)]],
     ValueMax: [1.0000, [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{0,1})?$'), Validators.min(0)]],
