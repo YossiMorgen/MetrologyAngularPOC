@@ -5,10 +5,8 @@ import { ToolsDefinitionComponent } from './components/pages/tools-definition/to
 import { TechnologyComponent } from './components/ToolsDefinition/tables/technology/technology.component';
 import { SubTechnologyComponent } from './components/ToolsDefinition/tables/sub-technology/sub-technology.component';
 import { ToolTopLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-top-level-definition/tool-top-level-definition.component';
-import { ToolMeasurementLevelDefinition } from './models/toolDefinitionModels/tool-measurement-level-definition';
 import { MeasurementUnitComponent } from './components/ToolsDefinition/tables/measurement-units/measurement-units.component';
 import { ToolLowLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-low-level-definition/tool-low-level-definition.component';
-import { IsoProcedureComponent } from './components/ToolsDefinition/tables/iso-procedure/iso-procedure.component';
 import { ToolMeasurementLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-measurement-level-definition/tool-measurement-level-definition.component';
 
 const routes: Routes = [

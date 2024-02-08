@@ -20,15 +20,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MeasurementUnitComponent } from './components/ToolsDefinition/tables/measurement-units/measurement-units.component';
 import { ToolLowLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-low-level-definition/tool-low-level-definition.component';
 import { ToolMeasurementLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-measurement-level-definition/tool-measurement-level-definition.component';
-import { IsoProcedureComponent } from './components/ToolsDefinition/tables/iso-procedure/iso-procedure.component';
 import { TechnologyFormComponent } from './components/ToolsDefinition/forms/technology-form/technology-form.component';
 import { SubTechnologyFormComponent } from './components/ToolsDefinition/forms/sub-technology-form/sub-technology-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastService, AngularToastifyModule } from 'angular-toastify';
-import { IsoProcedureFormComponent } from './components/ToolsDefinition/forms/iso-procedure-form/iso-procedure-form.component';
 import { ToolLowLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-low-level-definition-form/tool-low-level-definition-form.component';
 import { ToolMeasurementLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-measurement-level-definition-form/tool-measurement-level-definition-form.component';
-import { ToolTopLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-top-level-definition-form/tool-top-level-definition-form.component';
 import { ToolTopLevelDefinitionAndIsoProcedureFormComponent } from './components/ToolsDefinition/forms/tool-top-level-definition-and-iso-procedure-form/tool-top-level-definition-and-iso-procedure-form.component';
 
 @NgModule({
@@ -38,17 +35,14 @@ import { ToolTopLevelDefinitionAndIsoProcedureFormComponent } from './components
     ToolsDefinitionComponent,
     TechnologyComponent,
     SubTechnologyComponent,
-    IsoProcedureComponent,
     ToolTopLevelDefinitionComponent,
     MeasurementUnitComponent,
     ToolLowLevelDefinitionComponent,
     ToolMeasurementLevelDefinitionComponent,
     TechnologyFormComponent,
     SubTechnologyFormComponent,
-    IsoProcedureFormComponent,
     ToolLowLevelDefinitionFormComponent,
     ToolMeasurementLevelDefinitionFormComponent,
-    ToolTopLevelDefinitionFormComponent,
     ToolTopLevelDefinitionAndIsoProcedureFormComponent
   ],
   imports: [
