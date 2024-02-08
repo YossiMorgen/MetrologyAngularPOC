@@ -2,8 +2,11 @@
     <table>
         <tr>
             <th>
-                נוהל
+                MCode
             </th>
+            <th> תיאור מילולי לתעודה</th>
+            <th> קובץ וורד </th>
+            <th> תיאור </th>
             <th>
                 שם כלי
             </th>
@@ -19,7 +22,14 @@
         </tr>
         <tr *ngFor="let tool of toolTopLevelDefinitions">
             <td>
-                {{tool.SubTechnology?.Technology?.MCode + "." + tool.SubTechnology?.MCode + "." + tool.IsoProcedure.MCode}}
+                {{tool.SubTechnology?.Technology?.MCode + "." + tool.SubTechnology?.MCode + "." + tool.IsoProcedure?.MCode}}
+            </td>
+            <td>
+                {{tool.IsoProcedure?.CertificateText}}
+            </td>
+            <td>
+                <!-- {{tool.IsoProcedure?.WordFileLink}} -->
+                {{"נוהל: " + tool.IsoProcedure?.MCode }}
             </td>
             <td>
                 {{tool.ToolTopLevelDefinitionName}}
@@ -37,7 +47,7 @@
                         edit
                     </mat-icon>
                 </button>
-                <button mat-mini-fab color="warn" (click)="deleteToolTopLevelDefinition(tool.ToolTopLevelDefinitionID)">
+                <button mat-mini-fab color="warn" (click)="deleteToolTopLevelDefinition(tool.ToolTopLevelDefinitionID, tool.IsoProcedureID)">
                     <mat-icon>
                         delete
                     </mat-icon>
@@ -45,5 +55,5 @@
             </td>
         </tr>
     </table>
-    <app-tool-top-level-definition-form [toolId]="toolId"></app-tool-top-level-definition-form>
+    <app-tool-top-level-definition-and-iso-procedure-form [toolId]="toolId"></app-tool-top-level-definition-and-iso-procedure-form>
 </div>

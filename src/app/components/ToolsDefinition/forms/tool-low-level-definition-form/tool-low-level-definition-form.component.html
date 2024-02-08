@@ -67,7 +67,7 @@
     <mat-form-field>
         <mat-label>  יחידת מידה  </mat-label>
         <mat-select placeholder=" יחידת מידה " formControlName="ValueUnitID">
-            <mat-option *ngFor="let valueUnit of toolsDefinitionService.measurementUnits" [value]="valueUnit.MeasurementUnitsID">
+            <mat-option *ngFor="let valueUnit of toolsDefinitionService.MeasurementUnit" [value]="valueUnit.MeasurementUnitID">
                 {{valueUnit.Symbol}}
             </mat-option>
         </mat-select>

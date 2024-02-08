@@ -1,4 +1,4 @@
-import { MeasurementUnits } from "./measurement-units";
+import { MeasurementUnit } from "./measurement-unit";
 import { ToolMeasurementLevelDefinition } from "./tool-measurement-level-definition";
 
 export class ToolLowLevelDefinition {
@@ -8,13 +8,10 @@ export class ToolLowLevelDefinition {
     public ToolMeasurementLevelDefinition: ToolMeasurementLevelDefinition;
     public ValueMin: number;
     public ValueMax: number;
-    public ValueUnitID: number;
-    public ValueUnit: MeasurementUnits;
 
     constructor(
         MCode: number, 
         ToolMeasurementLevelDefinitionID: number, 
-        ValueUnitID: number,
         ValueMin: number, 
         ValueMax: number, 
         ToolLowLevelDefinitionID?: number
@@ -24,6 +21,5 @@ export class ToolLowLevelDefinition {
         this.ToolMeasurementLevelDefinitionID = ToolMeasurementLevelDefinitionID;
         this.ValueMin = ValueMin;
         this.ValueMax = ValueMax;
-        this.ValueUnitID = ValueUnitID;
     }
 }

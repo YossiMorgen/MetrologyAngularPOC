@@ -17,7 +17,7 @@ import { TechnologyComponent } from './components/ToolsDefinition/tables/technol
 import { SubTechnologyComponent } from './components/ToolsDefinition/tables/sub-technology/sub-technology.component';
 import { ToolTopLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-top-level-definition/tool-top-level-definition.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MeasurementUnitsComponent } from './components/ToolsDefinition/tables/measurement-units/measurement-units.component';
+import { MeasurementUnitComponent } from './components/ToolsDefinition/tables/measurement-units/measurement-units.component';
 import { ToolLowLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-low-level-definition/tool-low-level-definition.component';
 import { ToolMeasurementLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-measurement-level-definition/tool-measurement-level-definition.component';
 import { IsoProcedureComponent } from './components/ToolsDefinition/tables/iso-procedure/iso-procedure.component';
@@ -26,10 +26,10 @@ import { SubTechnologyFormComponent } from './components/ToolsDefinition/forms/s
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastService, AngularToastifyModule } from 'angular-toastify';
 import { IsoProcedureFormComponent } from './components/ToolsDefinition/forms/iso-procedure-form/iso-procedure-form.component';
-import { MeasurementUnitsFormComponent } from './components/ToolsDefinition/forms/measurement-units-form/measurement-units-form.component';
 import { ToolLowLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-low-level-definition-form/tool-low-level-definition-form.component';
 import { ToolMeasurementLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-measurement-level-definition-form/tool-measurement-level-definition-form.component';
 import { ToolTopLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-top-level-definition-form/tool-top-level-definition-form.component';
+import { ToolTopLevelDefinitionAndIsoProcedureFormComponent } from './components/ToolsDefinition/forms/tool-top-level-definition-and-iso-procedure-form/tool-top-level-definition-and-iso-procedure-form.component';
 
 @NgModule({
   declarations: [
@@ -40,16 +40,16 @@ import { ToolTopLevelDefinitionFormComponent } from './components/ToolsDefinitio
     SubTechnologyComponent,
     IsoProcedureComponent,
     ToolTopLevelDefinitionComponent,
-    MeasurementUnitsComponent,
+    MeasurementUnitComponent,
     ToolLowLevelDefinitionComponent,
     ToolMeasurementLevelDefinitionComponent,
     TechnologyFormComponent,
     SubTechnologyFormComponent,
     IsoProcedureFormComponent,
-    MeasurementUnitsFormComponent,
     ToolLowLevelDefinitionFormComponent,
     ToolMeasurementLevelDefinitionFormComponent,
-    ToolTopLevelDefinitionFormComponent
+    ToolTopLevelDefinitionFormComponent,
+    ToolTopLevelDefinitionAndIsoProcedureFormComponent
   ],
   imports: [
     ReactiveFormsModule,

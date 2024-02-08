@@ -58,7 +58,7 @@
     <mat-form-field>
         <mat-label>  יחידת מידה  </mat-label>
         <mat-select placeholder=" יחידת מידה " formControlName="ValueUnitID">
-            <mat-option *ngFor="let measurementUnit of toolsDefinitionService.measurementUnits" [value]="measurementUnit.MeasurementUnitsID">
+            <mat-option *ngFor="let measurementUnit of toolsDefinitionService.MeasurementUnit" [value]="measurementUnit.MeasurementUnitID">
                 {{measurementUnit.Symbol}}
             </mat-option>
         </mat-select>
@@ -91,29 +91,6 @@
             ערך מקסימלי חייב להיות גדול מ-0
         </mat-error>
         <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('ValueMax').hasError('pattern')">
-            יש להזין מספרים בלבד עד ארבעה ספרות לאחר הנקודה
-        </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label> יחידת אי ודאות </mat-label>
-        <mat-select placeholder=" יחידת אי ודאות " formControlName="UncertaintyUnitID">
-            <mat-option *ngFor="let uncertaintyUnit of toolsDefinitionService.measurementUnits" [value]="uncertaintyUnit.MeasurementUnitsID">
-                {{uncertaintyUnit.Symbol}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label> ערך אי ודאות </mat-label>
-        <input matInput type="number" placeholder="ערך אי ודאות" formControlName="UncertaintyDelta">
-        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('UncertaintyDelta').hasError('required')">
-            יש להזין ערך אי ודאות
-        </mat-error>
-        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('UncertaintyDelta').hasError('min')">
-            ערך אי ודאות חייב להיות גדול מ-0
-        </mat-error>
-        <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('UncertaintyDelta').hasError('pattern')">
             יש להזין מספרים בלבד עד ארבעה ספרות לאחר הנקודה
         </mat-error>
     </mat-form-field>

@@ -25,19 +25,29 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
   ) { }
 
   ngOnInit(): void {
+    this.toolMeasurementLevelDefinitionForm = this.formBuilder.group({
+      TechID:[0],
+      SubTechID: [0],
+      ToolTopLevelDefinitionID: [0, [Validators.required]],
+      ValueUnitID: [0, [Validators.required]],
+      ValueMin: [1.0000, [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{0,1})?$'), Validators.min(0)]],
+      ValueMax: [1.0000, [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{0,1})?$'), Validators.min(0)]],
+      MCode: [0, [Validators.required, Validators.pattern('^[0-9]*$')]]
+    });
+
     this.toolsDefinitionService.dataSubject.subscribe(() => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies;
       this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
     });
 
-    this.toolMeasurementLevelDefinitionForm.controls.TechID.valueChanges.subscribe((value) => {
+    this.toolMeasurementLevelDefinitionForm.controls.TechID.valueChanges.subscribe((value: number) => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies.filter(subTech => subTech.TechID === +value);
       if(this.subTechnologies.length === 0 && value){
         this.toastService.error('לא קיימות תת טכנולוגיות תחת טכנולוגיה זו');
       }
     });
 
-    this.toolMeasurementLevelDefinitionForm.controls.SubTechID.valueChanges.subscribe((value) => {
+    this.toolMeasurementLevelDefinitionForm.controls.SubTechID.valueChanges.subscribe((value: number) => {
       this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions.filter(tool => tool.SubTechID === +value);
       if(this.toolTopLevels.length === 0 && value){
         this.toastService.error('לא קיימים כלים על פי הטכנולוגיה והתת טכנולוגיה שנבחרו');
@@ -49,7 +59,7 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
       );
     });
 
-    this.toolMeasurementLevelDefinitionForm.controls.ToolTopLevelDefinitionID.valueChanges.subscribe(value =>{
+    this.toolMeasurementLevelDefinitionForm.controls.ToolTopLevelDefinitionID.valueChanges.subscribe((value: number) =>{
       const tool = this.toolsDefinitionService.toolTopLevelDefinitions.find(tool => tool.ToolTopLevelDefinitionID === +value);
       this.toolMeasurementLevelDefinitionForm.controls.SubTechID.setValue(tool.SubTechID);
       this.toolMeasurementLevelDefinitionForm.controls.TechID.setValue(tool.SubTechnology?.TechID);
@@ -60,12 +70,10 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
       TechID: null,
       SubTechID: null,
       ToolTopLevelDefinitionID: null,
-      ValueMin: null,
+      ValueMin: 0,
       ValueMax: null,
       ValueUnitID: null,
-      MCode: null,
-      UncertaintyDelta: null,
-      UncertaintyUnitID: null
+      MCode: null
     });
 
     // selects default values
@@ -87,26 +95,20 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
         ValueMax: tool.ValueMax,
         ValueUnitID: tool.ValueUnitID,
         MCode: tool.MCode,
-        UncertaintyDelta: tool.UncertaintyDelta,
-        UncertaintyUnitID: tool.UncertaintyUnitID
       });
     }
   }
 
-  public toolMeasurementLevelDefinitionForm = this.formBuilder.group({
-    TechID:[0],
-    SubTechID: [0],
-    ToolTopLevelDefinitionID: [0, [Validators.required]],
-    ValueUnitID: [0, [Validators.required]],
-    ValueMin: [1.0000, [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{0,1})?$'), Validators.min(0)]],
-    ValueMax: [1.0000, [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{0,1})?$'), Validators.min(0)]],
-    MCode: [0, [Validators.required, Validators.pattern('^[0-9]*$')]],
-    UncertaintyUnitID: [1.0000, [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{0,1})?$'), Validators.min(0)]],
-    UncertaintyDelta: [0, [Validators.required]],
-  });
+  public toolMeasurementLevelDefinitionForm: any;
 
   async submitForm(){
-    const newTool = new ToolMeasurementLevelDefinition(this.toolMeasurementLevelDefinitionForm.value.ToolTopLevelDefinitionID, +this.toolMeasurementLevelDefinitionForm.value.ValueMin, +this.toolMeasurementLevelDefinitionForm.value.ValueMax, +this.toolMeasurementLevelDefinitionForm.value.ValueUnitID, +this.toolMeasurementLevelDefinitionForm.value.MCode, +this.toolMeasurementLevelDefinitionForm.value.UncertaintyDelta, +this.toolMeasurementLevelDefinitionForm.value.UncertaintyUnitID);
+    const newTool = new ToolMeasurementLevelDefinition(
+      this.toolMeasurementLevelDefinitionForm.value.ToolTopLevelDefinitionID, 
+      +this.toolMeasurementLevelDefinitionForm.value.ValueMin, 
+      +this.toolMeasurementLevelDefinitionForm.value.ValueMax, 
+      +this.toolMeasurementLevelDefinitionForm.value.ValueUnitID, 
+      +this.toolMeasurementLevelDefinitionForm.value.MCode
+    );
     console.log(newTool);
     
     if(this.toolId){
@@ -121,8 +123,7 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
     }
 
     newTool.ToolTopLevelDefinition = this.toolsDefinitionService.toolTopLevelDefinitions.find(tool => tool.ToolTopLevelDefinitionID === newTool.ToolTopLevelDefinitionID);
-    newTool.ValueUnit = this.toolsDefinitionService.measurementUnits.find(unit => unit.MeasurementUnitsID === newTool.ValueUnitID);
-    newTool.UncertaintyUnit = this.toolsDefinitionService.measurementUnits.find(unit => unit.MeasurementUnitsID === newTool.UncertaintyUnitID);
+    newTool.ValueUnit = this.toolsDefinitionService.MeasurementUnit.find(unit => unit.MeasurementUnitID === newTool.ValueUnitID);
 
     this.toolsDefinitionService.dataSubject.next(true);
     this.toolId = null;

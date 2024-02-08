@@ -8,9 +8,6 @@
                 תחום מדידה
             </th>
             <th>
-                אי וודאות
-            </th>
-            <th>
                 שם כלי
             </th>
             <th>
@@ -32,9 +29,6 @@
             </td>
             <td>
                 {{(tool.ValueMin != tool.ValueMax && tool.ValueMin+' - ')+tool.ValueMax + ' ' + tool.ValueUnit?.Symbol}}
-            </td>
-            <td>
-                {{tool.UncertaintyDelta + ' ' + tool.UncertaintyUnit?.Symbol}}
             </td>
             <td>
                 {{tool.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}

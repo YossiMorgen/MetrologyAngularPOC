@@ -27,7 +27,7 @@ export class ToolTopLevelDefinitionComponent implements OnInit {
     this.toolId = toolId;
   }
 
-  async deleteToolTopLevelDefinition(toolId: number): Promise<void> {
+  async deleteToolTopLevelDefinition(toolId: number, procedureId: number): Promise<void> {
     const tool = this.toolsDefinitionService.toolMeasurementLevelDefinition.find(tool => tool.ToolTopLevelDefinitionID === toolId);
     if(tool){
       this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
@@ -35,8 +35,11 @@ export class ToolTopLevelDefinitionComponent implements OnInit {
     }
     try {
       await this.toolsDefinitionService.deleteToolDefinition("ToolTopLevelDefinition", toolId);
+      await this.toolsDefinitionService.deleteToolDefinition("IsoProcedure", procedureId);
+      
       this.toolsDefinitionService.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions.filter(toolTopLevelDefinition => toolTopLevelDefinition.ToolTopLevelDefinitionID !== toolId);
       this.toolsDefinitionService.dataSubject.next(true);
+      this.toastService.success(" כלי נמחק בהצלחה :)");
     } catch (error: any) {
       console.error(error);
     }

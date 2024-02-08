@@ -1,6 +1,11 @@
 <mat-toolbar color="primary">
-  <a routerLink="/home">
-    <img class="gif" src="http://www.metrology.co.il/logoAnim.gif" alt="Home">
+  <a 
+    mat-mini-fab 
+    routerLink="/home" 
+    routerLinkActive="active"
+    color="primary"
+  >
+    <mat-icon>home</mat-icon>
   </a>
   <a  routerLinkActive="active" mat-button routerLink="/tool_definitions"> הגדרת סוגי כלים </a>
 </mat-toolbar>

@@ -73,9 +73,14 @@ export class ToolTopLevelDefinitionFormComponent implements OnChanges, OnInit {
     );
 
     if(this.toolId){
-      await this.toolsDefinitionService.updateToolDefinition(newTool, this.toolId);
-      this.toolsDefinitionService.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions.map(tool => tool.ToolTopLevelDefinitionID === this.toolId ? newTool : tool);
-      this.toastService.success('הכלי עודכן בהצלחה');
+      try {
+        
+        await this.toolsDefinitionService.updateToolDefinition(newTool, this.toolId);
+        this.toolsDefinitionService.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions.map(tool => tool.ToolTopLevelDefinitionID === this.toolId ? newTool : tool);
+        this.toastService.success('הכלי עודכן בהצלחה');
+      } catch (error: any) {
+        this.toastService.error(error);
+      }
     } else{
       const id = await this.toolsDefinitionService.createToolDefinition(newTool);
       newTool.ToolTopLevelDefinitionID = id;

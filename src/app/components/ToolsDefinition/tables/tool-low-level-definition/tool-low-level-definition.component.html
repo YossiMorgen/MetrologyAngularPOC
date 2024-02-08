@@ -11,9 +11,6 @@
                 תחום מדידה
             </th>
             <th>
-                אי וודאות
-            </th>
-            <th>
                 שם כלי
             </th>
             <th>
@@ -34,7 +31,7 @@
                 {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
             </td>
             <td>
-                {{(tool.ValueMin != tool.ValueMax && tool.ValueMin + ' - ') + tool.ValueMax + ' ' + tool.ValueUnit?.Symbol}}
+                {{(tool.ValueMin != tool.ValueMax && tool.ValueMin + ' - ') + tool.ValueMax + ' ' + tool.ToolMeasurementLevelDefinition?.ValueUnit?.Symbol}}
             </td>
             <td>
                 {{
@@ -43,9 +40,7 @@
                     tool.ToolMeasurementLevelDefinition?.ValueUnit?.Symbol 
                 }}
             </td>
-            <td>
-                {{tool.ToolMeasurementLevelDefinition?.UncertaintyDelta + ' ' + tool.ToolMeasurementLevelDefinition?.UncertaintyUnit?.Symbol}}
-            </td>
+
             <td>
                 {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}
             </td>

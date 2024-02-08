@@ -2,24 +2,9 @@
     <table> 
         <tr>
             <th> יחידת מדידה </th>
-            <th> פעולות </th>
         </tr>
-        <tr *ngFor="let unit of measurementUnits">
+        <tr *ngFor="let unit of MeasurementUnit">
             <td> {{unit.Symbol}}</td>
-            <td>
-                <button mat-mini-fab color="danger" (click)="changeToolId(unit.MeasurementUnitsID)">
-                    <mat-icon>
-                        edit
-                    </mat-icon>
-                </button>
-                <button mat-mini-fab color="warn" (click)="deleteMeasurementUnit(unit.MeasurementUnitsID)">
-                    <mat-icon>
-                        delete
-                    </mat-icon>
-                </button>
-            </td>
         </tr>
     </table>
-
-    <app-measurement-units-form [toolId]="toolId"></app-measurement-units-form>
 </div>

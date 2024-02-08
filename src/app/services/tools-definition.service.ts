@@ -4,7 +4,7 @@ import { Technology } from '../models/toolDefinitionModels/technology';
 import { SubTechnology } from '../models/toolDefinitionModels/sub-technology';
 import { IsoProcedure } from '../models/toolDefinitionModels/iso-procedure';
 import { ToolTopLevelDefinition } from '../models/toolDefinitionModels/tool-top-level-definition';
-import { MeasurementUnits } from '../models/toolDefinitionModels/measurement-units';
+import { MeasurementUnit } from '../models/toolDefinitionModels/measurement-unit';
 import { ToolMeasurementLevelDefinition } from '../models/toolDefinitionModels/tool-measurement-level-definition';
 import { ToolLowLevelDefinition } from '../models/toolDefinitionModels/tool-low-level-definition';
 import { HttpClient } from '@angular/common/http';
@@ -15,7 +15,7 @@ interface ToolDefinitionData {
   SubTechnologies: SubTechnology[];
   IsoProcedures: IsoProcedure[];
   ToolTopLevelDefinitions: ToolTopLevelDefinition[];
-  MeasurementUnits: MeasurementUnits[];
+  MeasurementUnit: MeasurementUnit[];
   ToolMeasurementLevelDefinition: ToolMeasurementLevelDefinition[];
   ToolLowLevelDefinition: ToolLowLevelDefinition[];
 }
@@ -33,7 +33,7 @@ export class ToolsDefinitionService {
   public subTechnologies: SubTechnology[];
   public isoProcedure: IsoProcedure[];
   public toolTopLevelDefinitions: ToolTopLevelDefinition[];
-  public measurementUnits: MeasurementUnits[];
+  public MeasurementUnit: MeasurementUnit[];
   public toolMeasurementLevelDefinition: ToolMeasurementLevelDefinition[];
   public toolLowLevelDefinition: ToolLowLevelDefinition[];
 
@@ -59,33 +59,25 @@ export class ToolsDefinitionService {
       }
     });
 
-    this.measurementUnits = data.MeasurementUnits;
+    this.MeasurementUnit = data.MeasurementUnit;
 
     this.toolMeasurementLevelDefinition = data.ToolMeasurementLevelDefinition.map(measurement =>
       { 
         return { ...measurement,
           ToolTopLevelDefinition: this.toolTopLevelDefinitions.find(toolTopLevelDefinition => toolTopLevelDefinition.ToolTopLevelDefinitionID === measurement.ToolTopLevelDefinitionID),
-          ValueUnit: this.measurementUnits.find(measurementUnit => measurementUnit.MeasurementUnitsID === measurement.ValueUnitID),
-          UncertaintyUnit: this.measurementUnits.find(measurementUnit => measurementUnit.MeasurementUnitsID === measurement.UncertaintyUnitID),
+          ValueUnit: this.MeasurementUnit.find(measurementUnit => measurementUnit.MeasurementUnitID === measurement.ValueUnitID),
         }
       }
     );
 
-    this.toolLowLevelDefinition = data.ToolLowLevelDefinition.map(measurement =>
-      { 
-        return { ...measurement,
-          ToolMeasurementLevelDefinition: this.toolMeasurementLevelDefinition.find(toolMeasurementLevelDefinition => toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID === measurement.ToolMeasurementLevelDefinitionID),
-          ValueUnit: this.measurementUnits.find(measurementUnit => measurementUnit.MeasurementUnitsID === measurement.ValueUnitID),
-        }
-      }
-    );
+    this.toolLowLevelDefinition = data.ToolLowLevelDefinition;
     console.log(this.toolLowLevelDefinition);
     this.dataSubject.next(true);
   }
 
   public async createToolDefinition(toolDef: Technology | 
         SubTechnology | IsoProcedure | ToolTopLevelDefinition | 
-        MeasurementUnits | ToolMeasurementLevelDefinition | ToolLowLevelDefinition): Promise<number> {
+        MeasurementUnit | ToolMeasurementLevelDefinition | ToolLowLevelDefinition): Promise<number> {
     
     let cname = toolDef.constructor.name;
 
@@ -100,7 +92,7 @@ export class ToolsDefinitionService {
 
   public async updateToolDefinition(toolDef: Technology | 
         SubTechnology | IsoProcedure | ToolTopLevelDefinition | 
-        MeasurementUnits | ToolMeasurementLevelDefinition | ToolLowLevelDefinition,
+        MeasurementUnit | ToolMeasurementLevelDefinition | ToolLowLevelDefinition,
         id: number
     ): Promise<void> {
     
