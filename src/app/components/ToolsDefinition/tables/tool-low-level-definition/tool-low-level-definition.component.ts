@@ -27,14 +27,4 @@ export class ToolLowLevelDefinitionComponent implements OnInit {
     this.toolId = toolId;
   }
 
-  async deleteToolLowLevelDefinition(toolId: number): Promise<void> {
-
-    try {
-      await this.toolsDefinitionService.deleteToolDefinition("ToolLowLevelDefinition", toolId);
-      this.toolsDefinitionService.toolLowLevelDefinition = this.toolsDefinitionService.toolLowLevelDefinition.filter(toolLowLevelDefinition => toolLowLevelDefinition.ToolLowLevelDefinitionID !== toolId);
-      this.toolsDefinitionService.dataSubject.next(true);
-    } catch (error: any) {
-      this.toastService.error(error);
-    }
-  }
 }

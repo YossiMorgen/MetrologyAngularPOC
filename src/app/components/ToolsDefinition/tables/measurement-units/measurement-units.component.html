@@ -1,10 +1,19 @@
 <div class="width50percent">
-    <table> 
+    <table class="table"> 
         <tr>
             <th> יחידת מדידה </th>
+            <th> פעולות </th>
         </tr>
-        <tr *ngFor="let unit of MeasurementUnit">
+        <tr *ngFor="let unit of MeasurementUnits">
             <td> {{unit.Symbol}}</td>
+            <td>
+                <button mat-mini-fab color="danger" (click)="changeMeasurementUnit(unit)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </td>
         </tr>
+
     </table>
+
+    <app-measurement-unit-form [MeasurementUnit]="MeasurementUnit"></app-measurement-unit-form>
 </div>

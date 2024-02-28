@@ -1,0 +1,16 @@
+
+form{
+    margin-top: 10px;
+}
+button ~ button
+{
+    margin-right: 10px;
+}
+
+.close{
+    position: absolute;
+    top: 0;
+    left: -10px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}

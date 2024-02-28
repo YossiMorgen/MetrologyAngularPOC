@@ -1,0 +1,34 @@
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th> ערך נדרש </th>
+                <th  *ngFor="let res of testDefinitionGroup?.ToolTopLevelDefinition.Resolutions">
+                    {{res.Value === 0 ? "" : res.Value}}
+                </th>
+                <th>
+                    ערך אי ודאות
+                </th>
+                <th> פעולות </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let test of testDefinitions">
+                <th>
+                    {{test.ValueRequired}}
+                </th>
+                <th *ngFor="let res of testDefinitionGroup?.ToolTopLevelDefinition.Resolutions; let i = index">
+                    {{getEnduranceByResolution( res.Value, test.Endurance)}}
+                </th>
+                <th>
+                    {{test.ValueUncertainty}}
+                </th>
+                <th>
+                    <button mat-mini-fab color="danger" (click)="changeTestDefinitionID(test)"> <mat-icon>edit</mat-icon> </button>
+                    <!-- <button mat-mini-fab color="warn" (click)="deleteTestDefinition(test.TestDefinitionID )"> <mat-icon>delete</mat-icon> </button> -->
+                </th>
+            </tr>
+        </tbody>
+    </table>
+    <app-test-definition-form [testDefinitions]="testDefinitions" [testDefinitionGroup]="testDefinitionGroup" [testDefinitionInput]="testDefinition"></app-test-definition-form>
+</div>

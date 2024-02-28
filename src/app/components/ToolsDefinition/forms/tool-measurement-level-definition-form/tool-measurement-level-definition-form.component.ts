@@ -1,6 +1,9 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from 'angular-toastify';
+import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogModel } from 'src/app/models/confirm-dialog';
 import { SubTechnology } from 'src/app/models/toolDefinitionModels/sub-technology';
 import { ToolMeasurementLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-measurement-level-definition';
 import { ToolTopLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-top-level-definition';
@@ -21,6 +24,7 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
   constructor(
     public toolsDefinitionService: ToolsDefinitionService,
     private formBuilder : FormBuilder,
+    private dialog: MatDialog,
     private toastService: ToastService
   ) { }
 
@@ -113,23 +117,57 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
     
     if(this.toolId){
       await this.toolsDefinitionService.updateToolDefinition(newTool, this.toolId);
-      this.toolsDefinitionService.toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition.map(tool => tool.ToolMeasurementLevelDefinitionID === this.toolId ? newTool : tool);
+      // this.toolsDefinitionService.toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition.map(tool => tool.ToolMeasurementLevelDefinitionID === this.toolId ? newTool : tool);
       this.toastService.success('הכלי עודכן בהצלחה');
     } else{
-      const id = await this.toolsDefinitionService.createToolDefinition(newTool);
-      newTool.ToolMeasurementLevelDefinitionID = id;
-      this.toolsDefinitionService.toolMeasurementLevelDefinition.push(newTool);
+      await this.toolsDefinitionService.createToolDefinition(newTool);
+      // const id = await this.toolsDefinitionService.createToolDefinition(newTool);
+      // newTool.ToolMeasurementLevelDefinitionID = id;
+      // this.toolsDefinitionService.toolMeasurementLevelDefinition.push(newTool);
       this.toastService.success('הכלי נוצר בהצלחה');
     }
 
-    newTool.ToolTopLevelDefinition = this.toolsDefinitionService.toolTopLevelDefinitions.find(tool => tool.ToolTopLevelDefinitionID === newTool.ToolTopLevelDefinitionID);
-    newTool.ValueUnit = this.toolsDefinitionService.MeasurementUnit.find(unit => unit.MeasurementUnitID === newTool.ValueUnitID);
+    // newTool.ToolTopLevelDefinition = this.toolsDefinitionService.toolTopLevelDefinitions.find(tool => tool.ToolTopLevelDefinitionID === newTool.ToolTopLevelDefinitionID);
+    // newTool.ValueUnit = this.toolsDefinitionService.MeasurementUnit.find(unit => unit.MeasurementUnitID === newTool.ValueUnitID);
 
-    this.toolsDefinitionService.dataSubject.next(true);
+    // this.toolsDefinitionService.dataSubject.next(true);
     this.toolId = null;
-    this.formDirective.resetForm();
 
-    this.subTechnologies = this.toolsDefinitionService.subTechnologies;
-    this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
+    this.resetForm();
+    // this.subTechnologies = this.toolsDefinitionService.subTechnologies;
+    // this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
+  }
+
+  resetForm() {
+    this.formDirective.resetForm();
+    this.toolMeasurementLevelDefinitionForm.reset();
+  }
+
+  async deleteToolMeasurementLevelDefinition(): Promise<void> {
+    const tool = this.toolsDefinitionService.toolLowLevelDefinition.find(tool => tool.ToolMeasurementLevelDefinitionID === this.toolId);
+    if(tool){
+      this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
+      return;
+    }
+
+    const dialogData = new ConfirmDialogModel("אישור מחיקת כלי", "האם אתה בטוח שברצונך למחוק את הכלי?");
+    
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: dialogData
+    });
+    dialogRef.afterClosed().subscribe(async result => {
+      if(result){
+        try {
+          await this.toolsDefinitionService.deleteToolDefinition("ToolMeasurementLevelDefinition", this.toolId);
+          this.toolsDefinitionService.toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition.filter(toolMeasurementLevelDefinition => toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID !== this.toolId);
+          this.toolsDefinitionService.dataSubject.next(true);
+          this.toolId = null;
+          this.resetForm();
+          this.toastService.success('הכלי נמחק בהצלחה');
+        } catch (error: any) {
+          this.toastService.error(error);
+        }
+      }
+    });
   }
 }

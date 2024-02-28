@@ -1,0 +1,88 @@
+<div>
+    <form [formGroup]="testTemplateForm" (ngSubmit)="onSubmit()">
+        <h1>
+            הגדרת טמפלייט
+        </h1>
+
+        <div class="TestGroupForm">
+            <mat-form-field>
+                <mat-label>שם כלי</mat-label>
+                <mat-select formControlName="ToolTopLevelDefinitionID">
+                    <mat-option *ngFor="let tool of toolsDefinitionService.toolTopLevelDefinitions" [value]="tool.ToolTopLevelDefinitionID">
+                        {{tool.ToolTopLevelDefinitionName + " (" + tool.IsoProcedure.MCode + ")"}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>            
+            
+            <mat-form-field >
+                <!-- searchable select testDefinitionGroup -->
+                <mat-label>קבוצת בדיקה</mat-label>
+                <mat-select #selectTestDefinitionGroupID formControlName="TestDefinitionGroupID">
+                    <mat-option>
+                        <ngx-mat-select-search 
+                            [formControl]="searchInput"
+                            noEntriesFoundLabel="אין תוצאות"
+                            placeholderLabel="חפש קבוצת בדיקה"
+                            (ngModelChange)="filterTestDefinitionGroups()"
+                        ></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let testDefinitionGroup of filteredTestDefinitionGroups" [value]="testDefinitionGroup.TestDefinitionGroupID">
+                        {{testDefinitionGroup.TestDefinitionGroupName}}
+                    </mat-option>
+                </mat-select>
+        
+            </mat-form-field>
+        </div>
+    
+        <div *ngIf="testTemplateForm.controls.TestDefinitionGroupID.value" class="ToolLowLevelForm">
+            <mat-form-field>
+                <mat-label> תחום מדידה </mat-label>
+                <mat-select formControlName="ToolMeasurementLevelDefinitionID">
+                    <mat-option *ngFor="let toolMeasurementLevelDefinition of toolMeasurementLevelDefinitions" [value]="toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID">
+                        {{toolMeasurementLevelDefinition.ValueMin + " - " + toolMeasurementLevelDefinition.ValueMax + " " + toolMeasurementLevelDefinition.ValueUnit.Symbol}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        
+            <mat-form-field>
+                <mat-label> גודל כלי </mat-label>
+                <mat-select  formControlName="ToolLowLevelDefinitionID">
+                    <mat-option *ngFor="let toolLowLevelDefinition of toolLowLevelDefinitions" [value]="toolLowLevelDefinition.ToolLowLevelDefinitionID">
+                        {{toolLowLevelDefinition.ValueMin + " - " + toolLowLevelDefinition.ValueMax + " " + toolLowLevelDefinition.ToolMeasurementLevelDefinition?.ValueUnit?.Symbol}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="chip-list">
+                <!-- list of checkboxes for the testDefinitions array use the addTestDefinitionID to add and the removeTestDefinitionID to remove from the testDefinitionIDs -->
+                <label class="chip-label" *ngFor="let testDefinition of testDefinitions">
+                    <input 
+                        class="chip-checkbox"
+                        type="checkbox" 
+                        [checked]="isTestDefinitionIDExist(testDefinition.TestDefinitionID)" 
+                        (change)="testDefinitionIDs.includes(testDefinition.TestDefinitionID) ? removeTestDefinitionID(testDefinition.TestDefinitionID) : addTestDefinitionID(testDefinition.TestDefinitionID)"
+                    >
+                    {{testDefinition.ValueRequired}}
+                </label>
+            </div>
+            
+            <button 
+                mat-raised-button 
+                color="primary" 
+                type="submit"
+                [disabled]="!testTemplateForm.valid"
+            >שמור</button>
+            <button
+                (click)="cancelEdit()"
+                type="reset"
+                mat-raised-button
+                color="warn"
+            >
+                reset
+            </button>
+        </div>
+    </form>
+
+
+</div>
+

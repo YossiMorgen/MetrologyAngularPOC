@@ -17,6 +17,9 @@
                 טכנולוגיה
             </th>
             <th>
+                רזולוציות
+            </th>
+            <th>
                 פעולות
             </th>
         </tr>
@@ -32,6 +35,9 @@
                 {{"נוהל: " + tool.IsoProcedure?.MCode }}
             </td>
             <td>
+                {{tool.IsoProcedure?.Description}}
+            </td>
+            <td>
                 {{tool.ToolTopLevelDefinitionName}}
             </td>
             <td>
@@ -40,6 +46,12 @@
             <td>
                 {{tool.SubTechnology?.Technology?.TechnologyName}}
             </td>
+
+            <td>
+                <mat-icon [matTooltip]="resolutionToolTipStr(tool)">
+                    list
+                </mat-icon>
+            </td>
             
             <td>
                 <button mat-mini-fab color="danger" (click)="changeToolId(tool.ToolTopLevelDefinitionID)">
@@ -47,11 +59,11 @@
                         edit
                     </mat-icon>
                 </button>
-                <button mat-mini-fab color="warn" (click)="deleteToolTopLevelDefinition(tool.ToolTopLevelDefinitionID, tool.IsoProcedureID)">
+                <!-- <button mat-mini-fab color="warn" (click)="deleteToolTopLevelDefinition(tool.ToolTopLevelDefinitionID)">
                     <mat-icon>
                         delete
                     </mat-icon>
-                </button>
+                </button> -->
             </td>
         </tr>
     </table>

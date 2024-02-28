@@ -29,19 +29,5 @@ export class TechnologyComponent implements OnInit {
       this.toolId = toolId;
     }
 
-    async deleteTechnology(toolId: number): Promise<void> {
-      const subTech = this.toolsDefinitionService.subTechnologies.find(subTech => subTech.TechID === toolId);
-      if(subTech){
-        this.toastService.error("אי אפשר למחוק את הטכנולוגיה הזאת כי יש לה תתי טכנולוגיות");
-        return;
-      }
-      try {
-        await this.toolsDefinitionService.deleteToolDefinition("Technology", toolId);
-        this.toolsDefinitionService.technologies = this.toolsDefinitionService.technologies.filter(technology => technology.TechnologyID !== toolId);
-        this.toolsDefinitionService.dataSubject.next(true);
-        this.toastService.success('הטכנולוגיה נמחקה בהצלחה');        
-      } catch (error: any) {
-        this.toastService.error(error);
-      }
-    }
+
 }

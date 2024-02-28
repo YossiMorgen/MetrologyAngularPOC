@@ -1,0 +1,28 @@
+<div class="width50percent">
+    <table>
+        <thead>
+            <tr>
+            <th> שם בדיקה </th>
+            <th> שם כלי </th>
+            <!-- <th> תת טכנולוגיה</th>
+            <th> טכנולוגיה </th> -->
+            <th> פעולות </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let group of testDefinitionGroups">
+                <td>{{ group.TestDefinitionGroupName }}</td>
+                <td>{{ group.ToolTopLevelDefinition?.ToolTopLevelDefinitionName }}</td>
+                <td>
+                    <button mat-mini-fab color="danger" (click)="changeTestDefinitionGroup(group)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <!-- <button mat-mini-fab color="warn" (click)="deleteTestDefinitionGroup(group.TestDefinitionGroupID )">
+                        <mat-icon>delete</mat-icon>
+                    </button> -->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <app-test-definition-group-form [triggerChanges]="triggerChanges" [testDefinitionGroupInput]="testDefinitionGroup"></app-test-definition-group-form>
+</div>

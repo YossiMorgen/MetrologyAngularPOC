@@ -27,18 +27,18 @@ export class ToolMeasurementLevelDefinitionComponent implements OnInit {
     this.toolId = toolId;
   }
 
-  async deleteToolMeasurementLevelDefinition(toolId: number): Promise<void> {
-    const tool = this.toolsDefinitionService.toolLowLevelDefinition.find(tool => tool.ToolMeasurementLevelDefinitionID === toolId);
-    if(tool){
-      this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
-      return;
-    }
-    try {
-      await this.toolsDefinitionService.deleteToolDefinition("ToolMeasurementLevelDefinition", toolId);
-      this.toolsDefinitionService.toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition.filter(toolMeasurementLevelDefinition => toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID !== toolId);
-      this.toolsDefinitionService.dataSubject.next(true);
-    } catch (error: any) {
-      this.toastService.error(error);
-    }
-  }
+  // async deleteToolMeasurementLevelDefinition(toolId: number): Promise<void> {
+  //   const tool = this.toolsDefinitionService.toolLowLevelDefinition.find(tool => tool.ToolMeasurementLevelDefinitionID === toolId);
+  //   if(tool){
+  //     this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
+  //     return;
+  //   }
+  //   try {
+  //     await this.toolsDefinitionService.deleteToolDefinition("ToolMeasurementLevelDefinition", toolId);
+  //     this.toolsDefinitionService.toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition.filter(toolMeasurementLevelDefinition => toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID !== toolId);
+  //     this.toolsDefinitionService.dataSubject.next(true);
+  //   } catch (error: any) {
+  //     this.toastService.error(error);
+  //   }
+  // }
 }

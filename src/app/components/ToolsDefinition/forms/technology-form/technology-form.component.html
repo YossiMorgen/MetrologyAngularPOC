@@ -4,15 +4,20 @@
          טכנולוגיה
     </h1>
 
-    <button 
-        color="warn" 
+    <div >
+
+        <button
         class="close" 
-        (click)="toolId = null; technologyForm.reset()" 
-        type="reset" mat-mini-fab 
-        *ngIf="toolId != null"
-    >
-        <mat-icon >close</mat-icon>
-    </button>
+            mat-mini-fab color="warn" 
+            (click)="deleteTechnology()"
+            *ngIf="toolId != null"
+            type="button"
+        >
+            <mat-icon>  
+                delete
+            </mat-icon>
+        </button>
+    </div>
 
     <mat-form-field>
         <mat-label> שם טכנולוגיה </mat-label>
@@ -49,5 +54,22 @@
         [disabled]="!technologyForm.valid"
     >
         שמור
+    </button>
+
+    <button
+        (click)="resetForm()"
+        type="reset"
+        mat-raised-button
+        color="warn"
+    >
+        reset
+    </button>
+    <button 
+        (click)="toolId = null; technologyForm.reset()" 
+        type="reset" 
+        mat-raised-button
+        *ngIf="toolId != null"
+    >
+        ביטול עריכה
     </button>
 </form>

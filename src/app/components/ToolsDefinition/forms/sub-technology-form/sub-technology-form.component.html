@@ -5,14 +5,16 @@
         תת טכנולוגיה
     </h1>
 
-    <button 
-        color="warn" 
+    <button
         class="close" 
-        (click)="toolId = null; subTechnologyForm.reset()" 
-        type="reset" mat-mini-fab 
-        *ngIf="toolId != null"
+        mat-mini-fab color="warn" 
+        (click)="deleteSubTechnology()" 
+        *ngIf="toolId != null" 
+        type="button"
     >
-        <mat-icon >close</mat-icon>
+        <mat-icon>   
+            delete
+        </mat-icon>
     </button>
 
     <mat-form-field>
@@ -65,4 +67,22 @@
         color="primary" 
         type="submit" 
     >שמור</button>
+
+    <button
+        (click)="resetForm()"
+        type="reset"
+        mat-raised-button
+        color="warn"
+    >
+        reset
+    </button>    
+    <button 
+        (click)="toolId = null; subTechnologyForm.reset()" 
+        type="reset"
+        mat-raised-button
+        *ngIf="toolId != null"
+    >
+        ביטול עריכה
+    </button>
+
 </form>

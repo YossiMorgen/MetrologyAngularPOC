@@ -1,0 +1,84 @@
+<mat-card>
+    <form [formGroup]="testDefinitionForm" (ngSubmit)="onSubmit()">
+
+        <mat-icon>{{testDefinitionInput ? "edit" : "add" }}</mat-icon>
+
+        <mat-form-field>
+            <mat-label> ערך נדרש </mat-label>
+            <input matInput type="number" placeholder="ערך נדרש" formControlName="ValueRequired">
+            <mat-error *ngIf="testDefinitionForm.get('ValueRequired').hasError('required')">
+                יש להזין ערך נדרש
+            </mat-error>
+        </mat-form-field>
+
+        <!-- <h4> סיבולות: </h4> -->
+        <ng-container *ngFor="let enduranceForm of EnduranceForm.controls">
+            <div class="EnduranceFormRow" [formGroup]="enduranceForm">
+                
+                <mat-form-field appearance="fill">
+                    <mat-label> {{ enduranceForm.get('resValue').value }} </mat-label>
+                    <input matInput type="number" placeholder=" סיבולת " formControlName="ValueEnduranceUp">
+                    <mat-error *ngIf="enduranceForm.get('ValueEnduranceUp').hasError('required')">
+                        יש להזין סיבולת
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </ng-container>
+
+        <mat-form-field>
+            <mat-label> ערך אי ודאות </mat-label>
+            <input matInput type="number" placeholder="ערך אי ודאות" formControlName="ValueUncertainty">
+            <mat-error *ngIf="testDefinitionForm.get('ValueUncertainty').hasError('required')">
+                יש להזין ערך אי ודאות
+            </mat-error>
+        </mat-form-field>
+
+    <div class="formActions">
+        <button
+            mat-raised-button color="primary"
+            type="submit"
+            [disabled]="!testDefinitionForm.valid || !EnduranceForm.valid"
+        >
+            שמור
+        </button>
+
+        <button
+            (click)="resetForm()"
+            type="reset"
+            mat-raised-button
+            color="warn"
+        >
+            reset
+        </button>
+
+        <button
+            mat-raised-button color="success"
+            type="button"
+            (click)="testDefinitionInput = null; addEnduranceForms(); testDefinitionForm.reset();"
+            *ngIf="testDefinitionInput"
+        >
+            ביטול עריכה
+        </button>
+
+        <button
+            mat-raised-button 
+            color="accent"
+            (click)="divideEnduranceByTen()"
+            type="button"
+            [disabled]="!EnduranceForm.dirty"
+        >
+            חלק את הסיבולות ב10
+        </button>
+
+        <button
+            mat-mini-fab color="warn"
+            (click)="deleteTestDefinition()"
+            *ngIf="testDefinitionInput"
+            type="button"
+        >
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+
+    </form>
+</mat-card>

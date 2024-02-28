@@ -5,13 +5,16 @@
     </h1>
 
     <button
-        color="warn"
         class="close"
-        (click)="toolId = null; toolLowLevelDefinitionForm.reset()"
-        type="reset" mat-mini-fab
+        mat-mini-fab
+        color="warn"
+        (click)="deleteToolLowLevelDefinition()"
         *ngIf="toolId != null"
+        type="button"
     >
-        <mat-icon >close</mat-icon>
+        <mat-icon>
+            delete
+        </mat-icon>
     </button>
 
     <mat-form-field>
@@ -65,15 +68,6 @@
     </mat-form-field>
 
     <mat-form-field>
-        <mat-label>  יחידת מידה  </mat-label>
-        <mat-select placeholder=" יחידת מידה " formControlName="ValueUnitID">
-            <mat-option *ngFor="let valueUnit of toolsDefinitionService.MeasurementUnit" [value]="valueUnit.MeasurementUnitID">
-                {{valueUnit.Symbol}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
         <mat-label> ערך מינימלי </mat-label>
         <input matInput type="number" placeholder="ערך מינימלי" formControlName="ValueMin">
         <mat-error *ngIf="toolLowLevelDefinitionForm.get('ValueMin').hasError('required')">
@@ -101,12 +95,32 @@
         </mat-error>
     </mat-form-field>
     
-    <button 
-        type="submit" 
-        mat-raised-button
-        color="primary"
-        [disabled]="!toolLowLevelDefinitionForm.valid"
-    >
-        שמירה
-    </button>
+    <div class="formActions">
+        <button 
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="!toolLowLevelDefinitionForm.valid"
+        >
+            שמירה
+        </button>
+
+        <button
+            (click)="this.toolLowLevelDefinitionForm.reset()"
+            type="reset"
+            mat-raised-button
+            color="warn"
+        >
+            reset
+        </button>
+        
+        <button
+            (click)="toolId = null; toolLowLevelDefinitionForm.reset()"
+            type="reset"
+            mat-raised-button
+            *ngIf="toolId != null"
+        >
+            ביטול עריכה
+        </button>
+    </div>
 </form>

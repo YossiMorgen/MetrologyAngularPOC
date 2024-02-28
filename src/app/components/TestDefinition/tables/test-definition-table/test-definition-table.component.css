@@ -1,0 +1,32 @@
+table {
+    max-width: 650px;
+    min-width: 100px;
+    margin: 0;
+    padding: 0;
+    table-layout: fixed;
+    overflow-x: scroll;
+    display: block; 
+}
+
+tbody {
+    display: block;
+    height: 300px;
+    overflow: auto;
+    min-width: fit-content;
+}
+
+thead, tbody tr {
+    display: table;
+    width: 100%;
+    min-width: fit-content;
+    table-layout: fixed;
+}
+
+thead {
+    width: calc( 100% - 1em )
+}
+
+th, td {
+    width: 100px;
+    word-wrap: break-word;
+}

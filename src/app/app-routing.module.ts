@@ -8,6 +8,10 @@ import { ToolTopLevelDefinitionComponent } from './components/ToolsDefinition/ta
 import { MeasurementUnitComponent } from './components/ToolsDefinition/tables/measurement-units/measurement-units.component';
 import { ToolLowLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-low-level-definition/tool-low-level-definition.component';
 import { ToolMeasurementLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-measurement-level-definition/tool-measurement-level-definition.component';
+import { TestsDefinitionsComponent } from './components/pages/tests-definitions/tests-definitions.component';
+import { TestDefinitionGroupTableComponent } from './components/TestDefinition/tables/test-definition-group-table/test-definition-group-table.component';
+import { TestTemplateFormComponent } from './components/TestTemplates/forms/test-template-form/TestTemplateFormComponent';
+import { TestTemplatTableComponent } from './components/TestTemplates/tables/test-templat-table/test-templat-table.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -23,6 +27,15 @@ const routes: Routes = [
       {path: 'measurement_units', component: MeasurementUnitComponent},
       {path: 'tool_low_level_definition', component: ToolLowLevelDefinitionComponent},
       {path: 'tool_measurement_level_definition', component: ToolMeasurementLevelDefinitionComponent}
+    ]
+  },
+  {
+    path: 'test_definition',
+    component: TestsDefinitionsComponent,
+    children: [
+      {path: '', redirectTo: 'test_definition_group', pathMatch: 'full'},
+      {path: 'test_definition_group', component: TestDefinitionGroupTableComponent},
+      {path: 'test_template_form', component: TestTemplatTableComponent},
     ]
   },
   {path: '**', component: HomeComponent}

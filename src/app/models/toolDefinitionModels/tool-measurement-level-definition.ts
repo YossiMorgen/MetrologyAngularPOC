@@ -1,4 +1,5 @@
 import { MeasurementUnit } from "./measurement-unit";
+import { ToolLowLevelDefinition } from "./tool-low-level-definition";
 import { ToolTopLevelDefinition } from "./tool-top-level-definition";
 
 export class ToolMeasurementLevelDefinition {
@@ -11,6 +12,8 @@ export class ToolMeasurementLevelDefinition {
     public ValueUnit: MeasurementUnit;
     public MCode: number;
     public UncertaintyDelta: number;
+
+    public ToolLowLevelDefinitions : ToolLowLevelDefinition[] = [];
 
     constructor(ToolTopLevelDefinitionID: number, ValueMin: number, ValueMax: number, ValueUnitID: number, MCode: number, ToolMeasurementLevelDefinitionID?: number) {
         this.ToolMeasurementLevelDefinitionID = ToolMeasurementLevelDefinitionID;

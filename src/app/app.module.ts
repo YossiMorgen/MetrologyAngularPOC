@@ -8,6 +8,14 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatCardModule} from '@angular/material/card';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,6 +35,15 @@ import { ToastService, AngularToastifyModule } from 'angular-toastify';
 import { ToolLowLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-low-level-definition-form/tool-low-level-definition-form.component';
 import { ToolMeasurementLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-measurement-level-definition-form/tool-measurement-level-definition-form.component';
 import { ToolTopLevelDefinitionAndIsoProcedureFormComponent } from './components/ToolsDefinition/forms/tool-top-level-definition-and-iso-procedure-form/tool-top-level-definition-and-iso-procedure-form.component';
+import { TestDefinitionGroupTableComponent } from './components/TestDefinition/tables/test-definition-group-table/test-definition-group-table.component';
+import { TestDefinitionTableComponent } from './components/TestDefinition/tables/test-definition-table/test-definition-table.component';
+import { TestDefinitionFormComponent } from './components/TestDefinition/forms/test-definition-form/test-definition-form.component';
+import { TestDefinitionGroupFormComponent } from './components/TestDefinition/forms/test-definition-group-form/test-definition-group-form.component';
+import { TestsDefinitionsComponent } from './components/pages/tests-definitions/tests-definitions.component';
+import { TestTemplatTableComponent } from './components/TestTemplates/tables/test-templat-table/test-templat-table.component';
+import { TestTemplateFormComponent } from './components/TestTemplates/forms/test-template-form/TestTemplateFormComponent';
+import { MeasurementUnitFormComponent } from './components/ToolsDefinition/forms/measurement-unit-form/measurement-unit-form.component';
+import { ConfirmDialogComponent } from './components/dashboard/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +60,16 @@ import { ToolTopLevelDefinitionAndIsoProcedureFormComponent } from './components
     SubTechnologyFormComponent,
     ToolLowLevelDefinitionFormComponent,
     ToolMeasurementLevelDefinitionFormComponent,
-    ToolTopLevelDefinitionAndIsoProcedureFormComponent
+    ToolTopLevelDefinitionAndIsoProcedureFormComponent,
+    TestDefinitionGroupTableComponent,
+    TestDefinitionTableComponent,
+    TestDefinitionFormComponent,
+    TestDefinitionGroupFormComponent,
+    TestsDefinitionsComponent,
+    TestTemplateFormComponent,
+    TestTemplatTableComponent,
+    MeasurementUnitFormComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -58,7 +84,16 @@ import { ToolTopLevelDefinitionAndIsoProcedureFormComponent } from './components
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    AngularToastifyModule
+    AngularToastifyModule,
+    MatAutocompleteModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatCardModule,
+    MatChipsModule,
+    NgxMatSelectSearchModule,
+    MatCheckboxModule,
+    MatSlideToggleModule,
+    MatDialogModule,
   ],
   providers: [
     ToastService,

@@ -1,0 +1,85 @@
+<div class="width50percent">
+    <form [formGroup]="testDefinitionGroupForm" (ngSubmit)="submitForm()">
+        <h1>
+            <mat-icon>{{testDefinitionGroupInput ? "edit" : "add" }}</mat-icon>
+            {{testDefinitionGroupInput ? "עריכת" : "הוספת"}} כלי
+        </h1>
+
+        <button
+            (click)="deleteTestDefinitionGroup()"
+            type="button"
+            mat-mini-fab
+            color="warn"
+            *ngIf="testDefinitionGroupInput"
+            class="close"
+        >
+            <mat-icon>delete</mat-icon>
+        </button>
+
+        <mat-form-field>
+            <mat-label> טכנולוגיה </mat-label>
+            <mat-select placeholder=" טכנולוגיה " formControlName="TechID">
+                <mat-option *ngFor="let technology of toolsDefinitionService.technologies" [value]="technology.TechnologyID">
+                    {{technology.TechnologyName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> תת טכנולוגיה </mat-label>
+            <mat-select placeholder=" תת טכנולוגיה " formControlName="SubTechID">
+                <mat-option *ngFor="let subTechnology of subTechnologies" [value]="subTechnology.SubTechnologyID">
+                    {{subTechnology.SubTechnologyName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> שם כלי </mat-label>
+            <mat-select placeholder=" שם כלי " formControlName="ToolTopLevelDefinitionID">
+                <mat-option *ngFor="let toolTopLevel of toolTopLevels" [value]="toolTopLevel.ToolTopLevelDefinitionID">
+                    {{toolTopLevel.ToolTopLevelDefinitionName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> שם בדיקה </mat-label>
+            <input matInput type="text" placeholder=" שם בדיקה " formControlName="TestDefinitionGroupName">
+            <mat-error *ngIf="testDefinitionGroupForm.get('TestDefinitionGroupName').hasError('required')">
+                יש להזין שם בדיקה
+            </mat-error>
+        </mat-form-field>
+    
+        <div class="formActions">
+            <button 
+            mat-raised-button color="primary" 
+            type="submit" 
+            [disabled]="!testDefinitionGroupForm.valid"
+        >
+            שמור
+        </button>
+        
+        <button
+            (click)="resetForm()"
+            type="reset"
+            mat-raised-button
+            color="warn"
+        >
+            reset
+        </button>
+        <button
+            (click)="cancelEdit()"
+            type="reset" 
+            mat-raised-button
+            *ngIf="testDefinitionGroupInput != null"
+        >
+            בטל עריכה
+        </button>
+        </div>
+        <mat-slide-toggle [formControl]="keepEditing"> עריכה לאחר הוספת כלי </mat-slide-toggle>
+    </form>
+
+
+    <app-test-definition-table *ngIf="testDefinitionGroupInput" [testDefinitionGroup]="testDefinitionGroupInput"></app-test-definition-table>
+</div>

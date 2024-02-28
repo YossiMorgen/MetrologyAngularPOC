@@ -1,3 +1,4 @@
+import { TestTemplate } from "../TestDefinition/test-template";
 import { MeasurementUnit } from "./measurement-unit";
 import { ToolMeasurementLevelDefinition } from "./tool-measurement-level-definition";
 
@@ -8,6 +9,8 @@ export class ToolLowLevelDefinition {
     public ToolMeasurementLevelDefinition: ToolMeasurementLevelDefinition;
     public ValueMin: number;
     public ValueMax: number;
+
+    public TestTemplates: TestTemplate[] = [];
 
     constructor(
         MCode: number, 

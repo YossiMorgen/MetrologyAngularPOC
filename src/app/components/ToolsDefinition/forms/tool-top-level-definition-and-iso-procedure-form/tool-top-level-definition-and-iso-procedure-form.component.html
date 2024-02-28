@@ -5,15 +5,17 @@
     </h1>
 
     <button
-        color="warn"
         class="close"
-        (click)="toolId = null; toolTopLevelDefinitionAndIsoForm.reset()"
-        type="reset" mat-mini-fab
+        mat-mini-fab
+        color="warn"
+        (click)="deleteToolTopLevelDefinitionAndIsoProcedure()"
         *ngIf="toolId != null"
-    >
-        <mat-icon >close</mat-icon>
+        type="button"
+        >
+        <mat-icon>
+            delete
+        </mat-icon>
     </button>
-
 
     <mat-form-field>
         <mat-label> שם כלי </mat-label>
@@ -52,7 +54,7 @@
 
     <mat-form-field>
         <mat-label> MCode </mat-label>
-        <input matInput type="text" placeholder="MCode" formControlName="MCode">
+        <input matInput type="number" placeholder="MCode" formControlName="MCode">
         <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('MCode').hasError('required')">
             יש להזין m-code
         </mat-error>
@@ -63,12 +65,6 @@
             יש להזין ספרות בלבד
         </mat-error>
     </mat-form-field>
-    
-    <!-- <mat-form-field>
-        <mat-label> קישור לוורד </mat-label>
-        <input matInput type="text" placeholder="קישור לוורד" formControlName="WordFileLink">
-
-    </mat-form-field> -->
 
     <mat-form-field>
         <mat-label> תיאור מילולי לתעודה </mat-label>
@@ -79,13 +75,70 @@
         <input matInput type="text" placeholder="תיאור נוהל" formControlName="Description">
     </mat-form-field>
 
-    <button 
-        mat-raised-button 
-        color="primary" 
-        type="submit"
-        [disabled]="!toolTopLevelDefinitionAndIsoForm.valid"
-    >
-        {{toolId == null ? "הוספה" : "עריכה"}}
-    </button>
+    <!-- form for resolutionsControl chipGrid -->
+    <form class="resolutionForm">
+        <mat-form-field>
+            <mat-label> בחר רזולוציות </mat-label>
+            <mat-chip-grid #chipGrid aria-label=" בחירת רזולוציות ">
+                <mat-chip
+                    *ngFor="let resolution of resolutions; let i = index"
+                    [removable]="true"
+                    (removed)="removeResolutionFromSelection(i)"
+                >
+                    {{resolution}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input
+                    #resolutionsInput
+                    [formControl]="resolutionsControl"
+                    placeholder="בחר או הקלד רזולוציה"
+                    [matChipInputFor]="chipGrid"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matAutocomplete]="auto"
+                    (matChipInputTokenEnd)="addResolutionsFromInput($event)"
+                />
+
+            </mat-chip-grid>
+            
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedResolution($event)">
+                <mat-option 
+                    *ngFor="let resolution of allResolutionsPreviousValues"
+                    [value]="resolution"
+                    [disabled]="resolutions.includes(resolution)"
+                >
+                    {{resolution}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </form>
+
+    <div class="formActions">
+        <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            [disabled]="!toolTopLevelDefinitionAndIsoForm.valid"
+        >
+            {{toolId == null ? "הוספה" : "עריכה"}}
+        </button>
+
+        <button
+            (click)="resetForm()"
+            type="reset"
+            mat-raised-button
+            color="warn"
+        >
+            reset
+        </button>
+
+        <button
+            (click)="toolId = null; toolTopLevelDefinitionAndIsoForm.reset()"
+            type="reset" 
+            mat-raised-button
+            *ngIf="toolId != null"
+        >
+            ביטול עריכה
+        </button>
+    </div>
 
 </form>

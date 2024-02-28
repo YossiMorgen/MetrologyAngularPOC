@@ -1,0 +1,15 @@
+.resolutionForm{
+    width: 100%;
+}
+
+.resolutionForm input{
+    width: 100%;
+}
+
+.close{
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    margin-bottom: 10px;
+}

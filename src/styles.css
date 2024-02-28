@@ -11,6 +11,7 @@ html, body {
 body { 
     margin: 0; 
     font-family: Roboto, "Helvetica Neue", sans-serif;
+    overflow-y: scroll;
 }
 a{
     text-decoration: none;
@@ -40,19 +41,30 @@ tr:nth-child(even){
     align-items: flex-start;
     justify-content: flex-start;
     padding: var(20px); 
+    margin: 10px;
 }
 
 .width50percent > *:nth-child(1){
     margin-left: 100px;
 }
 
-.width50percent:nth-child(){
+/* .width50percent:nth-child(){
     min-width: fit-content;
+} */
+
+.width50percent > table {
+    max-height: 700px;
+    overflow-y: auto;
 }
 
 form{
     width: 50%;
+    min-width: 200px;
     position: relative;
+}
+
+form button[type="submit"] ~ button[type="reset"]{
+    margin-right: 10px;
 }
 
 mat-form-field{
@@ -63,11 +75,47 @@ mat-toolbar > a{
     margin-left: 5px;
 }
 
+.formActions{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.formActions button{
+    margin: 5px;
+}
+
 a.active{
     font-weight: bolder;
     box-shadow: 0 2.5px 5px 0 #000000;
 }
 
 tr button ~ button{
-    margin-right: 5px;
+    margin-right: 15px;
+}
+
+/* style the scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+.mat-success {
+    background-color: green;
+    color: #fff;
 }
