@@ -2,26 +2,41 @@ import { Resolution } from "../TestDefinition/resolution";
 import { ResolutionToolTopLevelDefinition } from "../TestDefinition/resolution-tool-top-level-definition";
 import { TestDefinitionGroup } from "../TestDefinition/test-definition-group";
 import { IsoProcedure } from "./iso-procedure";
+import { MeasurementUnit } from "./measurement-unit";
 import { SubTechnology } from "./sub-technology";
-import { ToolMeasurementLevelDefinition } from "./tool-measurement-level-definition";
+import { ToolFamilyLevelDefinition } from "./tool-family-level-definition";
 
 export class ToolTopLevelDefinition {
     public ToolTopLevelDefinitionID: number;
     public ToolTopLevelDefinitionName: string;
     public SubTechID: number;
     public SubTechnology: SubTechnology;
+    
+    public ValueUnitID: number;
+    public MeasurementUnit: MeasurementUnit;
+    
+    public CovertOpsJsonTool: string;
+    public CovertOpsJsonToolJson: object;
 
     public IsoProcedure: IsoProcedure;
     
     public Resolutions: Resolution[] = [];
     public TestDefinitionGroups: TestDefinitionGroup[] = [];
-    public ToolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[] = [];
+    public ToolFamilyLevelDefinitions: ToolFamilyLevelDefinition[] = [];
     public ResolutionToolTopLevelDefinition: ResolutionToolTopLevelDefinition[] = [];
 
-    constructor(ToolTopLevelDefinitionName: string, SubTechID: number, ToolTopLevelDefinitionID?: number) {
+    constructor(
+        ToolTopLevelDefinitionName: string, 
+        SubTechID: number, 
+        ToolTopLevelDefinitionID?: number,
+        ValueUnitID: number = 0,
+        CovertOpsJsonTool: string = "",
+    ) {
         this.ToolTopLevelDefinitionID = ToolTopLevelDefinitionID;
         this.ToolTopLevelDefinitionName = ToolTopLevelDefinitionName;
         this.SubTechID = SubTechID;
-
+        this.ValueUnitID = ValueUnitID;
+        this.CovertOpsJsonTool = CovertOpsJsonTool;
+        this.CovertOpsJsonToolJson = CovertOpsJsonTool ?  JSON.parse(CovertOpsJsonTool) : {};
     }
 }

@@ -9,7 +9,10 @@
                 <th>
                     ערך אי ודאות
                 </th>
-                <th> פעולות </th>
+                <th>
+                    הסמכה
+                </th>
+                <th> עריכה </th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +25,9 @@
                 </th>
                 <th>
                     {{test.ValueUncertainty}}
+                </th>
+                <th>
+                    {{test.IsIso17025 ? 'כן' : 'לא'}}
                 </th>
                 <th>
                     <button mat-mini-fab color="danger" (click)="changeTestDefinitionID(test)"> <mat-icon>edit</mat-icon> </button>

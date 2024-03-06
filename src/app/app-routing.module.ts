@@ -10,8 +10,8 @@ import { ToolLowLevelDefinitionComponent } from './components/ToolsDefinition/ta
 import { ToolMeasurementLevelDefinitionComponent } from './components/ToolsDefinition/tables/tool-measurement-level-definition/tool-measurement-level-definition.component';
 import { TestsDefinitionsComponent } from './components/pages/tests-definitions/tests-definitions.component';
 import { TestDefinitionGroupTableComponent } from './components/TestDefinition/tables/test-definition-group-table/test-definition-group-table.component';
-import { TestTemplateFormComponent } from './components/TestTemplates/forms/test-template-form/TestTemplateFormComponent';
 import { TestTemplatTableComponent } from './components/TestTemplates/tables/test-templat-table/test-templat-table.component';
+import { ToolFamilyLevelDefinitionTableComponent } from './components/ToolsDefinition/tables/tool-family-level-definition-table/tool-family-level-definition-table.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -21,12 +21,19 @@ const routes: Routes = [
     component: ToolsDefinitionComponent,
     children: [
       {path: '', redirectTo: 'technology', pathMatch: 'full'},
+      {path: 'measurement_units', component: MeasurementUnitComponent},
+      {path: 'measurement_units/:id', component: MeasurementUnitComponent},
       {path: 'technology', component: TechnologyComponent},
       {path: 'sub_technology', component: SubTechnologyComponent},
+      {path: 'sub_technology/:id', component: SubTechnologyComponent},
       {path: 'tool_top_level_definition', component: ToolTopLevelDefinitionComponent},
-      {path: 'measurement_units', component: MeasurementUnitComponent},
+      {path: 'tool_top_level_definition/:id', component: ToolTopLevelDefinitionComponent},
+      {path: 'tool_family_level_definition', component: ToolFamilyLevelDefinitionTableComponent},
+      {path: 'tool_family_level_definition/:id', component: ToolFamilyLevelDefinitionTableComponent},
       {path: 'tool_low_level_definition', component: ToolLowLevelDefinitionComponent},
-      {path: 'tool_measurement_level_definition', component: ToolMeasurementLevelDefinitionComponent}
+      {path: 'tool_low_level_definition/:id', component: ToolLowLevelDefinitionComponent},
+      {path: 'tool_measurement_level_definition', component: ToolMeasurementLevelDefinitionComponent},
+      {path: 'tool_measurement_level_definition/:id', component: ToolMeasurementLevelDefinitionComponent},
     ]
   },
   {
@@ -35,7 +42,9 @@ const routes: Routes = [
     children: [
       {path: '', redirectTo: 'test_definition_group', pathMatch: 'full'},
       {path: 'test_definition_group', component: TestDefinitionGroupTableComponent},
+      {path: 'test_definition_group/:id', component: TestDefinitionGroupTableComponent},
       {path: 'test_template_form', component: TestTemplatTableComponent},
+      {path: 'test_template_form/:id', component: TestTemplatTableComponent},
     ]
   },
   {path: '**', component: HomeComponent}

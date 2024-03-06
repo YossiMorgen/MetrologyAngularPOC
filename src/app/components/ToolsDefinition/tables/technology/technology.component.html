@@ -1,13 +1,18 @@
 <div class="width50percent">
     <table dir="rtl">
         <tr>
-            <th> טכנולוגיה </th>
             <th> M-Code</th>
-            <th>פעולות </th>
+            <th> טכנולוגיה </th>
+            <th>עריכה </th>
         </tr>
         <tr *ngFor="let technology of technologies">
+            <!-- <td>{{technology.TechnologyName}}</td> -->
+            <td>
+                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/sub_technology/' + technology.TechnologyID " >
+                    {{technology.MCode}}
+                </a>
+            </td>
             <td>{{technology.TechnologyName}}</td>
-            <td>{{technology.MCode}}</td>
             <td>
                 <button mat-mini-fab color="danger" (click)="changeToolId(technology.TechnologyID)">
                     <mat-icon>  

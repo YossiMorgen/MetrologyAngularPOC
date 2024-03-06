@@ -18,23 +18,6 @@
     </button>
 
     <mat-form-field>
-        <mat-label> שם כלי </mat-label>
-        <input matInput type="text" placeholder="שם כלי" formControlName="ToolTopLevelDefinitionName">
-        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('required')">
-            יש להזין שם כלי
-        </mat-error>
-        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('minlength')">
-            יש להזין לפחות 2 תווים
-        </mat-error>
-        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('maxlength')">
-            יש להזין עד 50 תווים
-        </mat-error>
-        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('pattern')">
-            יש להזין רק אותיות בעברית או אנגלית
-        </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
         <mat-label> טכנולוגיה </mat-label>
         <mat-select placeholder=" טכנולוגיה " formControlName="TechID">
             <mat-option *ngFor="let technology of toolsDefinitionService.technologies" [value]="technology.TechnologyID">
@@ -52,6 +35,23 @@
         </mat-select>
     </mat-form-field>
 
+    <mat-form-field>
+        <mat-label> שם כלי </mat-label>
+        <input matInput type="text" placeholder="שם כלי" formControlName="ToolTopLevelDefinitionName">
+        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('required')">
+            יש להזין שם כלי
+        </mat-error>
+        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('minlength')">
+            יש להזין לפחות 2 תווים
+        </mat-error>
+        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('maxlength')">
+            יש להזין עד 50 תווים
+        </mat-error>
+        <mat-error *ngIf="toolTopLevelDefinitionAndIsoForm.get('ToolTopLevelDefinitionName').hasError('pattern')">
+            יש להזין רק אותיות בעברית או אנגלית
+        </mat-error>
+    </mat-form-field>
+    
     <mat-form-field>
         <mat-label> MCode </mat-label>
         <input matInput type="number" placeholder="MCode" formControlName="MCode">
@@ -134,11 +134,10 @@
         <button
             (click)="toolId = null; toolTopLevelDefinitionAndIsoForm.reset()"
             type="reset" 
+            color="accent"
             mat-raised-button
             *ngIf="toolId != null"
-        >
-            ביטול עריכה
-        </button>
+        > ביטול עריכה </button>
     </div>
 
 </form>

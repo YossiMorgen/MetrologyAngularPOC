@@ -4,7 +4,7 @@
         <thead>
             <tr>
                 <th>שם כלי</th>
-                <th>קבוצת בדיקות </th>
+                <th> בדיקה </th>
                 <th>גודל כלי </th>
                 <th> Mcode </th>
                 <th> עריכה </th>
@@ -13,12 +13,12 @@
         <tbody>
             <tr *ngFor="let testTemplate of testTemplates">
                 <td>{{testTemplate.TestDefinitions?.[0]?.TestDefinitionGroup?.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}</td>
-                <td>{{testTemplate.TestDefinitions?.[0]?.TestDefinitionGroup?.TestDefinitionGroupName}}</td>
+                <td [matTooltip]="testTemplateDefinitionsToolTip(testTemplate)">{{testTemplate.TestDefinitions?.[0]?.TestDefinitionGroup?.TestDefinitionGroupName}}</td>
                 <td>{{testTemplate.ToolLowLevelDefinition?.ValueMin + " - " + testTemplate.ToolLowLevelDefinition?.ValueMax }}</td>
                 <td>
                     {{
-                        testTemplate.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + '.' +
-                        testTemplate.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode + '.' +
+                        testTemplate.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + '.' +
+                        testTemplate.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode + '.' +
                         testTemplate.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.MCode + '.' +
                         testTemplate.ToolLowLevelDefinition?.MCode
                     }}

@@ -65,11 +65,10 @@
         reset
     </button>
     <button 
-        (click)="toolId = null; technologyForm.reset()" 
+        (click)="toolId = null;" 
         type="reset" 
+        color="accent"
         mat-raised-button
         *ngIf="toolId != null"
-    >
-        ביטול עריכה
-    </button>
+    > ביטול עריכה </button>
 </form>

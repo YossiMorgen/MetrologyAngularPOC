@@ -4,6 +4,7 @@ import { ToolMeasurementLevelDefinition } from "./tool-measurement-level-definit
 
 export class ToolLowLevelDefinition {
     public ToolLowLevelDefinitionID: number;
+    public ToolLowLevelDefinitionName: string;
     public MCode: number;
     public ToolMeasurementLevelDefinitionID: number;
     public ToolMeasurementLevelDefinition: ToolMeasurementLevelDefinition;
@@ -17,9 +18,11 @@ export class ToolLowLevelDefinition {
         ToolMeasurementLevelDefinitionID: number, 
         ValueMin: number, 
         ValueMax: number, 
+        ToolLowLevelDefinitionName: string = "",
         ToolLowLevelDefinitionID?: number
     ) {
         this.ToolLowLevelDefinitionID = ToolLowLevelDefinitionID;
+        this.ToolLowLevelDefinitionName = ToolLowLevelDefinitionName;
         this.MCode = MCode;
         this.ToolMeasurementLevelDefinitionID = ToolMeasurementLevelDefinitionID;
         this.ValueMin = ValueMin;

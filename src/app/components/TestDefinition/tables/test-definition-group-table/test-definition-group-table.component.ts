@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastService } from 'angular-toastify';
 import { TestDefinitionGroup } from 'src/app/models/TestDefinition/test-definition-group';
-import { ToolDefinitionURLs } from 'src/app/services/app-config.service';
 import { ToolsDefinitionService } from 'src/app/services/tools-definition.service';
+import { TestDefinitionGroupFormComponent } from '../../forms/test-definition-group-form/test-definition-group-form.component';
 
 @Component({
   selector: 'app-test-definition-group-table',
@@ -11,6 +11,7 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
 })
 export class TestDefinitionGroupTableComponent implements OnInit {
   triggerChanges: boolean = false;
+  @ViewChild('child') child: TestDefinitionGroupFormComponent;
 
   constructor(
     private toolsDefinitionService: ToolsDefinitionService,

@@ -18,7 +18,7 @@ export class TestTemplatTableComponent implements OnInit {
   public testTemplates: TestTemplate[] = [];
   
   ngOnInit(): void {
-    this.testTemplates = this.toolsDefinitionService.testTemplates.filter(test => test.TestDefinitions.length > 0);
+    this.testTemplates = this.toolsDefinitionService.testTemplates?.filter(test => test.TestDefinitions.length > 0);
     this.toolsDefinitionService.dataSubject.subscribe(() => {
       this.testTemplates = this.toolsDefinitionService.testTemplates.filter(test => test.TestDefinitions.length > 0);
     });
@@ -27,6 +27,11 @@ export class TestTemplatTableComponent implements OnInit {
   changeTestTemplate(testTemplate: TestTemplate): void {
     this.testTemplate = testTemplate;
   }
+
+  testTemplateDefinitionsToolTip(testTemplate: TestTemplate): string {
+    return testTemplate.TestDefinitions.map(test => test.ValueRequired).join(', ');
+  }
+  
 
   // async deleteTestTemplate(testTemplate: TestTemplate): Promise<void> {
   //   try {

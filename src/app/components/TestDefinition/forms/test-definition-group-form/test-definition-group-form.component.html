@@ -51,6 +51,15 @@
             </mat-error>
         </mat-form-field>
     
+        <mat-form-field>
+            <mat-label> סוג חישוב סטייה </mat-label>
+            <mat-select placeholder=" סוג חישוב סטייה " formControlName="DeviationCalcTypeID">
+                <mat-option *ngFor="let deviationCalcType of DeviationCalcTypes" [value]="deviationCalcType">
+                    {{deviationCalcType}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        
         <div class="formActions">
             <button 
             mat-raised-button color="primary" 
@@ -70,12 +79,11 @@
         </button>
         <button
             (click)="cancelEdit()"
+            color="accent"
             type="reset" 
             mat-raised-button
             *ngIf="testDefinitionGroupInput != null"
-        >
-            בטל עריכה
-        </button>
+        > ביטול עריכה </button>
         </div>
         <mat-slide-toggle [formControl]="keepEditing"> עריכה לאחר הוספת כלי </mat-slide-toggle>
     </form>

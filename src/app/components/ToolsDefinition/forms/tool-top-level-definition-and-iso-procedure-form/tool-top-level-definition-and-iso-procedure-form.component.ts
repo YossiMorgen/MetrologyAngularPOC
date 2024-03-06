@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { ToastService } from 'angular-toastify';
 import { Resolution } from 'src/app/models/TestDefinition/resolution';
@@ -11,6 +11,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dialog/confirm-dialog.component';
+import { ToolFamilyLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-family-level-definition';
 
 @Component({
   selector: 'app-tool-top-level-definition-and-iso-procedure-form',
@@ -19,8 +20,11 @@ import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dia
 })
 export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnChanges, OnInit {
   @Input() public toolId: number = null;
+  @Input() public toolTopId: number = null;
+
   subTechnologies: SubTechnology[];
   @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
+  filteredToolTops: ToolTopLevelDefinition[] = [];
 
   constructor(
     public toolsDefinitionService: ToolsDefinitionService,
@@ -30,39 +34,27 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
   ) { }
     
   ngOnInit(): void {
-    this.toolTopLevelDefinitionAndIsoForm = this.formBuilder.group({
-      toolTopLevelDefinitionID: [0],
-      ToolTopLevelDefinitionName: ["", [Validators.required, Validators.minLength(2), Validators.pattern('^[a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')]],
-      TechID:[0],
-      SubTechID: [0, [Validators.required]],
-      IsoProcedureID: [0],
-      MCode: [0, [Validators.required, Validators.pattern('^[0-9]*$')]],
-      WordFileLink: [" "],
-      CertificateText: [" "],
-      Description: [" "],
-    });
 
-    this.toolTopLevelDefinitionAndIsoForm.setValue({
-      toolTopLevelDefinitionID: 0,
-      ToolTopLevelDefinitionName: "",
-      TechID: 0,
-      SubTechID: 0,
-      IsoProcedureID: 0,
-      MCode: null,
-      WordFileLink: " ",
-      CertificateText: " ",
-      Description: " ",
-    })
-    
+    this.resetForm();
 
     this.toolsDefinitionService.dataSubject.subscribe(() => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies;
+      this.filteredToolTops = this.toolsDefinitionService.toolTopLevelDefinitions;
+      this.setDefaultMCode();
     });
+    this.filteredToolTops = this.toolsDefinitionService.toolTopLevelDefinitions;
+    this.setDefaultMCode();
 
     this.toolTopLevelDefinitionAndIsoForm.controls.TechID.valueChanges.subscribe((value: number) => {
+
+      if(!value){
+        this.subTechnologies = this.toolsDefinitionService.subTechnologies;
+        return;
+      }
+
       this.subTechnologies = this.toolsDefinitionService.subTechnologies?.filter(subTech => subTech.TechID === +value);
       
-      if(this.subTechnologies.length === 0 && value){
+      if(this.subTechnologies.length === 0){
         this.toastService.error('לא קיימות תת טכנולוגיות תחת טכנולוגיה זו');
       }
     });
@@ -71,6 +63,9 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
       this.toolTopLevelDefinitionAndIsoForm.controls.TechID.setValue(
         this.toolsDefinitionService.subTechnologies?.find(subTech => subTech.SubTechnologyID === +value)?.TechID
       );
+
+      this.filteredToolTops = this.toolsDefinitionService.toolTopLevelDefinitions?.filter(toolTop => toolTop.SubTechID === +value);
+      this.setDefaultMCode();
     });
 
     this.toolTopLevelDefinitionAndIsoForm.controls.MCode.valueChanges.subscribe((value: number) => {
@@ -79,19 +74,18 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
 
     this.toolsDefinitionService.dataSubject.subscribe(() => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies; 
-      this.allResolutionsPreviousValues = this.toolsDefinitionService.getUniqueAndSortedResolutions();
-      console.log(this.allResolutionsPreviousValues);
-      
+      this.allResolutionsPreviousValues = this.toolsDefinitionService.getUniqueAndSortedResolutions();      
+      this.toolTopLevelDefinitionAndIsoForm.controls.SubTechID.setValue(this.toolTopId);
     });
+    this.toolTopLevelDefinitionAndIsoForm.controls.SubTechID.setValue(this.toolTopId);
     this.subTechnologies = this.toolsDefinitionService.subTechnologies;
     this.allResolutionsPreviousValues = this.toolsDefinitionService.getUniqueAndSortedResolutions();
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     console.log(this.toolId);
-    if(this.toolId){
+    if(this.toolId && changes['toolId'] ){
       const tool = this.toolsDefinitionService.toolTopLevelDefinitions.find(tool => tool.ToolTopLevelDefinitionID == this.toolId);
-      console.log(tool);
 
       this.toolTopLevelDefinitionAndIsoForm.setValue({
         toolTopLevelDefinitionID: tool.ToolTopLevelDefinitionID,
@@ -109,7 +103,17 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
     }
   }
 
-  public toolTopLevelDefinitionAndIsoForm: any;
+  toolTopLevelDefinitionAndIsoForm = this.formBuilder.group({
+    toolTopLevelDefinitionID: [0],
+    ToolTopLevelDefinitionName: ["", [Validators.required, Validators.minLength(2), Validators.pattern('^[0-90-9a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')]],
+    TechID:[0],
+    SubTechID: [0, [Validators.required]],
+    IsoProcedureID: [0],
+    MCode: [0, [Validators.required, Validators.pattern('^[0-9]*$')]],
+    WordFileLink: [" "],
+    CertificateText: [" "],
+    Description: [" "],
+  });
 
   async submitForm(){
     const newIsoProcedure = new IsoProcedure(
@@ -135,25 +139,34 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
     }
 
     try {
-      await this.toolsDefinitionService.uploadToolTopDefinition(SValues, newToolTopLevelDefinition, newIsoProcedure);
+      const id = await this.toolsDefinitionService.uploadToolTopDefinition(SValues, newToolTopLevelDefinition, newIsoProcedure);
+      if(!this.toolId){
+        const family = new ToolFamilyLevelDefinition(newToolTopLevelDefinition.ToolTopLevelDefinitionName, id);
+        await this.toolsDefinitionService.createToolDefinition(family);
+      } else {
+        await this.toolsDefinitionService.getToolsDefinitionData();
+      }
       this.toastService.success('העדכון התבצע בהצלחה');
+      this.resetForm();
+      this.setDefaultMCode();
     } catch (error) {
       this.toastService.error('העדכון נכשל');
     }
 
     // this.subTechnologies = this.toolsDefinitionService.subTechnologies;
-    this.resetForm();
+    // this.resetForm();
     this.toolId = null;
   }
 
   resetForm() {
-    this.formDirective.resetForm();
-    this.toolTopLevelDefinitionAndIsoForm.reset();
+    this.toolTopLevelDefinitionAndIsoForm.controls.ToolTopLevelDefinitionName.setValue(null);
+    this.toolTopLevelDefinitionAndIsoForm.controls.ToolTopLevelDefinitionName.setErrors(null);
+    this.toolTopLevelDefinitionAndIsoForm.controls.Description.setValue(null);
     this.resolutions = [];
   }
 
   async deleteToolTopLevelDefinitionAndIsoProcedure(): Promise<void> {
-    const tool = this.toolsDefinitionService.toolMeasurementLevelDefinition.find(tool => tool.ToolTopLevelDefinitionID === this.toolId);
+    const tool = this.toolsDefinitionService.toolFamilyDefinitions.find(tool => tool.ToolFamilyLevelDefinitionID === this.toolId);
     if(tool){
       this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
       return;
@@ -176,7 +189,10 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
           await this.toolsDefinitionService.deleteToolDefinition("IsoProcedure", isoId);
           this.toolsDefinitionService.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions.filter(toolTopLevelDefinition => toolTopLevelDefinition.ToolTopLevelDefinitionID !== this.toolId);
           this.toolsDefinitionService.dataSubject.next(true);
-          this.resetForm();
+          this.toolTopLevelDefinitionAndIsoForm.reset();
+          this.formDirective.resetForm();
+          this.resolutions = [];
+          this.setDefaultMCode();
           this.toolId = null;
           this.toastService.success(" כלי נמחק בהצלחה :)");
         } catch (error: any) {
@@ -184,6 +200,11 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
         }
       }
     });
+  }
+
+  setDefaultMCode(){    
+    const maxMCode = this.filteredToolTops?.reduce((max, toolTop) => { return toolTop.IsoProcedure?.MCode > max ? toolTop.IsoProcedure?.MCode : max }, 0);    
+    this.toolTopLevelDefinitionAndIsoForm.controls.MCode.setValue(maxMCode + 1);
   }
 
 // resolutionSelectForm using MatChipsModule-------------------------------------------------------
@@ -220,4 +241,7 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
     this.resolutionsInput.nativeElement.value = '';
     this.resolutionsControl.setValue(null);
   }
+
+  // ------------------------------------------------------------------------------------------------
+
 }

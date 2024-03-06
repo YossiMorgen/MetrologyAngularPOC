@@ -16,13 +16,15 @@ import { Endurance } from '../models/TestDefinition/endurance';
 import { TestTemplate } from '../models/TestDefinition/test-template';
 import { TestTemplatesDefinition, TestTemplatesDefinitionResponse } from '../models/TestDefinition/test-templates-definition';
 import { TestDefinition } from '../models/TestDefinition/test-definition';
+import { ToolFamilyLevelDefinition } from '../models/toolDefinitionModels/tool-family-level-definition';
 
 interface ToolDefinitionData {
+  MeasurementUnits: MeasurementUnit[];
   Technologies: Technology[];
   SubTechnologies: SubTechnology[];
   IsoProcedures: IsoProcedure[];
   ToolTopLevelDefinitions: ToolTopLevelDefinition[];
-  MeasurementUnits: MeasurementUnit[];
+  ToolFamilyLevelDefinitions: ToolFamilyLevelDefinition[];
   ToolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[];
   ToolLowLevelDefinitions: ToolLowLevelDefinition[];
   Resolutions: Resolution[];
@@ -61,8 +63,8 @@ interface PostTestTemplate {
 }
 
 type Models = Technology | 
-SubTechnology | IsoProcedure | ToolTopLevelDefinition | 
-MeasurementUnit | ToolMeasurementLevelDefinition | ToolLowLevelDefinition |
+MeasurementUnit | SubTechnology | IsoProcedure | ToolTopLevelDefinition | 
+ToolFamilyLevelDefinition | ToolMeasurementLevelDefinition | ToolLowLevelDefinition |
 Resolution | ResolutionToolTopLevelDefinition | TestDefinitionGroup |
 TestDefinition | Endurance | TestTemplate | TestTemplatesDefinition;
 
@@ -75,13 +77,14 @@ export class ToolsDefinitionService {
     this.getToolsDefinitionData();
   }
 
+  public MeasurementUnit: MeasurementUnit[];
   public technologies: Technology[];
   public subTechnologies: SubTechnology[];
   public isoProcedure: IsoProcedure[];
   public toolTopLevelDefinitions: ToolTopLevelDefinition[];
-  public MeasurementUnit: MeasurementUnit[];
-  public toolMeasurementLevelDefinition: ToolMeasurementLevelDefinition[];
-  public toolLowLevelDefinition: ToolLowLevelDefinition[];
+  public toolFamilyDefinitions: ToolFamilyLevelDefinition[];
+  public toolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[];
+  public toolLowLevelDefinitions: ToolLowLevelDefinition[];
   public resolutions: Resolution[];
   public resolutionToolTopLevelDefinitions: ResolutionToolTopLevelDefinition[];
   public testDefinitionGroups: TestDefinitionGroup[];
@@ -98,13 +101,14 @@ export class ToolsDefinitionService {
 
     console.log(data);
     
+    this.MeasurementUnit = data.MeasurementUnits;
     this.technologies = data.Technologies;
     this.subTechnologies = data.SubTechnologies;
     this.isoProcedure = data.IsoProcedures;
     this.toolTopLevelDefinitions = data.ToolTopLevelDefinitions;
-    this.MeasurementUnit = data.MeasurementUnits;
-    this.toolMeasurementLevelDefinition = data.ToolMeasurementLevelDefinitions;
-    this.toolLowLevelDefinition = data.ToolLowLevelDefinitions;
+    this.toolFamilyDefinitions = data.ToolFamilyLevelDefinitions;
+    this.toolMeasurementLevelDefinitions = data.ToolMeasurementLevelDefinitions;
+    this.toolLowLevelDefinitions = data.ToolLowLevelDefinitions;
     this.resolutions = data.Resolutions;
     this.resolutionToolTopLevelDefinitions = data.Resolution_ToolTopLevelDefinitions;
     this.testDefinitionGroups = data.TestDefinitionGroups;
@@ -176,33 +180,12 @@ export class ToolsDefinitionService {
     // this.linkTheData();
   }
 
-  public async uploadToolTopDefinition(SValues: string, ToolTopLevelDefinition: ToolTopLevelDefinition, IsoProcedure: IsoProcedure): Promise<void> {
+  public async uploadToolTopDefinition(SValues: string, ToolTopLevelDefinition: ToolTopLevelDefinition, IsoProcedure: IsoProcedure): Promise<number> {
     const payload: PostToolTopLevelDefinition = { ToolTopLevelDefinition, SValues, IsoProcedure };
 
     const observable = this.http.post<PostToolTopLevelDefinitionResult>(this.appConfig.ToolTopLevelDefinitionURL, payload);
-    await firstValueFrom(observable);
-    await this.getToolsDefinitionData();
-    // const data = await firstValueFrom(observable);
-
-    // if(ToolTopLevelDefinition.ToolTopLevelDefinitionID === 0){
-    //   this.isoProcedure.unshift(data.IsoProcedure);
-    //   this.toolTopLevelDefinitions.unshift(data.ToolTopLevelDefinition);
-    //   console.log(this.toolTopLevelDefinitions);
-    // } else {
-    //   this.isoProcedure = this.isoProcedure.map(iso => iso.IsoProcedureID === IsoProcedure.IsoProcedureID ? data.IsoProcedure : iso);
-    //   this.toolTopLevelDefinitions = this.toolTopLevelDefinitions.map(tool => tool.ToolTopLevelDefinitionID === ToolTopLevelDefinition.ToolTopLevelDefinitionID ? data.ToolTopLevelDefinition : tool);
-    // }
-    
-    // data.Resolution_ToolTopLevelDefinitions.forEach((Resolution_ToolTopLevelDefinition: ResolutionToolTopLevelDefinitionResponse) => {
-    //   if(Resolution_ToolTopLevelDefinition.$action === 'INSERT'){
-    //     this.resolutionToolTopLevelDefinitions.unshift(Resolution_ToolTopLevelDefinition);
-    //   } else if(Resolution_ToolTopLevelDefinition.$action === 'DELETE'){
-    //     this.resolutionToolTopLevelDefinitions = this.resolutionToolTopLevelDefinitions.filter(res => res.Resolution_ToolTopLevelDefinitionID !== Resolution_ToolTopLevelDefinition.Resolution_ToolTopLevelDefinitionID1);
-    //   }
-    // }); 
-
-    // this.resolutions = this.resolutions.concat(data.Resolutions);
-    // this.linkTheData();
+    const data = await firstValueFrom(observable);
+    return data.ToolTopLevelDefinition.ToolTopLevelDefinitionID;
   }
 
   public async uploadTestDefinition(testDefinition: TestDefinition, endurance: Endurance[]): Promise<void> {
@@ -210,45 +193,12 @@ export class ToolsDefinitionService {
     const observable = this.http.post<PostTestDefinition>(this.appConfig.TestDefinitionURL, payload);
     await firstValueFrom(observable);
     await this.getToolsDefinitionData();
-    // const data = await firstValueFrom(observable);
-    // console.log(data);
-
-    // if(testDefinition.TestDefinitionID === 0){
-    //   this.testDefinitions.unshift(data.TestDefinition);
-    // } else {
-    //   this.endurance = this.endurance.filter(end => end.TestDefinitionID !== testDefinition.TestDefinitionID);
-    //   this.testDefinitions = this.testDefinitions.map(test => test.TestDefinitionID === testDefinition.TestDefinitionID ? data.TestDefinition : test);
-    // }
-    
-    // data.Endurance = data.Endurance?.filter(endurance => endurance.EnduranceID != null);
-    // this.endurance = this.endurance.concat(data.Endurance);
-
-    // this.linkTheData();
   }
 
   async uploadTestTemplate(testTemplate: TestTemplate, testDefinitionsIDs: string): Promise<void>{
     const observable = this.http.post<PostTestTemplate>(this.appConfig.TestTemplateURL, { TestTemplate: testTemplate, TestDefinitionsIDs: testDefinitionsIDs });
     await firstValueFrom(observable);
     this.getToolsDefinitionData();
-    // const data = await firstValueFrom(observable);
-    // console.log(data);
-
-    // if(testTemplate.TestTemplateID === 0){
-    //   this.testTemplates.unshift(data.TestTemplate);
-    // } else {
-    //   this.testTemplates = this.testTemplates.map(template => template.TestTemplateID === testTemplate.TestTemplateID ? data.TestTemplate : template);
-    // }
-
-    // data.TestTemplatesDefinitions.forEach(template =>
-    // {
-    //   if(template.$action === 'INSERT'){
-    //     this.testTemplatesDefinitions.unshift(template);
-    //   } else if(template.$action === 'DELETE'){
-    //     this.testTemplatesDefinitions = this.testTemplatesDefinitions.filter(def => def.TestTemplatesDefinitionID !== template.TestTemplatesDefinitionID1);
-    //   }
-    // });
-
-    // this.linkTheData();
   }
 
   linkTheData(): void {
@@ -274,19 +224,27 @@ export class ToolsDefinitionService {
       }
     });
 
-    this.toolMeasurementLevelDefinition.forEach(measurement => {
-      const toolTopLevelDefinition = this.toolTopLevelDefinitions.find(toolTopLevelDefinition => toolTopLevelDefinition.ToolTopLevelDefinitionID === measurement.ToolTopLevelDefinitionID);
+    this.toolFamilyDefinitions.forEach((toolFamilyDefinition: ToolFamilyLevelDefinition) => {
+      const toolTopLevelDefinition = this.toolTopLevelDefinitions.find(toolTopLevelDefinition => toolTopLevelDefinition.ToolTopLevelDefinitionID === toolFamilyDefinition.ToolTopLevelDefinitionID);
+      if(toolTopLevelDefinition){
+        toolFamilyDefinition.ToolTopLevelDefinition = toolTopLevelDefinition;
+        toolTopLevelDefinition.ToolFamilyLevelDefinitions.push(toolFamilyDefinition);
+      }
+    });
+
+    this.toolMeasurementLevelDefinitions.forEach(measurement => {
+      const toolFamily = this.toolFamilyDefinitions.find(toolFamily => toolFamily.ToolFamilyLevelDefinitionID === measurement.ToolFamilyLevelDefinitionID);
       const valueUnit = this.MeasurementUnit.find(measurementUnit => measurementUnit.MeasurementUnitID === measurement.ValueUnitID);
-      if(valueUnit && toolTopLevelDefinition){
-        measurement.ToolTopLevelDefinition = toolTopLevelDefinition;
-        toolTopLevelDefinition.ToolMeasurementLevelDefinitions.push(measurement);
+      if(valueUnit && toolFamily){
+        measurement.ToolFamilyLevelDefinition = toolFamily;
+        toolFamily.ToolMeasurementLevelDefinitions.push(measurement);
         valueUnit.ToolMeasurementLevelDefinition.push(measurement);
         measurement.ValueUnit = valueUnit;
       }
     });
 
-    this.toolLowLevelDefinition.forEach(low => {
-      const toolMeasurementLevelDefinition = this.toolMeasurementLevelDefinition.find(toolMeasurementLevelDefinition => toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID === low.ToolMeasurementLevelDefinitionID);
+    this.toolLowLevelDefinitions.forEach(low => {
+      const toolMeasurementLevelDefinition = this.toolMeasurementLevelDefinitions.find(toolMeasurementLevelDefinition => toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID === low.ToolMeasurementLevelDefinitionID);
       if (toolMeasurementLevelDefinition){
         low.ToolMeasurementLevelDefinition = toolMeasurementLevelDefinition;
         toolMeasurementLevelDefinition?.ToolLowLevelDefinitions?.push(low);
@@ -348,7 +306,7 @@ export class ToolsDefinitionService {
 
 
     this.testTemplates.forEach(template => {
-      const toolLowLevelDefinition = this.toolLowLevelDefinition.find(toolLowLevelDefinition => toolLowLevelDefinition.ToolLowLevelDefinitionID === template.ToolLowLevelDefinitionID);
+      const toolLowLevelDefinition = this.toolLowLevelDefinitions.find(toolLowLevelDefinition => toolLowLevelDefinition.ToolLowLevelDefinitionID === template.ToolLowLevelDefinitionID);
       if(toolLowLevelDefinition){
         template.ToolLowLevelDefinition = toolLowLevelDefinition;
         toolLowLevelDefinition.TestTemplates.push(template);
@@ -368,14 +326,20 @@ export class ToolsDefinitionService {
         testTemplate.TestTemplatesDefinitions.push(definition);
       }
     });
-
-    console.log("Data linked");
-    console.log(this); 
+ 
+    this.toolMeasurementLevelDefinitions = this.toolMeasurementLevelDefinitions.sort((a, b) => a.ValueMax - b.ValueMax);
     
+    console.log("Data linked");
+    console.log(this);
+
     this.dataSubject.next(true);
   }
 
   clearTheArrays(){
+
+    this.resolutionToolTopLevelDefinitions.forEach(res => {
+      res.Endurance = [];
+    });
 
     this.technologies.forEach(tech =>{
       tech.SubTechnologies = [];
@@ -396,7 +360,7 @@ export class ToolsDefinitionService {
     this.toolTopLevelDefinitions.forEach(tool => {
       tool.Resolutions = [];
       tool.TestDefinitionGroups = [];
-      tool.ToolMeasurementLevelDefinitions = [];
+      tool.ToolFamilyLevelDefinitions = [];
       tool.ResolutionToolTopLevelDefinition = [];
     });
 
@@ -405,15 +369,15 @@ export class ToolsDefinitionService {
       res.ResolutionToolTopLevelDefinitions = []; 
     });
 
-    this.resolutionToolTopLevelDefinitions.forEach(res => {
-      res.Endurance = [];
+    this.toolFamilyDefinitions.forEach(family => {
+      family.ToolMeasurementLevelDefinitions = [];
     });
 
-    this.toolMeasurementLevelDefinition.forEach(measurement => {
+    this.toolMeasurementLevelDefinitions.forEach(measurement => {
       measurement.ToolLowLevelDefinitions = [];
     });
 
-    this.toolLowLevelDefinition.forEach(low => {
+    this.toolLowLevelDefinitions.forEach(low => {
       low.TestTemplates = [];
     });
 
@@ -438,7 +402,7 @@ export class ToolsDefinitionService {
   }
 
   getUniqueAndSortedResolutions(): number[] {
-    return[...new Set(this.resolutions.map(res => res.Value))].sort();
+    return[...new Set(this.resolutions?.map(res => res.Value))].sort();
   }
 
   getStringNameFromObject(model: Models): string {
@@ -462,6 +426,9 @@ export class ToolsDefinitionService {
         break;
       case  MeasurementUnit.name:
         sname = "MeasurementUnit";
+        break;
+      case  ToolFamilyLevelDefinition.name:
+        sname = "ToolFamilyLevelDefinition";
         break;
       case  ToolMeasurementLevelDefinition.name:
         sname = "ToolMeasurementLevelDefinition";

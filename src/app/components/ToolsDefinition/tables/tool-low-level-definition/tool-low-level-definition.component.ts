@@ -13,13 +13,13 @@ export class ToolLowLevelDefinitionComponent implements OnInit {
     private toolsDefinitionService: ToolsDefinitionService,
     private toastService: ToastService
   ) { }
-  public toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinition;
+  public toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinitions;
 
   public toolId: number = null;
 
   ngOnInit(): void {    
     this.toolsDefinitionService.dataSubject.subscribe(() => {
-        this.toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinition;
+        this.toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinitions;
     });
   }
 

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ToastService } from 'angular-toastify';
 import { ToolTopLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-top-level-definition';
 import { ToolDefinitionURLs } from 'src/app/services/app-config.service';
@@ -12,17 +13,36 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
 export class ToolTopLevelDefinitionComponent implements OnInit {
   constructor(
     private toolsDefinitionService: ToolsDefinitionService,
-    private toastService: ToastService
+    private route: ActivatedRoute,
+    private toastService: ToastService,
   ) { }
 
-  public toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions;
 
   public toolId: number = null;
+  public toolTopId: number = null;
+  public toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions;
 
   ngOnInit(): void {
     this.toolsDefinitionService.dataSubject.subscribe((data) => {
-      this.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions;
+      this.setToolTopLevelDefinitions();
     });
+
+    this.route.params.subscribe(params => {
+      this.toolTopId = +params['id'];
+      this.setToolTopLevelDefinitions();
+    });
+
+    this.setToolTopLevelDefinitions();
+  }
+
+  setToolTopLevelDefinitions(){    
+    if(this.toolTopId && this.toolsDefinitionService.toolTopLevelDefinitions){
+      this.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions
+        .filter(x => x.ToolTopLevelDefinitionID == this.toolTopId)
+        .sort((a, b) => a.IsoProcedure.MCode - b.IsoProcedure.MCode);
+    } else {
+      this.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions;
+    }
   }
 
   changeToolId(toolId: number): void {

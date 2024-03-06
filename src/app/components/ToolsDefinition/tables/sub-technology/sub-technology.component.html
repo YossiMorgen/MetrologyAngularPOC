@@ -2,15 +2,20 @@
     
     <table dir="rtl">
         <tr>
-            <th> טכנולוגיה </th>
-            <th> תת טכנולוגיה </th>
             <th> M-Code </th>
-            <th>פעולות </th>
+            <th> תת טכנולוגיה </th>
+            <th> טכנולוגיה </th>
+            <th>עריכה </th>
         </tr>
         <tr *ngFor="let subTechnology of subTechnologies">
+            <!-- <td>{{subTechnology.Technology?.TechnologyName}}</td> -->
+            <td>
+                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/tool_top_level_definition/' + subTechnology.SubTechnologyID " >
+                    {{subTechnology.Technology?.MCode + "." + subTechnology.MCode}}
+                </a>
+            </td>
             <td>{{subTechnology.Technology?.TechnologyName}}</td>
             <td>{{subTechnology.SubTechnologyName}}</td>
-            <td>{{subTechnology.Technology?.MCode + "." + subTechnology.MCode}}</td>
             <td>
                 <button mat-mini-fab color="danger" (click)="changeToolId(subTechnology.SubTechnologyID)">
                     <mat-icon>
@@ -21,6 +26,6 @@
         </tr>
     </table>
 
-    <app-sub-technology-form [toolId]="toolId"></app-sub-technology-form>
+    <app-sub-technology-form [techID]="techID" [toolId]="toolId"></app-sub-technology-form>
 
 </div>

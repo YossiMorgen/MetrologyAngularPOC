@@ -1,11 +1,11 @@
+import { ToolFamilyLevelDefinition } from "./tool-family-level-definition";
 import { MeasurementUnit } from "./measurement-unit";
 import { ToolLowLevelDefinition } from "./tool-low-level-definition";
-import { ToolTopLevelDefinition } from "./tool-top-level-definition";
 
 export class ToolMeasurementLevelDefinition {
     public ToolMeasurementLevelDefinitionID: number;
-    public ToolTopLevelDefinitionID: number;
-    public ToolTopLevelDefinition: ToolTopLevelDefinition;
+    public ToolFamilyLevelDefinitionID: number;
+    public ToolFamilyLevelDefinition: ToolFamilyLevelDefinition;
     public ValueMin: number;
     public ValueMax: number;
     public ValueUnitID: number;
@@ -15,9 +15,15 @@ export class ToolMeasurementLevelDefinition {
 
     public ToolLowLevelDefinitions : ToolLowLevelDefinition[] = [];
 
-    constructor(ToolTopLevelDefinitionID: number, ValueMin: number, ValueMax: number, ValueUnitID: number, MCode: number, ToolMeasurementLevelDefinitionID?: number) {
+    constructor(
+        ToolFamilyLevelDefinitionID: number, 
+        ValueMin: number, ValueMax: number, 
+        ValueUnitID: number, 
+        MCode: number, 
+        ToolMeasurementLevelDefinitionID?: number
+    ) {
         this.ToolMeasurementLevelDefinitionID = ToolMeasurementLevelDefinitionID;
-        this.ToolTopLevelDefinitionID = ToolTopLevelDefinitionID;
+        this.ToolFamilyLevelDefinitionID = ToolFamilyLevelDefinitionID;
         this.ValueMin = ValueMin;
         this.ValueMax = ValueMax;
         this.ValueUnitID = ValueUnitID;

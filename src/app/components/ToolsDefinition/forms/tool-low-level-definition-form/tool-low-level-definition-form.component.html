@@ -43,6 +43,15 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
+    
+    <mat-form-field>
+        <mat-label> משפחת כלי </mat-label>
+        <mat-select placeholder=" משפחת כלי " formControlName="ToolFamilyLevelDefinitionID">
+            <mat-option *ngFor="let tool of toolFamilyLevels" [value]="tool.ToolFamilyLevelDefinitionID">
+                {{tool.ToolFamilyLevelDefinitionName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 
     <mat-form-field>
         <mat-label> תחום מדידה </mat-label>
@@ -118,9 +127,8 @@
             (click)="toolId = null; toolLowLevelDefinitionForm.reset()"
             type="reset"
             mat-raised-button
+            color="accent"
             *ngIf="toolId != null"
-        >
-            ביטול עריכה
-        </button>
+        > ביטול עריכה </button>
     </div>
 </form>

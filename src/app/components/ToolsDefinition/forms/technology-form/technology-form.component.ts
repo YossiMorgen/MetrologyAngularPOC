@@ -25,6 +25,10 @@ export class TechnologyFormComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     this.technologyForm.controls.MCode.setValue(null);
+    this.toolsDefinitionService.dataSubject.subscribe(() => {
+      const highestMCode = this.toolsDefinitionService.technologies.reduce((prev, current) => (prev.MCode > current.MCode) ? prev : current).MCode;
+      this.technologyForm.controls.MCode.setValue(highestMCode + 1);
+    });
   }
 
   ngOnChanges(): void {
@@ -40,7 +44,7 @@ export class TechnologyFormComponent implements OnChanges, OnInit {
   }
 
   public technologyForm = this.formBuilder.group({
-    TechnologyName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')]],
+    TechnologyName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[0-9a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')]],
     MCode: [0, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]*$')]]
   });
 

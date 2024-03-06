@@ -26,7 +26,7 @@ export class MeasurementUnitFormComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
       this.MeasurementUnitForm.setValue({
-        Symbol: this.MeasurementUnit?.Symbol,
+        Symbol: this.MeasurementUnit?.Symbol || '',
         MeasurementUnitID: this.MeasurementUnit?.MeasurementUnitID
       });
   }

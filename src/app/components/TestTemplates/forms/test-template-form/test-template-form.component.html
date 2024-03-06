@@ -12,29 +12,17 @@
                         {{tool.ToolTopLevelDefinitionName + " (" + tool.IsoProcedure.MCode + ")"}}
                     </mat-option>
                 </mat-select>
-            </mat-form-field>            
-            
-            <mat-form-field >
-                <!-- searchable select testDefinitionGroup -->
-                <mat-label>קבוצת בדיקה</mat-label>
-                <mat-select #selectTestDefinitionGroupID formControlName="TestDefinitionGroupID">
-                    <mat-option>
-                        <ngx-mat-select-search 
-                            [formControl]="searchInput"
-                            noEntriesFoundLabel="אין תוצאות"
-                            placeholderLabel="חפש קבוצת בדיקה"
-                            (ngModelChange)="filterTestDefinitionGroups()"
-                        ></ngx-mat-select-search>
-                    </mat-option>
-                    <mat-option *ngFor="let testDefinitionGroup of filteredTestDefinitionGroups" [value]="testDefinitionGroup.TestDefinitionGroupID">
-                        {{testDefinitionGroup.TestDefinitionGroupName}}
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label> שם משפחת כלי </mat-label>
+                <mat-select formControlName="toolFamilyDefinitionID">
+                    <mat-option *ngFor="let tool of toolFamilyDefinitions" [value]="tool.ToolFamilyLevelDefinitionID">
+                        {{tool.ToolFamilyLevelDefinitionName + " (" + tool.ToolTopLevelDefinition?.IsoProcedure?.MCode + ")" }}
                     </mat-option>
                 </mat-select>
-        
             </mat-form-field>
-        </div>
-    
-        <div *ngIf="testTemplateForm.controls.TestDefinitionGroupID.value" class="ToolLowLevelForm">
+
             <mat-form-field>
                 <mat-label> תחום מדידה </mat-label>
                 <mat-select formControlName="ToolMeasurementLevelDefinitionID">
@@ -51,11 +39,31 @@
                         {{toolLowLevelDefinition.ValueMin + " - " + toolLowLevelDefinition.ValueMax + " " + toolLowLevelDefinition.ToolMeasurementLevelDefinition?.ValueUnit?.Symbol}}
                     </mat-option>
                 </mat-select>
+            </mat-form-field>           
+            
+            <mat-form-field >
+                <mat-label>קבוצת בדיקה</mat-label>
+                <mat-select #selectTestDefinitionGroupID formControlName="TestDefinitionGroupID">
+                    <mat-option>
+                        <ngx-mat-select-search 
+                            [formControl]="searchInput"
+                            noEntriesFoundLabel="אין תוצאות"
+                            placeholderLabel="חפש קבוצת בדיקה"
+                        ></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let testDefinitionGroup of filteredTestDefinitionGroups" [value]="testDefinitionGroup.TestDefinitionGroupID">
+                        {{testDefinitionGroup.TestDefinitionGroupName}}
+                    </mat-option>
+                </mat-select>
+        
             </mat-form-field>
+        </div>
+    
+        <div *ngIf="testTemplateForm.controls.TestDefinitionGroupID.value" class="ToolLowLevelForm">
 
             <div class="chip-list">
                 <!-- list of checkboxes for the testDefinitions array use the addTestDefinitionID to add and the removeTestDefinitionID to remove from the testDefinitionIDs -->
-                <label class="chip-label" *ngFor="let testDefinition of testDefinitions">
+                <label class="chip-label" *ngFor="let testDefinition of selectedTestDefinitionGroup?.TestDefinitions">
                     <input 
                         class="chip-checkbox"
                         type="checkbox" 

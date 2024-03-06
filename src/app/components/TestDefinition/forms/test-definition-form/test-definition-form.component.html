@@ -17,8 +17,8 @@
                 
                 <mat-form-field appearance="fill">
                     <mat-label> {{ enduranceForm.get('resValue').value }} </mat-label>
-                    <input matInput type="number" placeholder=" סיבולת " formControlName="ValueEnduranceUp">
-                    <mat-error *ngIf="enduranceForm.get('ValueEnduranceUp').hasError('required')">
+                    <input matInput type="number" placeholder=" סיבולת " formControlName="ValueEndurance">
+                    <mat-error *ngIf="enduranceForm.get('ValueEndurance').hasError('required')">
                         יש להזין סיבולת
                     </mat-error>
                 </mat-form-field>
@@ -32,6 +32,11 @@
                 יש להזין ערך אי ודאות
             </mat-error>
         </mat-form-field>
+
+        <!-- IsIso17025 -->
+        <mat-slide-toggle formControlName="IsIso17025" color="primary">
+            Iso 17025
+        </mat-slide-toggle>
 
     <div class="formActions">
         <button
@@ -53,14 +58,13 @@
 
         <button
             mat-raised-button color="success"
+            color="accent"
             type="button"
             (click)="testDefinitionInput = null; addEnduranceForms(); testDefinitionForm.reset();"
             *ngIf="testDefinitionInput"
-        >
-            ביטול עריכה
-        </button>
+        > ביטול עריכה </button>
 
-        <button
+        <!-- <button
             mat-raised-button 
             color="accent"
             (click)="divideEnduranceByTen()"
@@ -68,7 +72,7 @@
             [disabled]="!EnduranceForm.dirty"
         >
             חלק את הסיבולות ב10
-        </button>
+        </button> -->
 
         <button
             mat-mini-fab color="warn"

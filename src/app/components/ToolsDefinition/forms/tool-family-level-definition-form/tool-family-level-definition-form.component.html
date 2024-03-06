@@ -1,0 +1,82 @@
+<form [formGroup]="toolFamilyLevelForm" (ngSubmit)="onSubmit()">
+    <h1>
+        <mat-icon>{{toolId == null ? "add" : "edit"}}</mat-icon>
+        {{toolId == null ? "הוספת" : "עריכת"}} משפחת כלים
+    </h1>
+
+    <button
+        class="close"
+        mat-mini-fab
+        color="warn"
+        (click)="deleteFamily()"
+        *ngIf="toolId != null"
+        type="button"
+    >
+        <mat-icon>
+            delete
+        </mat-icon>
+    </button>
+
+    <mat-form-field>
+        <mat-label> טכנולוגיה </mat-label>
+        <mat-select placeholder=" טכנולוגיה " formControlName="TechID">
+            <mat-option *ngFor="let technology of toolsDefinitionService.technologies" [value]="technology.TechnologyID">
+                {{technology.TechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> תת טכנולוגיה </mat-label>
+        <mat-select placeholder=" תת טכנולוגיה " formControlName="SubTechID">
+            <mat-option *ngFor="let subTechnology of subTechnologies" [value]="subTechnology.SubTechnologyID">
+                {{subTechnology.SubTechnologyName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> שם כלי </mat-label>
+        <mat-select placeholder=" שם כלי " formControlName="ToolTopLevelDefinitionID">
+            <mat-option *ngFor="let toolTopLevel of toolTopLevels" [value]="toolTopLevel.ToolTopLevelDefinitionID">
+                {{toolTopLevel.ToolTopLevelDefinitionName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label> סוג כלי </mat-label>
+        <input matInput type="text" placeholder="סוג כלי" formControlName="ToolFamilyLevelDefinitionName">
+        <mat-error *ngIf="toolFamilyLevelForm.get('ToolFamilyLevelDefinitionName').hasError('required')">
+            יש להזין סוג כלי
+        </mat-error>
+        <mat-error *ngIf="toolFamilyLevelForm.get('ToolFamilyLevelDefinitionName').hasError('pattern')">
+            יש להזין רק אותיות בעברית או אנגלית
+        </mat-error>
+    </mat-form-field>
+
+    <div class="formActions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!toolFamilyLevelForm.valid">
+            שמירה
+        </button>
+
+        <button 
+            mat-raised-button
+            color="warn"
+            type="button"
+            (click)="formDirective.resetForm()"
+        >
+            reset
+        </button>
+
+        <button 
+            mat-raised-button
+            color="accent"
+            type="button"
+            *ngIf="toolId != null"
+            (click)="toolId = null"
+        >
+            ביטול עריכה
+        </button>
+    </div>
+</form>

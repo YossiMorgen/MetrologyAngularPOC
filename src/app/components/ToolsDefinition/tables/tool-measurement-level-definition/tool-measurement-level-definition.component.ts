@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ToastService } from 'angular-toastify';
+import { ToolMeasurementLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-measurement-level-definition';
 import { ToolsDefinitionService } from 'src/app/services/tools-definition.service';
 
 @Component({
@@ -11,34 +13,35 @@ export class ToolMeasurementLevelDefinitionComponent implements OnInit {
 
   constructor(
     private toolsDefinitionService: ToolsDefinitionService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private route: ActivatedRoute,
   ) { }
-  public toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition;
 
   public toolId: number = null;
+  public toolFamilyLevelDefinitionId: number = null;
+  public toolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[] = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
 
   ngOnInit(): void {
     this.toolsDefinitionService.dataSubject.subscribe((data) => {
-      this.toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition;
+      this.setToolMeasurementLevelDefinitions();
     });
+    this.route.params.subscribe(params => {
+      this.toolFamilyLevelDefinitionId = +params['id'];
+      this.setToolMeasurementLevelDefinitions();
+    });
+    this.setToolMeasurementLevelDefinitions();
+  }
+
+  setToolMeasurementLevelDefinitions(){
+    if(this.toolId && this.toolsDefinitionService.toolMeasurementLevelDefinitions){
+      this.toolMeasurementLevelDefinitions = this.toolsDefinitionService.toolMeasurementLevelDefinitions
+        .filter(x => x.ToolFamilyLevelDefinitionID == this.toolId)
+    } else {
+      this.toolMeasurementLevelDefinitions = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
+    }
   }
 
   changeToolId(toolId: number): void {
     this.toolId = toolId;
   }
-
-  // async deleteToolMeasurementLevelDefinition(toolId: number): Promise<void> {
-  //   const tool = this.toolsDefinitionService.toolLowLevelDefinition.find(tool => tool.ToolMeasurementLevelDefinitionID === toolId);
-  //   if(tool){
-  //     this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
-  //     return;
-  //   }
-  //   try {
-  //     await this.toolsDefinitionService.deleteToolDefinition("ToolMeasurementLevelDefinition", toolId);
-  //     this.toolsDefinitionService.toolMeasurementLevelDefinition = this.toolsDefinitionService.toolMeasurementLevelDefinition.filter(toolMeasurementLevelDefinition => toolMeasurementLevelDefinition.ToolMeasurementLevelDefinitionID !== toolId);
-  //     this.toolsDefinitionService.dataSubject.next(true);
-  //   } catch (error: any) {
-  //     this.toastService.error(error);
-  //   }
-  // }
 }

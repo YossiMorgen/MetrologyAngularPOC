@@ -45,10 +45,6 @@ export class TestDefinitionTableComponent implements OnInit, OnChanges{
   }
 
   getEnduranceByResolution(resolution: number, Endurance: Endurance[]): number | string {
-    console.log('Endurance', Endurance);
-    console.log('resolution', resolution);
-    
-    
     return Endurance.find(endurance => endurance?.Resolution_ToolTopLevelDefinition?.Resolution?.Value === resolution)?.ValueEnduranceUp || '0';
   }
 

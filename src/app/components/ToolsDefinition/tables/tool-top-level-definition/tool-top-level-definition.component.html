@@ -20,12 +20,14 @@
                 רזולוציות
             </th>
             <th>
-                פעולות
+                עריכה
             </th>
         </tr>
         <tr *ngFor="let tool of toolTopLevelDefinitions">
             <td>
-                {{tool.SubTechnology?.Technology?.MCode + "." + tool.SubTechnology?.MCode + "." + tool.IsoProcedure?.MCode}}
+                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/tool_measurement_level_definition/' + tool.ToolTopLevelDefinitionID" >
+                    {{tool.SubTechnology?.Technology?.MCode + "." + tool.SubTechnology?.MCode + "." + tool.IsoProcedure?.MCode}}
+                </a>
             </td>
             <td>
                 {{tool.IsoProcedure?.CertificateText}}
@@ -67,5 +69,5 @@
             </td>
         </tr>
     </table>
-    <app-tool-top-level-definition-and-iso-procedure-form [toolId]="toolId"></app-tool-top-level-definition-and-iso-procedure-form>
+    <app-tool-top-level-definition-and-iso-procedure-form [toolTopId]="toolTopId" [toolId]="toolId"></app-tool-top-level-definition-and-iso-procedure-form>
 </div>

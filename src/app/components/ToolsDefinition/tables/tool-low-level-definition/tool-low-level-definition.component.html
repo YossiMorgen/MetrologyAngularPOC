@@ -23,12 +23,12 @@
                 MCode
             </th>
             <th>
-                פעולות
+                עריכה
             </th>
         </tr>
         <tr *ngFor="let tool of toolLowLevelDefinitions">
             <td>
-                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
+                {{tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
             </td>
             <td>
                 {{(tool.ValueMin != tool.ValueMax && tool.ValueMin + ' - ') + tool.ValueMax + ' ' + tool.ToolMeasurementLevelDefinition?.ValueUnit?.Symbol}}
@@ -42,19 +42,19 @@
             </td>
 
             <td>
-                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}
+                {{tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}
             </td>
             <td>
-                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.SubTechnologyName}}
+                {{tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.SubTechnologyName}}
             </td>
             <td>
-                {{tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.TechnologyName}}
+                {{tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.TechnologyName}}
             </td>
             <td>
                 {{
-                    tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + '.' + 
-                    tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.MCode + '.' + 
-                    tool.ToolMeasurementLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode + '.' + 
+                    tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + '.' + 
+                    tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.MCode + '.' + 
+                    tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode + '.' + 
                     tool.ToolMeasurementLevelDefinition?.MCode + '.' +
                     tool.MCode
                 }}

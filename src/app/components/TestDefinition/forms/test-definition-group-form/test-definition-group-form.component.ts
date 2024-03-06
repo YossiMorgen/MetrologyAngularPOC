@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroupDirective, Validators } from '@angul
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from 'angular-toastify';
 import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dialog/confirm-dialog.component';
-import { TestDefinitionGroup } from 'src/app/models/TestDefinition/test-definition-group';
+import { DeviationCalcTypeEnum, TestDefinitionGroup } from 'src/app/models/TestDefinition/test-definition-group';
 import { ConfirmDialogModel } from 'src/app/models/confirm-dialog';
 import { SubTechnology } from 'src/app/models/toolDefinitionModels/sub-technology';
 import { ToolTopLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-top-level-definition';
@@ -22,6 +22,7 @@ export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
   public keepEditing = new FormControl(true);
   subTechnologies: SubTechnology[];
   toolTopLevels: ToolTopLevelDefinition[];
+  DeviationCalcTypes = Object.values(DeviationCalcTypeEnum);
 
   constructor(
     public toolsDefinitionService: ToolsDefinitionService,
@@ -97,7 +98,8 @@ export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
       TechID: this.testDefinitionGroupInput?.ToolTopLevelDefinition?.SubTechnology?.TechID || null,
       SubTechID: this.testDefinitionGroupInput?.ToolTopLevelDefinition?.SubTechID || null,
       ToolTopLevelDefinitionID: this.testDefinitionGroupInput?.ToolTopLevelDefinitionID || null,
-      TestDefinitionGroupName: this.testDefinitionGroupInput?.TestDefinitionGroupName || null
+      TestDefinitionGroupName: this.testDefinitionGroupInput?.TestDefinitionGroupName || null,
+      DeviationCalcType: this.testDefinitionGroupInput?.DeviationCalcType || null,
     });
   }
 
@@ -105,7 +107,8 @@ export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
     TechID:[0],
     SubTechID: [0],
     ToolTopLevelDefinitionID: [0, [Validators.required]],
-    TestDefinitionGroupName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')] ]
+    TestDefinitionGroupName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern('^[0-9a-zA-Z\u0590-\u05FF\u200f\u200e ]*$')] ],
+    DeviationCalcType: [DeviationCalcTypeEnum.AVG, [Validators.required]],
   });
 
   async submitForm() {
@@ -114,7 +117,8 @@ export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
       const newGroup = new TestDefinitionGroup(
         this.testDefinitionGroupForm.value.TestDefinitionGroupName, 
         this.testDefinitionGroupForm.value.ToolTopLevelDefinitionID,
-        this.testDefinitionGroupInput?.TestDefinitionGroupID || 0
+        this.testDefinitionGroupInput?.TestDefinitionGroupID || 0,
+        this.testDefinitionGroupForm.value.DeviationCalcType
       )
 
       let id: number = this.testDefinitionGroupInput?.TestDefinitionGroupID;
@@ -152,6 +156,7 @@ export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
   resetForm() {
     this.formDirective.resetForm();
     this.testDefinitionGroupForm.reset();
+    this.testDefinitionGroupForm.controls.DeviationCalcType.setValue(DeviationCalcTypeEnum.AVG);
   }
 
   

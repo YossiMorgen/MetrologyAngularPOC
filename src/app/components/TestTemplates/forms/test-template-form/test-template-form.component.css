@@ -1,16 +1,15 @@
-form .ToolLowLevelForm, form .TestGroupForm{
+/* form .ToolLowLevelForm, form .TestGroupForm{
     min-width: 500px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     margin: 10px 0;
-    /* gap: 10px; */
 }
 
 mat-form-field {
     max-width: 47%;
     margin: 5px;
-}
+} */
 
 .chip-list{
     flex-basis: 100%;

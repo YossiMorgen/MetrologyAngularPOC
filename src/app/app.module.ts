@@ -44,6 +44,8 @@ import { TestTemplatTableComponent } from './components/TestTemplates/tables/tes
 import { TestTemplateFormComponent } from './components/TestTemplates/forms/test-template-form/TestTemplateFormComponent';
 import { MeasurementUnitFormComponent } from './components/ToolsDefinition/forms/measurement-unit-form/measurement-unit-form.component';
 import { ConfirmDialogComponent } from './components/dashboard/confirm-dialog/confirm-dialog.component';
+import { ToolFamilyLevelDefinitionTableComponent } from './components/ToolsDefinition/tables/tool-family-level-definition-table/tool-family-level-definition-table.component';
+import { ToolFamilyLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-family-level-definition-form/tool-family-level-definition-form.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +72,8 @@ import { ConfirmDialogComponent } from './components/dashboard/confirm-dialog/co
     TestTemplatTableComponent,
     MeasurementUnitFormComponent,
     ConfirmDialogComponent,
+    ToolFamilyLevelDefinitionTableComponent,
+    ToolFamilyLevelDefinitionFormComponent,
   ],
   imports: [
     ReactiveFormsModule,

@@ -13,6 +13,7 @@ body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
     overflow-y: scroll;
 }
+
 a{
     text-decoration: none;
 }
@@ -21,8 +22,15 @@ table{
     border-collapse: collapse;
     min-width: fit-content;
     direction: rtl;
-
+    
+    max-height: 700px;
+    overflow-y: scroll !important;
 }
+
+/* tbody, table{
+    max-height: 700px;
+    overflow-y: auto;
+} */
 
 th, td{
     padding: 8px;
@@ -67,6 +75,11 @@ form button[type="submit"] ~ button[type="reset"]{
     margin-right: 10px;
 }
 
+/* button:text-matches("^ ביטול עריכה $"){
+    background-color: green;
+    color: white;
+} */
+
 mat-form-field{
     width: 100%;
 }
@@ -84,6 +97,10 @@ mat-toolbar > a{
 
 .formActions button{
     margin: 5px;
+}
+
+a.navToChildren{
+    font-size: large;
 }
 
 a.active{

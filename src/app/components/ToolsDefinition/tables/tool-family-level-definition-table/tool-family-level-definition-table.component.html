@@ -1,0 +1,31 @@
+<div class="width50percent">
+    <table>
+        <tr>
+            <th> M-Code </th>
+            <th> טכנולוגיה </th>
+            <th> תת טכנולוגיה </th>
+            <th> שם כלי </th>
+            <th> סוג כלי </th>
+            <th>עריכה </th>
+        </tr>
+        <tr *ngFor="let toolFamilyLevelDefinition of toolFamilyLevelDefinitions">
+            <td>
+                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/tool_top_level_definition/' + toolFamilyLevelDefinition.ToolFamilyLevelDefinitionID " >
+                    {{toolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + "." + toolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.MCode + "." + toolFamilyLevelDefinition.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
+                </a>
+            </td>
+            <td>{{toolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.Technology?.TechnologyName}}</td>
+            <td>{{toolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.SubTechnologyName}}</td>
+            <td>{{toolFamilyLevelDefinition.ToolTopLevelDefinition?.ToolTopLevelDefinitionName}}</td>
+            <td>{{toolFamilyLevelDefinition.ToolFamilyLevelDefinitionName}}</td>
+            <td>
+                <button mat-mini-fab color="danger" (click)="changeToolId(toolFamilyLevelDefinition.ToolFamilyLevelDefinitionID)">
+                    <mat-icon>
+                        edit
+                    </mat-icon>
+                </button>
+            </td>
+        </tr>
+    </table>
+    <app-tool-family-level-definition-form [ToolTopId]="ToolTopId" [toolId]="toolId"></app-tool-family-level-definition-form>
+</div>

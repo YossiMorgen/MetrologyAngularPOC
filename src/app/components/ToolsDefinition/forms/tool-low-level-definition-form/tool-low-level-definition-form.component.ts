@@ -5,6 +5,7 @@ import { ToastService } from 'angular-toastify';
 import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogModel } from 'src/app/models/confirm-dialog';
 import { SubTechnology } from 'src/app/models/toolDefinitionModels/sub-technology';
+import { ToolFamilyLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-family-level-definition';
 import { ToolLowLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-low-level-definition';
 import { ToolMeasurementLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-measurement-level-definition';
 import { ToolTopLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-top-level-definition';
@@ -21,6 +22,7 @@ export class ToolLowLevelDefinitionFormComponent implements OnChanges, OnInit {
 
   subTechnologies: SubTechnology[];
   toolTopLevels: ToolTopLevelDefinition[];
+  toolFamilyLevels: ToolFamilyLevelDefinition[];
   toolMeasurementLevels: ToolMeasurementLevelDefinition[];
 
   constructor(
@@ -31,42 +33,24 @@ export class ToolLowLevelDefinitionFormComponent implements OnChanges, OnInit {
   ) { }
 
   ngOnInit(): void {
-
     this.toolLowLevelDefinitionForm = this.formBuilder.group({
       TechID: [0],
       SubTechID: [0],
       ToolTopLevelDefinitionID: [0],
+      ToolFamilyLevelDefinitionID: [0],
       ToolMeasurementLevelDefinitionID: [0, [Validators.required]],
       MCode: [0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]*$')]],
-      ValueMin: [1.0000, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+(.[0-9]{0,1})?$')]],
-      ValueMax: [1.0000, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+(.[0-9]{0,1})?$')]],
+      ValueMin: [0.0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+(.[0-9]{0,1})?$')]],
+      ValueMax: [0.0, [Validators.required, Validators.min(0), Validators.pattern('^[0-9]+(.[0-9]{0,1})?$')]],
     });
 
-    // set all the form to null
-    this.toolLowLevelDefinitionForm.setValue({
-      TechID: null,
-      SubTechID: null,
-      ToolTopLevelDefinitionID: null,
-      ToolMeasurementLevelDefinitionID: null,
-      MCode: null,
-      ValueMin: 0,
-      ValueMax: null,
-    });
-
-    // set the selects default values
-      this.subTechnologies = this.toolsDefinitionService.subTechnologies;
-      this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
-      this.toolMeasurementLevels = this.toolsDefinitionService.toolMeasurementLevelDefinition;
-  
-
-    this.toolsDefinitionService.dataSubject.subscribe(() => {
-      this.subTechnologies = this.toolsDefinitionService.subTechnologies;
-      this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
-      this.toolMeasurementLevels = this.toolsDefinitionService.toolMeasurementLevelDefinition;
-    });
+    this.resetForm();
 
     this.toolLowLevelDefinitionForm.controls.TechID.valueChanges.subscribe((value: number) => {
-      if(!value) return;
+      if(!value) {
+        this.subTechnologies = this.toolsDefinitionService.subTechnologies;
+        return;
+      }
       this.subTechnologies = this.toolsDefinitionService.subTechnologies.filter(subTech => subTech.TechID === +value);
       if(this.subTechnologies.length === 0 && value){
         this.toastService.error('לא קיימות תת טכנולוגיות תחת טכנולוגיה זו');
@@ -74,7 +58,10 @@ export class ToolLowLevelDefinitionFormComponent implements OnChanges, OnInit {
     });
 
     this.toolLowLevelDefinitionForm.controls.SubTechID.valueChanges.subscribe((value: number) => {
-      if(!value) return;
+      if(!value) {
+        this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
+        return;
+      }
       this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions.filter(tool => tool.SubTechID === +value);
       
       if(this.toolTopLevels.length === 0 && value){
@@ -88,45 +75,87 @@ export class ToolLowLevelDefinitionFormComponent implements OnChanges, OnInit {
     });
 
     this.toolLowLevelDefinitionForm.controls.ToolTopLevelDefinitionID.valueChanges.subscribe((value: number) =>{
-      if(!value) return;
-      this.toolMeasurementLevels = this.toolsDefinitionService.toolMeasurementLevelDefinition.filter(tool => tool.ToolTopLevelDefinitionID === +value);
-      if(this.toolMeasurementLevels.length === 0 && value){
-        this.toastService.error('לא קיימים תחומי מדידה על פי הכלי שנבחר');
+      if(!value) {
+        this.toolMeasurementLevels = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
         return;
       }
 
       const tool = this.toolsDefinitionService.toolTopLevelDefinitions.find(tool => tool.ToolTopLevelDefinitionID === +value);
+      this.toolFamilyLevels = this.toolsDefinitionService.toolFamilyDefinitions.filter(tool => tool.ToolTopLevelDefinitionID === +value);
+
+      if(tool.ToolFamilyLevelDefinitions.length === 0){
+        this.toastService.error('לא קיימים משפחות כלים על פי הכלי שנבחר');
+        return;
+      }
+
+      this.toolMeasurementLevels = [];
+      tool.ToolFamilyLevelDefinitions.forEach(toolFamily => {
+        this.toolMeasurementLevels = this.toolMeasurementLevels.concat(toolFamily.ToolMeasurementLevelDefinitions);
+      });
+
+      if(this.toolMeasurementLevels.length === 0){
+        this.toastService.error('לא קיימים תחומי מדידה על פי הכלי שנבחר');
+        return;
+      }
+
+
       if(tool){
         this.toolLowLevelDefinitionForm.controls.SubTechID.setValue(tool.SubTechID);
         this.toolLowLevelDefinitionForm.controls.TechID.setValue(tool.SubTechnology?.TechID);
-      } else {
-        console.log("ToolTopLevelDefinitionID:" + value);
-        
+      }
+    });
+
+    this.toolLowLevelDefinitionForm.controls.ToolFamilyLevelDefinitionID.valueChanges.subscribe((value: number) => {
+      if(!value) return;
+
+      const tool = this.toolsDefinitionService.toolFamilyDefinitions.find(tool => tool.ToolFamilyLevelDefinitionID === +value);
+      
+      if(tool.ToolMeasurementLevelDefinitions.length === 0){
+        this.toastService.error('לא קיימים תחומי מדידה על פי המשפחה שנבחרה');
+        return;
+      }
+
+      if(tool){
+        this.toolLowLevelDefinitionForm.controls.TechID.setValue(tool.ToolTopLevelDefinition.SubTechnology?.TechID);
+        this.toolLowLevelDefinitionForm.controls.SubTechID.setValue(tool.ToolTopLevelDefinition.SubTechID);
+        this.toolLowLevelDefinitionForm.controls.ToolTopLevelDefinitionID.setValue(tool.ToolTopLevelDefinitionID);
       }
     });
 
     this.toolLowLevelDefinitionForm.controls.ToolMeasurementLevelDefinitionID.valueChanges.subscribe((value: number) =>{
       if(!value) return;
-      const tool = this.toolsDefinitionService.toolMeasurementLevelDefinition.find(tool => tool.ToolMeasurementLevelDefinitionID === +value);
-      console.log(tool);
+      const tool = this.toolsDefinitionService.toolMeasurementLevelDefinitions.find(tool => tool.ToolMeasurementLevelDefinitionID === +value);
       
       if(tool){
-        this.toolLowLevelDefinitionForm.controls.ToolTopLevelDefinitionID.setValue(tool.ToolTopLevelDefinitionID);
-        this.toolLowLevelDefinitionForm.controls.SubTechID.setValue(tool.ToolTopLevelDefinition?.SubTechID);
-        this.toolLowLevelDefinitionForm.controls.TechID.setValue(tool.ToolTopLevelDefinition?.SubTechnology?.TechID);
+        this.toolLowLevelDefinitionForm.controls.TechID.setValue(tool.ToolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.TechID);
+        this.toolLowLevelDefinitionForm.controls.SubTechID.setValue(tool.ToolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechID);
+        this.toolLowLevelDefinitionForm.controls.ToolTopLevelDefinitionID.setValue(tool.ToolFamilyLevelDefinition.ToolTopLevelDefinitionID);
+        this.toolLowLevelDefinitionForm.controls.ToolFamilyLevelDefinitionID.setValue(tool.ToolFamilyLevelDefinitionID);
+
       }
     });
+
+    this.toolLowLevelDefinitionForm.controls.MCode.valueChanges.subscribe((value: number) => {
+      if(!value) return;
+      this.toolLowLevelDefinitionForm.controls.ValueMax.setValue(value);
+    });
+
+    this.toolsDefinitionService.dataSubject.subscribe(() => {
+      this.setDefaultSelectsValues();
+    });
+    this.setDefaultSelectsValues();    
   }
 
   ngOnChanges(): void {
     console.log(this.toolId);
     if(this.toolId){
-      const tool = this.toolsDefinitionService.toolLowLevelDefinition.find(tool => tool.ToolLowLevelDefinitionID == this.toolId);
+      const tool = this.toolsDefinitionService.toolLowLevelDefinitions.find(tool => tool.ToolLowLevelDefinitionID == this.toolId);
       
       this.toolLowLevelDefinitionForm.setValue({
-        TechID: tool.ToolMeasurementLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.TechID || 0,
-        SubTechID: tool.ToolMeasurementLevelDefinition.ToolTopLevelDefinition?.SubTechID || 0,
-        ToolTopLevelDefinitionID: tool.ToolMeasurementLevelDefinition.ToolTopLevelDefinitionID,
+        TechID: tool.ToolMeasurementLevelDefinition.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.TechID || 0,
+        SubTechID: tool.ToolMeasurementLevelDefinition.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechID || 0,
+        ToolTopLevelDefinitionID: tool.ToolMeasurementLevelDefinition.ToolFamilyLevelDefinition?.ToolTopLevelDefinitionID,
+        ToolFamilyLevelDefinitionID: tool.ToolMeasurementLevelDefinition.ToolFamilyLevelDefinitionID,
         ToolMeasurementLevelDefinitionID: tool.ToolMeasurementLevelDefinitionID,
         MCode: tool.MCode,
         ValueMin: tool.ValueMin,
@@ -162,11 +191,29 @@ export class ToolLowLevelDefinitionFormComponent implements OnChanges, OnInit {
     // this.toolsDefinitionService.dataSubject.next(true);
 
     this.toolId = null;
-    this.formDirective.resetForm();
+    this.resetForm();
 
     // this.subTechnologies = this.toolsDefinitionService.subTechnologies;
     // this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
     // this.toolMeasurementLevels = this.toolsDefinitionService.toolMeasurementLevelDefinition;
+  }
+
+  resetForm() {
+    if(this.toolLowLevelDefinitionForm.controls.ValueMin.value) {
+      console.log(1);
+      
+      this.toolLowLevelDefinitionForm.controls.ValueMin.setValue(this.toolLowLevelDefinitionForm.controls.ValueMax.value || 0);
+    } else {
+      console.log(0);
+      
+      this.toolLowLevelDefinitionForm.controls.ValueMin.setValue(0);
+    }
+    this.toolLowLevelDefinitionForm.controls.MCode.setValue(null);
+    this.toolLowLevelDefinitionForm.controls.ValueMax.setValue(null);
+
+    this.toolLowLevelDefinitionForm.controls.MCode.setErrors(null);
+    this.toolLowLevelDefinitionForm.controls.ValueMax.setErrors(null);
+
   }
   async deleteToolLowLevelDefinition(): Promise<void> {
 
@@ -180,16 +227,22 @@ export class ToolLowLevelDefinitionFormComponent implements OnChanges, OnInit {
       if(dialogResult){
         try {
           await this.toolsDefinitionService.deleteToolDefinition("ToolLowLevelDefinition", this.toolId);
-          this.toolsDefinitionService.toolLowLevelDefinition = this.toolsDefinitionService.toolLowLevelDefinition.filter(toolLowLevelDefinition => toolLowLevelDefinition.ToolLowLevelDefinitionID !== this.toolId);
+          this.toolsDefinitionService.toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinitions.filter(toolLowLevelDefinition => toolLowLevelDefinition.ToolLowLevelDefinitionID !== this.toolId);
           this.toolsDefinitionService.dataSubject.next(true);
           this.toolId = null;
           this.toastService.success('הכלי נמחק בהצלחה');
-          this.formDirective.resetForm();
-          this.toolLowLevelDefinitionForm.reset();
+          this.resetForm();
         } catch (error: any) {
           this.toastService.error(error);
         }
       }
     });
+  }
+
+  setDefaultSelectsValues(){
+    this.subTechnologies = this.toolsDefinitionService.subTechnologies;
+    this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
+    this.toolFamilyLevels = this.toolsDefinitionService.toolFamilyDefinitions;
+    this.toolMeasurementLevels = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
   }
 }

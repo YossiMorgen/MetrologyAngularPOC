@@ -4,6 +4,7 @@ import { ToastService } from 'angular-toastify';
 import { TestDefinition } from 'src/app/models/TestDefinition/test-definition';
 import { TestDefinitionGroup } from 'src/app/models/TestDefinition/test-definition-group';
 import { TestTemplate } from 'src/app/models/TestDefinition/test-template';
+import { ToolFamilyLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-family-level-definition';
 import { ToolLowLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-low-level-definition';
 import { ToolMeasurementLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-measurement-level-definition';
 import { ToolsDefinitionService } from 'src/app/services/tools-definition.service';
@@ -28,13 +29,17 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
   public testDefinitionIDs: number[] = [];
   public testDefinitionGroup: TestDefinitionGroup = null;
 
-  public toolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[] = [];
+  // public testDefinitions: TestDefinition[] = [];
+  
   public toolLowLevelDefinitions: ToolLowLevelDefinition[] = [];
-  public testDefinitions: TestDefinition[] = [];
+  public toolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[] = [];
+  public toolFamilyDefinitions: ToolFamilyLevelDefinition[] = [];
+
 
   public testTemplateForm = this.formBuilder.group({
     ToolTopLevelDefinitionID: [0, [Validators.required, Validators.pattern('^[0-9]*$')]],
     TestDefinitionGroupID: [0, Validators.required],
+    toolFamilyDefinitionID: [0],
     ToolMeasurementLevelDefinitionID: [0],
     ToolLowLevelDefinitionID: [0, [Validators.required]],
     TestTemplateName: [' '],
@@ -42,86 +47,84 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
   });
 
   ngOnInit(): void {
+    this.setDefaultSelectsValues();
 
-    this.testTemplateForm.reset();
-    
+    this.toolsDefinitionService.dataSubject.subscribe(() => {
+      this.setDefaultSelectsValues();
+    });
+
     this.testTemplateForm.controls.ToolTopLevelDefinitionID.valueChanges.subscribe((value: number) => {
-      this.testTemplateForm.controls.ToolMeasurementLevelDefinitionID.setValue(null);
-      this.testTemplateForm.controls.ToolLowLevelDefinitionID.setValue(null);
-      this.testDefinitions = [];
-      this.filteredTestDefinitionGroups = this.toolsDefinitionService.testDefinitionGroups.filter(testDefinitionGroup => testDefinitionGroup.ToolTopLevelDefinitionID === value);
+      if(!value) return;
+      this.selectedTestDefinitionGroup = null;
+      const toolTop = this.toolsDefinitionService.toolTopLevelDefinitions.find(toolTop => toolTop.ToolTopLevelDefinitionID === value);
+      this.updateToolFamilyDefinitions(toolTop.ToolFamilyLevelDefinitions || []);
+    });
+
+    this.testTemplateForm.controls.toolFamilyDefinitionID.valueChanges.subscribe((value: number) => {
+      if(!value) return;
       
-      const toolTopLevel = this.toolsDefinitionService.toolTopLevelDefinitions.find(toolTopLevelDefinition => toolTopLevelDefinition.ToolTopLevelDefinitionID === value);
+      const family = this.toolFamilyDefinitions.find(family => family.ToolFamilyLevelDefinitionID === value);
+      console.log(family);
       
-      // get the toolMeasurementLevelDefinitions of the selected testDefinitionGroup and sort them by ValueMax
-      this.toolMeasurementLevelDefinitions = toolTopLevel?.ToolMeasurementLevelDefinitions.sort((a, b) => a.ValueMax - b.ValueMax);
+      this.updateToolMeasurementLevelDefinitions(family.ToolMeasurementLevelDefinitions);
+      this.testTemplateForm.controls.ToolTopLevelDefinitionID.setValue(family.ToolTopLevelDefinitionID, { emitEvent: false });
+    });
 
-      this.toolLowLevelDefinitions = [];
-      this.toolMeasurementLevelDefinitions.forEach(definition => {
-        this.toolLowLevelDefinitions = this.toolLowLevelDefinitions.concat(definition.ToolLowLevelDefinitions);
-      });
+    this.testTemplateForm.controls.ToolMeasurementLevelDefinitionID.valueChanges.subscribe((value: number) => {
+      if(!value) return;
+      const measurement = this.toolMeasurementLevelDefinitions.find(measurement => measurement.ToolMeasurementLevelDefinitionID === value);
+      this.updateToolLowLevelDefinitions(measurement.ToolLowLevelDefinitions);
+      this.testTemplateForm.controls.toolFamilyDefinitionID.setValue(measurement.ToolFamilyLevelDefinitionID, { emitEvent: false });
+      this.testTemplateForm.controls.ToolTopLevelDefinitionID.setValue(measurement.ToolFamilyLevelDefinition?.ToolTopLevelDefinitionID, { emitEvent: false });
+    });
 
-      this.toolLowLevelDefinitions = this.toolLowLevelDefinitions.sort((a, b) => a.ValueMax - b.ValueMax);
+    this.testTemplateForm.controls.ToolLowLevelDefinitionID.valueChanges.subscribe((value: number) => {
+      if(!value) return;
+      const low = this.toolLowLevelDefinitions.find(low => low.ToolLowLevelDefinitionID === value);
+      this.testTemplateForm.controls.toolFamilyDefinitionID.setValue(low.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinitionID, { emitEvent: false });
+      this.testTemplateForm.controls.ToolTopLevelDefinitionID.setValue(low.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinitionID, { emitEvent: false });
+      this.testTemplateForm.controls.ToolMeasurementLevelDefinitionID.setValue(low.ToolMeasurementLevelDefinitionID, { emitEvent: false })
 
-      if(this.toolLowLevelDefinitions.length == 0){
-        this.toastService.error(' אין גודלי כלי לכלי זה, נא להגדיר גדלים ולחזור לטופס זה');
+      console.log(this.selectedTestDefinitionGroup);
+      
+      if(this.selectedTestDefinitionGroup){
+        this.selectTheTestTemplateDefinitions();
       }
     });
 
     this.testTemplateForm.controls.TestDefinitionGroupID.valueChanges.subscribe((value: number) => {
+      console.log(value);
       if(!value) return;
       
-      // find the testDefinitionGroup by the selected value
-      this.testDefinitionGroup = this.toolsDefinitionService.testDefinitionGroups.find(testDefinitionGroup => testDefinitionGroup.TestDefinitionGroupID === value);
-      console.log(this.testDefinitionGroup);
-
-      this.testTemplateForm.controls.ToolTopLevelDefinitionID.setValue(this.testDefinitionGroup.ToolTopLevelDefinitionID);
-     
-      // get the testDefinitions of the selected testDefinitionGroup
-      this.testDefinitions = this.testDefinitionGroup.TestDefinitions;
-      console.log(this.testDefinitions);
+      const group = this.toolsDefinitionService.testDefinitionGroups.find(group => group.TestDefinitionGroupID === value);
+      group.TestDefinitions = group.TestDefinitions.sort((a, b) => a.ValueRequired - b.ValueRequired);
+      this.selectedTestDefinitionGroup = group;
+      this.testTemplateForm.controls.ToolTopLevelDefinitionID.setValue(group?.ToolTopLevelDefinitionID, { emitEvent: false });
       
-
-    });
-
-    this.testTemplateForm.controls.ToolMeasurementLevelDefinitionID.valueChanges.subscribe((value: number) => {
-      this.toolLowLevelDefinitions = this.toolLowLevelDefinitions.filter(toolLowLevelDefinition => toolLowLevelDefinition.ToolMeasurementLevelDefinitionID === value);
-    });
-
-    this.testTemplateForm.controls.ToolLowLevelDefinitionID.valueChanges.subscribe((value: number) => {
-      const toolLow = this.toolLowLevelDefinitions.find(toolLowLevelDefinition => toolLowLevelDefinition.ToolLowLevelDefinitionID === value)
-      this.testTemplateForm.controls?.ToolMeasurementLevelDefinitionID?.setValue(toolLow?.ToolMeasurementLevelDefinitionID || null);
-
-      const testTemplate = this.toolsDefinitionService.testTemplates.find(testTemplate => 
-        testTemplate.ToolLowLevelDefinitionID === value && 
-        (
-          testTemplate.TestDefinitions[0]?.TestDefinitionGroupID === this.testDefinitionGroup.TestDefinitionGroupID || 
-          testTemplate.TestDefinitions.length === 0
-        )
-      );
-
-      if(testTemplate){
-        
-        // this.toastService.info('קיים כבר תבנית בדיקה עבור כלי זה');
-        this.testTemplateForm.controls.TestTemplateID.setValue(testTemplate.TestTemplateID);
-        this.testTemplateForm.controls.TestTemplateID.setValue(testTemplate.TestTemplateID);
-        console.log(this.testDefinitionIDs);
-        if(testTemplate.TestDefinitions.length > 0){
-          this.testDefinitionIDs = testTemplate.TestDefinitions.map(test => test.TestDefinitionID);
-        }  
-        
-      } else {
-        this.testTemplateForm.controls.TestTemplateID.setValue(0);
-        this.testDefinitionIDs = [];
+      if(this.testTemplateForm.controls.ToolLowLevelDefinitionID.value){
+        this.selectTheTestTemplateDefinitions();
       }
     });
+  }
 
-    this.toolsDefinitionService.dataSubject.subscribe(() => {
-      this.filteredTestDefinitionGroups = this.toolsDefinitionService.testDefinitionGroups;
-    });
-
-    this.filteredTestDefinitionGroups = this.toolsDefinitionService.testDefinitionGroups;
-    console.log(this.filteredTestDefinitionGroups);
+  selectTheTestTemplateDefinitions(): void {
+    console.log("selectTheTestTemplateDefinitions");
+    
+    const toolLowLevel = this.toolsDefinitionService.toolLowLevelDefinitions.find(toolLowLevel => toolLowLevel.ToolLowLevelDefinitionID === this.testTemplateForm.controls.ToolLowLevelDefinitionID.value);
+    if(toolLowLevel){
+      console.log("toolLowLevel");
+      console.log(toolLowLevel);
+      
+      
+      const testTemplate = toolLowLevel.TestTemplates.find(test => test.TestDefinitions[0]?.TestDefinitionGroupID === this.testTemplateForm.controls.TestDefinitionGroupID.value);
+      this.testTemplateForm.controls.TestTemplateID.setValue(testTemplate?.TestTemplateID || 0);
+      if(testTemplate){
+        console.log("testTemplate");
+        
+        this.testDefinitionIDs = testTemplate.TestTemplatesDefinitions.map(testTemplateDefinition => testTemplateDefinition.TestDefinitionID);
+      }
+    }
+    console.log(this.testDefinitionIDs);
     
   }
 
@@ -130,16 +133,21 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
     console.log(this.testTemplateInput);
     
     if(this.testTemplateInput){
-      this.testTemplateForm.setValue({
-        ToolTopLevelDefinitionID: this.testTemplateInput?.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolTopLevelDefinitionID,
-        TestDefinitionGroupID: this.testTemplateInput.TestDefinitions?.[0]?.TestDefinitionGroupID || 0,
-        ToolMeasurementLevelDefinitionID: this.testTemplateInput.ToolLowLevelDefinition?.ToolMeasurementLevelDefinitionID || 0,
-        ToolLowLevelDefinitionID: this.testTemplateInput.ToolLowLevelDefinitionID || 0,
-        TestTemplateName: this.testTemplateInput.TestTemplateName,
-        TestTemplateID: this.testTemplateInput.TestTemplateID,
-      })
+      this.testTemplateForm.setValue(
+        {
+          ToolTopLevelDefinitionID: this.testTemplateInput?.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinitionID || 0,
+          TestDefinitionGroupID: null,
+          toolFamilyDefinitionID: this.testTemplateInput?.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinitionID || 0,
+          ToolMeasurementLevelDefinitionID: this.testTemplateInput.ToolLowLevelDefinition?.ToolMeasurementLevelDefinitionID || 0,
+          ToolLowLevelDefinitionID: this.testTemplateInput.ToolLowLevelDefinitionID || 0,
+          TestTemplateName: this.testTemplateInput.TestTemplateName,
+          TestTemplateID: this.testTemplateInput.TestTemplateID,
+        },
+        { emitEvent: false}
+      )
 
-      this.testDefinitionIDs = this.testTemplateInput.TestTemplatesDefinitions.map(testTemplateDefinition => testTemplateDefinition.TestDefinitionID);
+      // trigger TestDefinitionGroupID.valueChanges
+      this.testTemplateForm.controls.TestDefinitionGroupID.setValue(this.testTemplateInput.TestDefinitions?.[0]?.TestDefinitionGroupID || 0);
     }
   }
 
@@ -148,11 +156,11 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
   }
 
   removeTestDefinitionID(id: number) {
-    this.testDefinitionIDs = this.testDefinitionIDs.filter(testDefinitionID => testDefinitionID !== id);
+    this.testDefinitionIDs = this.testDefinitionIDs?.filter(testDefinitionID => testDefinitionID !== id);
   }
 
   isTestDefinitionIDExist(id: number) {
-    return this.testDefinitionIDs.includes(id) ? true : false;
+    return this.testDefinitionIDs?.includes(id) ? true : false;
   }
 
   getEnduranceByResolution(resolution: number, test: TestDefinition): number | string {
@@ -167,8 +175,6 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
 
   async onSubmit(){
     const testDefinitionIDs: string = this.testDefinitionIDs.join(',');
-    console.log(testDefinitionIDs);
-    console.log(this.testTemplateForm.value);
 
     const newTestTemplate = new TestTemplate(
       this.testTemplateForm.value.TestTemplateName || ' ',
@@ -176,10 +182,22 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
       this.testTemplateForm.value.TestTemplateID || 0,
     );
 
+    console.log(newTestTemplate.TestTemplateID);
+    
+    // if the testTemplateID is 0, it means that the testTemplate is new and I want to use a free testTemplateID to save space in the database
+    if(newTestTemplate.TestTemplateID === 0){
+      const freeTemplate = this.toolsDefinitionService.testTemplates.find(template => template.TestTemplatesDefinitions.length === 0);
+      if(freeTemplate){
+        newTestTemplate.TestTemplateID = freeTemplate.TestTemplateID;
+      }
+    }
+
     try {
       await this.toolsDefinitionService.uploadTestTemplate( newTestTemplate, testDefinitionIDs);
-      // this.testTemplateForm.reset();
-      this.formDirective.resetForm();
+      this.testTemplateForm.controls.TestDefinitionGroupID.setValue(null);
+      this.testTemplateForm.controls.TestDefinitionGroupID.setErrors(null);
+      // this.searchInput.setValue(null);
+      this.selectedTestDefinitionGroup = null;
       this.toastService.success(' התבנית נשמרה בהצלחה ');
     } catch (error: any) {
       this.toastService.error(error);
@@ -187,7 +205,7 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
   }
 
 
-  // searchable select testDefinitionGroup variables and functions: ---------------------
+  // searchable select testDefinitionGroup variables and functions: ------------------------------------------
   public searchInput = new FormControl('');
   public filteredTestDefinitionGroups = this.toolsDefinitionService.testDefinitionGroups;
   public selectedTestDefinitionGroup: TestDefinitionGroup = null;
@@ -197,10 +215,96 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
   }
 
   public selectTestDefinitionGroup(testDefinitionGroup: TestDefinitionGroup) {
+    console.log("selectTestDefinitionGroup");
+    
     this.selectedTestDefinitionGroup = testDefinitionGroup;
     this.testTemplateForm.controls.TestDefinitionGroupID.setValue(testDefinitionGroup.TestDefinitionGroupID);
     this.searchInput.setValue(testDefinitionGroup.TestDefinitionGroupName);
+    
   }
 
-  // -----------------------------------------------------------------------------------
+  // organize SelectsValues -----------------------------------------------------------------------------------
+
+  setDefaultSelectsValues(){
+    this.filteredTestDefinitionGroups = this.toolsDefinitionService.testDefinitionGroups;
+    this.toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinitions;
+    this.toolMeasurementLevelDefinitions = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
+    this.toolFamilyDefinitions = this.toolsDefinitionService.toolFamilyDefinitions;
+  }
+
+  updateToolFamilyDefinitions(familyDefinitions: ToolFamilyLevelDefinition[]): void {
+    this.toolFamilyDefinitions = familyDefinitions;
+
+    if(familyDefinitions.length === 0) {
+      this.toastService.error('לא נמצאו משפחות כלים להצגה');
+      return;
+    }
+
+    if(familyDefinitions.length === 1){
+      this.testTemplateForm.controls.toolFamilyDefinitionID.setValue(familyDefinitions[0].ToolFamilyLevelDefinitionID, { emitEvent: false });
+    }
+
+    let toolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[] = [];
+    familyDefinitions.forEach(familyDefinition => {
+      toolMeasurementLevelDefinitions.concat(familyDefinition.ToolMeasurementLevelDefinitions);
+    });
+    console.log(1);
+    
+    this.updateToolMeasurementLevelDefinitions(toolMeasurementLevelDefinitions);
+  }
+
+  updateToolMeasurementLevelDefinitions(measurementLevelDefinitions: ToolMeasurementLevelDefinition[]): void {
+    this.toolMeasurementLevelDefinitions = measurementLevelDefinitions;
+    console.log(measurementLevelDefinitions);
+    
+    
+    if(measurementLevelDefinitions.length === 0) {
+      this.toastService.error('לא נמצאו טווחי מדידה להצגה');
+      return;
+    }
+
+    if(measurementLevelDefinitions.length === 1){
+      this.testTemplateForm.controls.ToolMeasurementLevelDefinitionID.setValue(measurementLevelDefinitions[0].ToolMeasurementLevelDefinitionID, { emitEvent: false });
+    }
+    
+    let toolLowLevelDefinitions: ToolLowLevelDefinition[] = [];
+    measurementLevelDefinitions.forEach(measurementLevelDefinition => {
+      console.log(measurementLevelDefinition);
+      
+      toolLowLevelDefinitions = toolLowLevelDefinitions.concat(measurementLevelDefinition.ToolLowLevelDefinitions);
+    });
+    console.log(toolLowLevelDefinitions);
+    
+    this.updateToolLowLevelDefinitions(toolLowLevelDefinitions);
+  }
+
+  updateToolLowLevelDefinitions(toolLowLevelDefinitions: ToolLowLevelDefinition[]): void {
+    this.toolLowLevelDefinitions = toolLowLevelDefinitions;
+    console.log(toolLowLevelDefinitions);
+    
+
+    if(toolLowLevelDefinitions.length === 0) {
+      this.toastService.error('לא נמצאו גדלי כלי להצגה');
+      return;
+    }
+
+    if(toolLowLevelDefinitions.length === 1){
+      this.testTemplateForm.controls.ToolLowLevelDefinitionID.setValue(toolLowLevelDefinitions[0].ToolLowLevelDefinitionID, { emitEvent: false });
+    }
+  }
+
+  updateFilteredTestDefinitionGroups(groups: TestDefinitionGroup[]): void {
+    this.filteredTestDefinitionGroups = groups;
+
+    if(groups.length === 0) {
+      this.toastService.error('לא נמצאו קבוצות בדיקות להצגה');
+      return;
+    }
+
+    if(groups.length === 1){
+      this.testTemplateForm.controls.TestDefinitionGroupID.setValue(groups[0].TestDefinitionGroupID, { emitEvent: false });
+    }
+  }
+
+  // --------------------------------------------------------------------------------------------------------
 }

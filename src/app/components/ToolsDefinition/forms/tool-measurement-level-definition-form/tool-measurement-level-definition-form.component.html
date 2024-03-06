@@ -45,6 +45,15 @@
     </mat-form-field>
 
     <mat-form-field>
+        <mat-label> שם משפחת כלים </mat-label>
+        <mat-select placeholder=" שם משפחת כלים " formControlName="ToolFamilyLevelDefinitionID">
+            <mat-option *ngFor="let tool of toolFamilies" [value]="tool.ToolFamilyLevelDefinitionID">
+                {{tool.ToolFamilyLevelDefinitionName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>    
+
+    <mat-form-field>
         <mat-label> MCode </mat-label>
         <input matInput type="text" placeholder="m-code" formControlName="MCode">
         <mat-error *ngIf="toolMeasurementLevelDefinitionForm.get('MCode').hasError('required')">
@@ -113,11 +122,10 @@
     <button
         (click)="toolId = null; toolMeasurementLevelDefinitionForm.reset()"
         type="reset" 
+        color="accent"
         mat-raised-button
         *ngIf="toolId != null"
-    >
-        ביטול עריכה
-    </button>
+    > ביטול עריכה </button>
 </form>
 
     

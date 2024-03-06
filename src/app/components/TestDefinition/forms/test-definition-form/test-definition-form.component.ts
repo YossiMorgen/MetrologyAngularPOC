@@ -43,6 +43,7 @@ export class TestDefinitionFormComponent implements OnChanges, OnInit {
       if(this.testDefinitions[this.testDefinitions.length - 1].ValueRequired < value){
         this.addEndurances(this.testDefinitions[this.testDefinitions.length - 1].Endurance);
         this.testDefinitionForm.controls.ValueUncertainty.setValue(this.testDefinitions[this.testDefinitions.length - 1].ValueUncertainty);
+        this.testDefinitionForm.controls.IsIso17025.setValue(this.testDefinitions[this.testDefinitions.length - 1].IsIso17025);
         return;
       }
 
@@ -56,6 +57,13 @@ export class TestDefinitionFormComponent implements OnChanges, OnInit {
         if(this.testDefinitions[i].ValueRequired > value){
           this.addEndurances(this.testDefinitions[i - 1].Endurance);
           this.testDefinitionForm.controls.ValueUncertainty.setValue(this.testDefinitions[i - 1].ValueUncertainty);
+          this.testDefinitionForm.controls.IsIso17025.setValue(this.testDefinitions[i - 1].IsIso17025);
+          console.log("IsIso17025");
+          
+          console.log(this.testDefinitions[i - 1].IsIso17025);
+          console.log(this.testDefinitionForm.controls.IsIso17025.value);
+          
+          
           return;
         }
       }
@@ -66,18 +74,30 @@ export class TestDefinitionFormComponent implements OnChanges, OnInit {
     //   console.log(this.EnduranceForm.value);
     //   console.log(this.EnduranceForm.valid);
     // });
+
+    // this.testDefinitionForm.valueChanges.subscribe((value: any) => {
+    //   console.log(this.testDefinitionForm.value);
+    //   console.log(this.EnduranceForm.value);
+    //   console.log(this.testDefinitionForm.valid);
+    //   console.log(this.EnduranceForm.valid);
+    //   // log the errors
+    //   console.log(this.testDefinitionForm.errors);
+    //   console.log(this.EnduranceForm.errors);
+    // });
   }
 
   testDefinitionForm = this.formBuilder.group({
     TestDefinitionID: [0],
     ValueRequired: [0, [Validators.required]],
     ValueUncertainty: [0, [Validators.required]],
+    IsIso17025: [true, [Validators.required]],
   });
   
   EnduranceForm = this.formBuilder.array([
     this.formBuilder.group({
-      ValueEnduranceUp: [0, [Validators.required]],
-      ValueEnduranceDown: [0],
+      ValueEndurance: [0],
+      EnduranceUp: [true],
+      EnduranceDown: [true],
       Resolution_ToolTopLevelDefinitionID: [0],
       resValue: [0]
     })
@@ -98,6 +118,7 @@ export class TestDefinitionFormComponent implements OnChanges, OnInit {
         TestDefinitionID: this.testDefinitionInput.TestDefinitionID,
         ValueRequired: this.testDefinitionInput.ValueRequired,
         ValueUncertainty: this.testDefinitionInput.ValueUncertainty,
+        IsIso17025: this.testDefinitionInput.IsIso17025,
       });
       console.log(this.testDefinitionForm.value);
       // return;
@@ -139,8 +160,9 @@ export class TestDefinitionFormComponent implements OnChanges, OnInit {
 
   addEndurance(endurance: Endurance, resValue: number): void {
     this.EnduranceForm.push(this.formBuilder.group({
-      ValueEnduranceUp: [endurance.ValueEnduranceUp, [Validators.required]],
-      ValueEnduranceDown: [endurance.ValueEnduranceDown || 0, [Validators.required]],
+      ValueEndurance: [endurance.ValueEnduranceUp || endurance.ValueEnduranceDown],
+      EnduranceUp: [endurance.ValueEnduranceUp ? true : false],
+      EnduranceDown: [endurance.ValueEnduranceDown ? true : false],
       Resolution_ToolTopLevelDefinitionID: [endurance.Resolution_ToolTopLevelDefinitionID],
       resValue: [resValue]
     }));
@@ -153,17 +175,30 @@ export class TestDefinitionFormComponent implements OnChanges, OnInit {
       this.testDefinitionGroup.TestDefinitionGroupID,
       this.testDefinitionForm.value.ValueRequired,
       this.testDefinitionForm.value.ValueUncertainty,
-      this.testDefinitionInput?.TestDefinitionID || 0
+      this.testDefinitionForm.value.IsIso17025,
+      this.testDefinitionInput?.TestDefinitionID || 0,
     );
 
-    let enduranceArray = this.EnduranceForm.value.map((endurance: any) => {
-      return new Endurance(
+    // let enduranceArray = this.EnduranceForm.value.map((endurance: any) => {
+    //   return new Endurance(
+    //     0,
+    //     endurance.Resolution_ToolTopLevelDefinitionID,
+    //     endurance.ValueEnduranceUp,
+    //     endurance.ValueEnduranceDown || 0
+    //   );
+    // });
+
+    let enduranceArray: Endurance[] = [];
+    for (let i = 0; i < this.EnduranceForm.length; i++) {
+      const endurance = this.EnduranceForm.controls[i] as any;
+      if(!endurance.controls.ValueEndurance.value) continue;
+      enduranceArray.push(new Endurance(
         0,
-        endurance.Resolution_ToolTopLevelDefinitionID,
-        endurance.ValueEnduranceUp,
-        endurance.ValueEnduranceDown || 0
-      );
-    });
+        endurance.controls.Resolution_ToolTopLevelDefinitionID.value,
+        endurance.controls.EnduranceUp && endurance.controls.ValueEndurance.value,
+        endurance.controls.EnduranceDown && endurance.controls.ValueEndurance.value,
+        ));
+    }
 
     try {
       await this.toolsDefinitionService.uploadTestDefinition(newTestDefinition, enduranceArray);
