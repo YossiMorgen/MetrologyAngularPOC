@@ -39,11 +39,9 @@ export class ToolFamilyLevelDefinitionFormComponent implements OnChanges, OnInit
 
   ngOnInit(): void {
     this.toolsDefinitionService.dataSubject.subscribe(() => {
-      this.toolFamilyLevels = this.toolsDefinitionService.toolFamilyDefinitions;
-      this.setDefaultSelectsValues();
+      this.init();
     });
-    this.toolFamilyLevels = this.toolsDefinitionService.toolFamilyDefinitions;
-    this.setDefaultSelectsValues();
+    this.init();
 
     this.toolFamilyLevelForm.controls.TechID.valueChanges.subscribe((value: number) => {
       if(!value) return;
@@ -62,12 +60,29 @@ export class ToolFamilyLevelDefinitionFormComponent implements OnChanges, OnInit
 
     this.toolFamilyLevelForm.controls.ToolTopLevelDefinitionID.valueChanges.subscribe((value: number) => {
       if(!value) return;
-
-      const toolTop = this.toolTopLevels.find(toolTop => toolTop.ToolTopLevelDefinitionID === value);
-      this.toolFamilyLevelForm.controls.SubTechID.setValue(toolTop.SubTechID, {emitEvent: false});
-      this.toolFamilyLevelForm.controls.TechID.setValue(toolTop.SubTechnology?.TechID, {emitEvent: false});
+      this.TopIdChange(value);
     });
     
+  }
+
+  init(){
+    this.toolFamilyLevels = this.toolsDefinitionService.toolFamilyDefinitions;
+    this.setDefaultSelectsValues();
+    if(this.ToolTopId){
+      this.toolFamilyLevelForm.controls.ToolTopLevelDefinitionID.setValue(this.ToolTopId);
+      this.TopIdChange(this.ToolTopId);
+    }
+  }
+
+  TopIdChange(value: number){
+    console.log(value);
+    
+    const toolTop = this.toolTopLevels?.find(toolTop => toolTop.ToolTopLevelDefinitionID === value);
+    console.log(toolTop);
+    
+    if(!toolTop) return;
+    this.toolFamilyLevelForm.controls.SubTechID.setValue(toolTop.SubTechID, {emitEvent: false});
+    this.toolFamilyLevelForm.controls.TechID.setValue(toolTop.SubTechnology?.TechID, {emitEvent: false});
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -82,8 +97,9 @@ export class ToolFamilyLevelDefinitionFormComponent implements OnChanges, OnInit
       });
     }
 
-    if(changes['ToolTopId'] && this.ToolTopId !== null){
+    if(changes['ToolTopId'] && this.ToolTopId !== null && this.toolsDefinitionService.toolTopLevelDefinitions){
       this.toolFamilyLevelForm.controls.ToolTopLevelDefinitionID.setValue(this.ToolTopId);
+      this.TopIdChange(this.ToolTopId);
     }
   }
 

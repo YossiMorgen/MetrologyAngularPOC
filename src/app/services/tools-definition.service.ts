@@ -17,56 +17,8 @@ import { TestTemplate } from '../models/TestDefinition/test-template';
 import { TestTemplatesDefinition, TestTemplatesDefinitionResponse } from '../models/TestDefinition/test-templates-definition';
 import { TestDefinition } from '../models/TestDefinition/test-definition';
 import { ToolFamilyLevelDefinition } from '../models/toolDefinitionModels/tool-family-level-definition';
+import { Models, PostGroupAndTestDefAndEndurance, PostTestDefinition, PostTestTemplate, PostToolTopLevelDefinition, PostToolTopLevelDefinitionResult, ToolDefinitionData } from '../models/dtos';
 
-interface ToolDefinitionData {
-  MeasurementUnits: MeasurementUnit[];
-  Technologies: Technology[];
-  SubTechnologies: SubTechnology[];
-  IsoProcedures: IsoProcedure[];
-  ToolTopLevelDefinitions: ToolTopLevelDefinition[];
-  ToolFamilyLevelDefinitions: ToolFamilyLevelDefinition[];
-  ToolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[];
-  ToolLowLevelDefinitions: ToolLowLevelDefinition[];
-  Resolutions: Resolution[];
-  Resolution_ToolTopLevelDefinitions: ResolutionToolTopLevelDefinition[];
-  TestDefinitionGroups: TestDefinitionGroup[];
-  TestDefinitions: TestDefinition[];
-  Endurance: Endurance[];
-  TestTemplates: TestTemplate[];
-  TestTemplatesDefinitions: TestTemplatesDefinition[];
-}
-
-interface PostToolTopLevelDefinition
-{
-    ToolTopLevelDefinition: ToolTopLevelDefinition;
-    SValues: string;
-    IsoProcedure: IsoProcedure;
-}
-
-interface PostToolTopLevelDefinitionResult
-{
-  ToolTopLevelDefinition: ToolTopLevelDefinition;
-  Resolution_ToolTopLevelDefinitions: ResolutionToolTopLevelDefinitionResponse[];
-  Resolutions: Resolution[];
-  IsoProcedure: IsoProcedure;
-}
-
-interface PostTestDefinition{
-  TestDefinition: TestDefinition;
-  Endurance: Endurance[];
-}
-
-interface PostTestTemplate {
-  TestTemplate: TestTemplate;
-  TestDefinitionsIDs: string;
-  TestTemplatesDefinitions: TestTemplatesDefinitionResponse[];
-}
-
-type Models = Technology | 
-MeasurementUnit | SubTechnology | IsoProcedure | ToolTopLevelDefinition | 
-ToolFamilyLevelDefinition | ToolMeasurementLevelDefinition | ToolLowLevelDefinition |
-Resolution | ResolutionToolTopLevelDefinition | TestDefinitionGroup |
-TestDefinition | Endurance | TestTemplate | TestTemplatesDefinition;
 
 @Injectable({
   providedIn: 'root'
@@ -121,7 +73,7 @@ export class ToolsDefinitionService {
     
   }
 
-  public async createToolDefinition(toolDef: Models): Promise<number> {
+  public async createToolDefinition(toolDef: Models, isNotGetToolsDefinitionData = false): Promise<number> {
     console.log(toolDef);
     
     let sname = this.getStringNameFromObject(toolDef);
@@ -135,13 +87,15 @@ export class ToolsDefinitionService {
     
     const observable = this.http.post<number>(this.appConfig.toolDefinitionURL, body);
     const id = await firstValueFrom(observable);
-    await this.getToolsDefinitionData();
+    !isNotGetToolsDefinitionData && await this.getToolsDefinitionData();
+    
     return id;
   }
 
   public async updateToolDefinition(
       toolDef: Models,
-        id: number
+      id: number,
+      isNotGetToolsDefinitionData = false
     ): Promise<void> {
     console.log(toolDef);
     
@@ -156,10 +110,10 @@ export class ToolsDefinitionService {
     
     const observable = this.http.put(this.appConfig.toolDefinitionURL + "/" + id, body);
     await firstValueFrom(observable);
-    await this.getToolsDefinitionData();
+    !isNotGetToolsDefinitionData && await this.getToolsDefinitionData();
   }
 
-  public async deleteToolDefinition(model: string,id: number, toolDefinitionURLs: ToolDefinitionURLs = ToolDefinitionURLs.toolDefinitionURL): Promise<void> {
+  public async deleteToolDefinition(model: string,id: number, toolDefinitionURLs: ToolDefinitionURLs = ToolDefinitionURLs.toolDefinitionURL, isNotGetToolsDefinitionData = false): Promise<void> {
     
     let str: string;
     switch(toolDefinitionURLs)
@@ -176,11 +130,17 @@ export class ToolsDefinitionService {
     }
     const observable = this.http.delete(str);
     await firstValueFrom(observable);
-
-    // this.linkTheData();
   }
 
-  public async uploadToolTopDefinition(SValues: string, ToolTopLevelDefinition: ToolTopLevelDefinition, IsoProcedure: IsoProcedure): Promise<number> {
+  public async uploadToolTopDefinition(ToolTopLevelDefinition: ToolTopLevelDefinition, IsoProcedure?: IsoProcedure, SValues?: string, isNotGetToolsDefinitionData = false): Promise<number> {
+
+    if(!IsoProcedure){
+      IsoProcedure = ToolTopLevelDefinition.IsoProcedure;
+    }
+
+    if(!SValues){
+      SValues = ToolTopLevelDefinition.ResolutionToolTopLevelDefinition.map(res => res.Resolution.Value).join(",") || "1";
+    }
     const payload: PostToolTopLevelDefinition = { ToolTopLevelDefinition, SValues, IsoProcedure };
 
     const observable = this.http.post<PostToolTopLevelDefinitionResult>(this.appConfig.ToolTopLevelDefinitionURL, payload);
@@ -188,17 +148,27 @@ export class ToolsDefinitionService {
     return data.ToolTopLevelDefinition.ToolTopLevelDefinitionID;
   }
 
-  public async uploadTestDefinition(testDefinition: TestDefinition, endurance: Endurance[]): Promise<void> {
+  public async uploadTestDefinition(testDefinition: TestDefinition, endurance: Endurance[], isNotGetToolsDefinitionData = false): Promise<void> {
     const payload = { testDefinition, endurance };
     const observable = this.http.post<PostTestDefinition>(this.appConfig.TestDefinitionURL, payload);
     await firstValueFrom(observable);
-    await this.getToolsDefinitionData();
+    !isNotGetToolsDefinitionData && await this.getToolsDefinitionData();
   }
 
-  async uploadTestTemplate(testTemplate: TestTemplate, testDefinitionsIDs: string): Promise<void>{
+  async uploadTestTemplate(testTemplate: TestTemplate, testDefinitionsIDs: string, isNotGetToolsDefinitionData = false): Promise<void>{
     const observable = this.http.post<PostTestTemplate>(this.appConfig.TestTemplateURL, { TestTemplate: testTemplate, TestDefinitionsIDs: testDefinitionsIDs });
     await firstValueFrom(observable);
-    this.getToolsDefinitionData();
+    !isNotGetToolsDefinitionData && await this.getToolsDefinitionData();
+  }
+
+  async uploadTavrig(toolLowLevelDefinition: ToolLowLevelDefinition, GTE: PostGroupAndTestDefAndEndurance[], isNotGetToolsDefinitionData = false): Promise<void>{
+    toolLowLevelDefinition.TestTemplates = [];
+    toolLowLevelDefinition.ToolMeasurementLevelDefinition = null;
+    toolLowLevelDefinition.CovertOpsJsonToolJson = null;
+    
+    const observable = this.http.post(this.appConfig.TavrigURL, { PostGroupAndTestDefAndEndurance: GTE, ToolLowLevelDefinition: toolLowLevelDefinition });
+    await firstValueFrom(observable);
+    !isNotGetToolsDefinitionData && await this.getToolsDefinitionData();
   }
 
   linkTheData(): void {
@@ -321,9 +291,8 @@ export class ToolsDefinitionService {
       // definition.TestTemplate = testTemplate;
 
       if(testDefinition && testTemplate){
-        testDefinition.TestTemplatesDefinitions?.push(definition);
+        testDefinition.TestTemplates.push(testTemplate);
         testTemplate.TestDefinitions.push(testDefinition);
-        testTemplate.TestTemplatesDefinitions.push(definition);
       }
     });
  
@@ -377,9 +346,10 @@ export class ToolsDefinitionService {
       measurement.ToolLowLevelDefinitions = [];
     });
 
-    this.toolLowLevelDefinitions.forEach(low => {
-      low.TestTemplates = [];
-    });
+    this.toolLowLevelDefinitions = this.toolLowLevelDefinitions.map(measurement =>{
+      const measurementInstance = new ToolLowLevelDefinition(measurement.MCode, measurement.ToolMeasurementLevelDefinitionID, measurement.ValueMin, measurement.ValueMax, measurement.ToolLowLevelDefinitionName, measurement.ToolLowLevelDefinitionID, measurement.CovertOpsJsonTool);
+      return measurementInstance;    
+    })
 
     this.testDefinitionGroups.forEach(group => {
       group.TestDefinitions = [];
@@ -405,11 +375,13 @@ export class ToolsDefinitionService {
     return[...new Set(this.resolutions?.map(res => res.Value))].sort();
   }
 
+  getNextMCode(MCodes: number[]): number {
+    let max = Math.max(...MCodes, 0);
+    return max + 1;
+  }
+
   getStringNameFromObject(model: Models): string {
-    console.log("getStringNameFromObject");
-    console.log(model);    
-    console.log(model.constructor.name);
-        let sname = "";
+    let sname = "";
 
     switch(model.constructor.name){
       case  Technology.name: 

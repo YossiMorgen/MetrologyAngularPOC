@@ -6,7 +6,7 @@ export class MeasurementUnit {
 
     public ToolMeasurementLevelDefinition : ToolMeasurementLevelDefinition[];
 
-    constructor(Symbol: string, MeasurementUnitID?: number) {
+    constructor(Symbol: string, MeasurementUnitID: number = 0) {
         this.MeasurementUnitID = MeasurementUnitID;
         this.Symbol = Symbol;
     }

@@ -12,6 +12,7 @@ import { TestsDefinitionsComponent } from './components/pages/tests-definitions/
 import { TestDefinitionGroupTableComponent } from './components/TestDefinition/tables/test-definition-group-table/test-definition-group-table.component';
 import { TestTemplatTableComponent } from './components/TestTemplates/tables/test-templat-table/test-templat-table.component';
 import { ToolFamilyLevelDefinitionTableComponent } from './components/ToolsDefinition/tables/tool-family-level-definition-table/tool-family-level-definition-table.component';
+import { TavrigimTableComponent } from './components/TestDefinition/tables/tavrigim-table/tavrigim-table.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -45,6 +46,8 @@ const routes: Routes = [
       {path: 'test_definition_group/:id', component: TestDefinitionGroupTableComponent},
       {path: 'test_template_form', component: TestTemplatTableComponent},
       {path: 'test_template_form/:id', component: TestTemplatTableComponent},
+      {path: 'tavrigim', component: TavrigimTableComponent},
+      {path: 'tavrigim/:id', component: TavrigimTableComponent},
     ]
   },
   {path: '**', component: HomeComponent}

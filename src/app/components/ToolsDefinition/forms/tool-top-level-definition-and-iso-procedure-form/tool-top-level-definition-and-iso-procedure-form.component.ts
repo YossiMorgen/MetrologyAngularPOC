@@ -12,6 +12,7 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dialog/confirm-dialog.component';
 import { ToolFamilyLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-family-level-definition';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tool-top-level-definition-and-iso-procedure-form',
@@ -20,16 +21,17 @@ import { ToolFamilyLevelDefinition } from 'src/app/models/toolDefinitionModels/t
 })
 export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnChanges, OnInit {
   @Input() public toolId: number = null;
-  @Input() public toolTopId: number = null;
+  @Input() public subTechId: number = null;
+  @Input() public toolTopLevelDefinitions: ToolTopLevelDefinition[] = [];
 
   subTechnologies: SubTechnology[];
   @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
-  filteredToolTops: ToolTopLevelDefinition[] = [];
 
   constructor(
     public toolsDefinitionService: ToolsDefinitionService,
     private formBuilder : FormBuilder,
     private dialog: MatDialog,
+    private router: Router,
     private toastService: ToastService
   ) { }
     
@@ -39,14 +41,12 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
 
     this.toolsDefinitionService.dataSubject.subscribe(() => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies;
-      this.filteredToolTops = this.toolsDefinitionService.toolTopLevelDefinitions;
-      this.setDefaultMCode();
+      this.setDefaults();
     });
-    this.filteredToolTops = this.toolsDefinitionService.toolTopLevelDefinitions;
-    this.setDefaultMCode();
+    this.setDefaults();
 
     this.toolTopLevelDefinitionAndIsoForm.controls.TechID.valueChanges.subscribe((value: number) => {
-
+      console.log("TechID: ", value);
       if(!value){
         this.subTechnologies = this.toolsDefinitionService.subTechnologies;
         return;
@@ -60,31 +60,30 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
     });
 
     this.toolTopLevelDefinitionAndIsoForm.controls.SubTechID.valueChanges.subscribe((value: number) => {
-      this.toolTopLevelDefinitionAndIsoForm.controls.TechID.setValue(
-        this.toolsDefinitionService.subTechnologies?.find(subTech => subTech.SubTechnologyID === +value)?.TechID
-      );
+      console.log("SubTechID: ", value);
+      
+      if(!value) return;
+      this.router.navigate([`/tool_definitions/tool_top_level_definition/${value}`]);
 
-      this.filteredToolTops = this.toolsDefinitionService.toolTopLevelDefinitions?.filter(toolTop => toolTop.SubTechID === +value);
-      this.setDefaultMCode();
     });
 
     this.toolTopLevelDefinitionAndIsoForm.controls.MCode.valueChanges.subscribe((value: number) => {
+      console.log("MCode: ", value);
+      
       this.toolTopLevelDefinitionAndIsoForm.controls.CertificateText.setValue("מבוסס על נוהל כיול " + value);
     });
 
     this.toolsDefinitionService.dataSubject.subscribe(() => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies; 
       this.allResolutionsPreviousValues = this.toolsDefinitionService.getUniqueAndSortedResolutions();      
-      this.toolTopLevelDefinitionAndIsoForm.controls.SubTechID.setValue(this.toolTopId);
     });
-    this.toolTopLevelDefinitionAndIsoForm.controls.SubTechID.setValue(this.toolTopId);
     this.subTechnologies = this.toolsDefinitionService.subTechnologies;
     this.allResolutionsPreviousValues = this.toolsDefinitionService.getUniqueAndSortedResolutions();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.toolId);
-    if(this.toolId && changes['toolId'] ){
+    if( this.toolId && changes['toolId'] ){
+      console.log(this.toolId);
       const tool = this.toolsDefinitionService.toolTopLevelDefinitions.find(tool => tool.ToolTopLevelDefinitionID == this.toolId);
 
       this.toolTopLevelDefinitionAndIsoForm.setValue({
@@ -100,6 +99,11 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
       });
 
       this.resolutions = tool.Resolutions.map(resolution => resolution.Value);
+    }
+
+    if(changes['toolTopLevelDefinitions'] && this.toolTopLevelDefinitions){
+
+      this.setDefaults();
     }
   }
 
@@ -139,7 +143,7 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
     }
 
     try {
-      const id = await this.toolsDefinitionService.uploadToolTopDefinition(SValues, newToolTopLevelDefinition, newIsoProcedure);
+      const id = await this.toolsDefinitionService.uploadToolTopDefinition( newToolTopLevelDefinition, newIsoProcedure, SValues);
       if(!this.toolId){
         const family = new ToolFamilyLevelDefinition(newToolTopLevelDefinition.ToolTopLevelDefinitionName, id);
         await this.toolsDefinitionService.createToolDefinition(family);
@@ -148,7 +152,7 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
       }
       this.toastService.success('העדכון התבצע בהצלחה');
       this.resetForm();
-      this.setDefaultMCode();
+      this.setDefaults();
     } catch (error) {
       this.toastService.error('העדכון נכשל');
     }
@@ -166,7 +170,7 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
   }
 
   async deleteToolTopLevelDefinitionAndIsoProcedure(): Promise<void> {
-    const tool = this.toolsDefinitionService.toolFamilyDefinitions.find(tool => tool.ToolFamilyLevelDefinitionID === this.toolId);
+    const tool = this.toolsDefinitionService.toolFamilyDefinitions.find(tool => tool.ToolTopLevelDefinitionID === this.toolId);
     if(tool){
       this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
       return;
@@ -192,7 +196,7 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
           this.toolTopLevelDefinitionAndIsoForm.reset();
           this.formDirective.resetForm();
           this.resolutions = [];
-          this.setDefaultMCode();
+          this.setDefaults();
           this.toolId = null;
           this.toastService.success(" כלי נמחק בהצלחה :)");
         } catch (error: any) {
@@ -202,9 +206,13 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
     });
   }
 
-  setDefaultMCode(){    
-    const maxMCode = this.filteredToolTops?.reduce((max, toolTop) => { return toolTop.IsoProcedure?.MCode > max ? toolTop.IsoProcedure?.MCode : max }, 0);    
-    this.toolTopLevelDefinitionAndIsoForm.controls.MCode.setValue(maxMCode + 1);
+  setDefaults(){  
+    this.toolTopLevelDefinitionAndIsoForm.controls.SubTechID.setValue(this.subTechId, {emitEvent: false});
+    this.setTechIdBySubTechId(this.subTechId);
+    const MCodes = this.toolTopLevelDefinitions?.map(toolTop => toolTop.IsoProcedure?.MCode);    
+    const MCode = this.toolsDefinitionService.getNextMCode(MCodes || [])
+    this.toolTopLevelDefinitionAndIsoForm.controls.MCode.setValue(MCode);
+    this.toolTopLevelDefinitionAndIsoForm.controls.CertificateText.setValue("מבוסס על נוהל כיול " + MCode);
   }
 
 // resolutionSelectForm using MatChipsModule-------------------------------------------------------
@@ -243,5 +251,11 @@ export class ToolTopLevelDefinitionAndIsoProcedureFormComponent implements OnCha
   }
 
   // ------------------------------------------------------------------------------------------------
-
+  setTechIdBySubTechId(subTechId: number){
+    
+    const subTech = this.toolsDefinitionService.subTechnologies?.find(subTech => subTech.SubTechnologyID === +subTechId);
+    console.log(subTech);
+    
+    this.toolTopLevelDefinitionAndIsoForm.controls.TechID.setValue(subTech?.TechID);
+  }
 }

@@ -18,8 +18,8 @@ export class TestDefinitionGroup {
 
     constructor(
         TestDefinitionGroupName: string, 
-        ToolTopLevelDefinitionID: number, 
-        TestDefinitionGroupID?: number,
+        ToolTopLevelDefinitionID: number = 0, 
+        TestDefinitionGroupID: number = 0,
         DeviationCalcType: DeviationCalcTypeEnum = DeviationCalcTypeEnum.AVG,
     ) {
         this.TestDefinitionGroupName = TestDefinitionGroupName;

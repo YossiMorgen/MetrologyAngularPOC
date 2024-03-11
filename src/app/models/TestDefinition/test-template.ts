@@ -13,7 +13,7 @@ export class TestTemplate {
     TestTemplatesDefinitions: TestTemplatesDefinition[] = [];
     TestDefinitions: TestDefinition[] = [];
 
-    constructor(TestTemplateName: string, ToolLowLevelDefinitionID: number, TestTemplateID?: number) {
+    constructor(TestTemplateName: string, ToolLowLevelDefinitionID: number = 0, TestTemplateID: number = 0) {
         this.TestTemplateName = TestTemplateName;
         this.ToolLowLevelDefinitionID = ToolLowLevelDefinitionID;
         this.TestTemplateID = TestTemplateID;

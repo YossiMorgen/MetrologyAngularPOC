@@ -25,7 +25,7 @@ export class TestDefinition {
         ValueRequired: number, 
         ValueUncertainty: number, 
         IsIso17025: boolean = true,
-        TestDefinitionID?: number
+        TestDefinitionID: number = 0
     ) {
         this.TestDefinitionName = TestDefinitionName;
         this.TestDefinitionGroupID = TestDefinitionGroupID;

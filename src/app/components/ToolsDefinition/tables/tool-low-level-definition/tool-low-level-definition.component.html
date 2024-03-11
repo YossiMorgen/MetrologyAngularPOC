@@ -2,7 +2,7 @@
     <table>
         <tr>
             <th>
-                נוהל
+                MCode
             </th>
             <th>
                 גודל כלי 
@@ -20,15 +20,20 @@
                 טכנולוגיה
             </th>
             <th>
-                MCode
-            </th>
-            <th>
                 עריכה
             </th>
         </tr>
         <tr *ngFor="let tool of toolLowLevelDefinitions">
             <td>
-                {{tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
+                <a class="navToChildren" mat-button [routerLink]="'/test_definition/test_template_form'" [queryParams]="{toolLowLevelId: tool.ToolLowLevelDefinitionID}" >
+                    {{
+                        tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + '.' + 
+                        tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.MCode + '.' + 
+                        tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode + '.' + 
+                        tool.ToolMeasurementLevelDefinition?.MCode + '.' +
+                        tool.MCode
+                    }}
+                </a>
             </td>
             <td>
                 {{(tool.ValueMin != tool.ValueMax && tool.ValueMin + ' - ') + tool.ValueMax + ' ' + tool.ToolMeasurementLevelDefinition?.ValueUnit?.Symbol}}
@@ -51,15 +56,6 @@
                 {{tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.TechnologyName}}
             </td>
             <td>
-                {{
-                    tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + '.' + 
-                    tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.SubTechnology?.MCode + '.' + 
-                    tool.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinition?.IsoProcedure?.MCode + '.' + 
-                    tool.ToolMeasurementLevelDefinition?.MCode + '.' +
-                    tool.MCode
-                }}
-            </td>
-            <td>
                 <button mat-mini-fab color="danger" (click)="changeToolId(tool.ToolLowLevelDefinitionID)">
                     <mat-icon>
                         edit
@@ -69,5 +65,5 @@
         </tr>
     </table>
 
-    <app-tool-low-level-definition-form [toolId]="toolId"></app-tool-low-level-definition-form>
+    <app-tool-low-level-definition-form [toolMeasurementLevelDefinitionId]="toolMeasurementLevelDefinitionId" [toolId]="toolId"></app-tool-low-level-definition-form>
 </div>

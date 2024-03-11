@@ -17,7 +17,7 @@
                 טכנולוגיה
             </th>
             <th>
-                רזולוציות
+                בדיקות
             </th>
             <th>
                 עריכה
@@ -25,7 +25,7 @@
         </tr>
         <tr *ngFor="let tool of toolTopLevelDefinitions">
             <td>
-                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/tool_measurement_level_definition/' + tool.ToolTopLevelDefinitionID" >
+                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/tool_family_level_definition/' + tool.ToolTopLevelDefinitionID" >
                     {{tool.SubTechnology?.Technology?.MCode + "." + tool.SubTechnology?.MCode + "." + tool.IsoProcedure?.MCode}}
                 </a>
             </td>
@@ -50,9 +50,11 @@
             </td>
 
             <td>
-                <mat-icon [matTooltip]="resolutionToolTipStr(tool)">
-                    list
-                </mat-icon>
+                <a [matTooltip]="testDefinitionGroupsToolTipStr(tool)" class="navToChildren" mat-button [routerLink]="'/test_definition/test_definition_group/' + tool.ToolTopLevelDefinitionID" >
+                    <mat-icon >
+                        list
+                    </mat-icon>
+                </a>
             </td>
             
             <td>
@@ -69,5 +71,5 @@
             </td>
         </tr>
     </table>
-    <app-tool-top-level-definition-and-iso-procedure-form [toolTopId]="toolTopId" [toolId]="toolId"></app-tool-top-level-definition-and-iso-procedure-form>
+    <app-tool-top-level-definition-and-iso-procedure-form [toolTopLevelDefinitions]="toolTopLevelDefinitions" [subTechId]="subTechId" [toolId]="toolId"></app-tool-top-level-definition-and-iso-procedure-form>
 </div>

@@ -35,7 +35,7 @@ export class SubTechnologyComponent implements OnInit {
 
   setSubTechnologies(): void {
     if(this.techID ){
-      this.subTechnologies = this.toolsDefinitionService.subTechnologies.filter(x => x.TechID == this.techID);
+      this.subTechnologies = this.toolsDefinitionService.subTechnologies?.filter(x => x.TechID == this.techID);
     } else {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies;
     }

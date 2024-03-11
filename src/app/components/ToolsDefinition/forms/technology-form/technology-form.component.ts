@@ -24,11 +24,19 @@ export class TechnologyFormComponent implements OnChanges, OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.technologyForm.controls.MCode.setValue(null);
+    // const MCodes = this.toolsDefinitionService.technologies?.map(technology => technology.MCode);
+    // this.technologyForm.controls.MCode.setValue(this.toolsDefinitionService.getNextMCode(MCodes || []));
+    this.formDefaultValues();
     this.toolsDefinitionService.dataSubject.subscribe(() => {
-      const highestMCode = this.toolsDefinitionService.technologies.reduce((prev, current) => (prev.MCode > current.MCode) ? prev : current).MCode;
-      this.technologyForm.controls.MCode.setValue(highestMCode + 1);
+      this.formDefaultValues();
     });
+  }
+
+  formDefaultValues(){
+    if(this.toolsDefinitionService.technologies){
+      const MCodes = this.toolsDefinitionService.technologies.map(technology => technology.MCode);
+      this.technologyForm.controls.MCode.setValue(this.toolsDefinitionService.getNextMCode(MCodes || []));
+    }
   }
 
   ngOnChanges(): void {
@@ -61,6 +69,7 @@ export class TechnologyFormComponent implements OnChanges, OnInit {
       
       this.resetForm();
       this.toolId = null;
+      this.formDefaultValues();
     } catch (error: any) {
       this.toastService.error(error);
     }
@@ -99,4 +108,5 @@ export class TechnologyFormComponent implements OnChanges, OnInit {
       }
     });
   }
+
 }

@@ -51,7 +51,16 @@
                 {{tool.ToolFamilyLevelDefinitionName}}
             </mat-option>
         </mat-select>
-    </mat-form-field>    
+    </mat-form-field>  
+
+    <mat-form-field>
+        <mat-label>  יחידת מידה  </mat-label>
+        <mat-select placeholder=" יחידת מידה " formControlName="ValueUnitID">
+            <mat-option *ngFor="let measurementUnit of toolsDefinitionService.MeasurementUnit" [value]="measurementUnit.MeasurementUnitID">
+                {{measurementUnit.Symbol}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 
     <mat-form-field>
         <mat-label> MCode </mat-label>
@@ -67,15 +76,6 @@
         </mat-error>
     </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>  יחידת מידה  </mat-label>
-        <mat-select placeholder=" יחידת מידה " formControlName="ValueUnitID">
-            <mat-option *ngFor="let measurementUnit of toolsDefinitionService.MeasurementUnit" [value]="measurementUnit.MeasurementUnitID">
-                {{measurementUnit.Symbol}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    
     <mat-form-field>
         <mat-label> ערך מינימלי </mat-label>
         <input matInput type="number" placeholder=" ערך מינימלי " formControlName="ValueMin">

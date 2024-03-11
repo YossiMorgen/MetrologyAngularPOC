@@ -1,6 +1,7 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ToastService } from 'angular-toastify';
 import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogModel } from 'src/app/models/confirm-dialog';
@@ -18,20 +19,18 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
 export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, OnInit {
   @Input() public toolId: number = null;
   @Input() public toolFamilyLevelDefinitionId: number = null;
+  @Input() public toolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[] = [];
   @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
 
   constructor(
     public toolsDefinitionService: ToolsDefinitionService,
     private formBuilder : FormBuilder,
+    private router: Router,
     private dialog: MatDialog,
     private toastService: ToastService
   ) { }
 
   ngOnInit(): void {
-    this.toolsDefinitionService.dataSubject.subscribe(() => {
-      this.setSelectsDefaultValues();
-    });
-    this.setSelectsDefaultValues();
 
     this.toolMeasurementLevelDefinitionForm.controls.TechID.valueChanges.subscribe((value: number) => {
       if(!value) return;
@@ -62,12 +61,9 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
     });
 
     this.toolMeasurementLevelDefinitionForm.controls.ToolFamilyLevelDefinitionID.valueChanges.subscribe((value: number) => {
-      const tool = this.toolsDefinitionService.toolFamilyDefinitions?.find(tool => tool.ToolFamilyLevelDefinitionID === +value);
-      if(tool){
-        this.toolMeasurementLevelDefinitionForm.controls.ToolTopLevelDefinitionID.setValue(tool.ToolTopLevelDefinitionID, {emitEvent: false});
-        this.toolMeasurementLevelDefinitionForm.controls.SubTechID.setValue(tool.ToolTopLevelDefinition.SubTechID, {emitEvent: false});
-        this.toolMeasurementLevelDefinitionForm.controls.TechID.setValue(tool.ToolTopLevelDefinition.SubTechnology.SubTechnologyID, {emitEvent: false});
-      }
+      if(!value) return;
+      // this.router.navigate([`/tool_definitions/tool_measurement_level_definition/${value}`]);
+      this.onToolFamilyIdChange(value);
     });
 
     this.toolMeasurementLevelDefinitionForm.controls.MCode.valueChanges.subscribe((value: number) => {
@@ -75,22 +71,44 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
       this.toolMeasurementLevelDefinitionForm.controls.ValueMax.setValue(value);
     });
 
-    // set all the form to null
-    this.toolMeasurementLevelDefinitionForm.setValue({
-      TechID: null,
-      SubTechID: null,
-      ToolTopLevelDefinitionID: null,
-      ToolFamilyLevelDefinitionID: null,
-      ValueMin: 0,
-      ValueMax: null,
-      ValueUnitID: null,
-      MCode: null
+    this.toolsDefinitionService.dataSubject.subscribe(() => {
+      this.setSelectsDefaultValues();
+      this.toolMeasurementLevelDefinitionForm.controls.ToolFamilyLevelDefinitionID.setValue(this.toolFamilyLevelDefinitionId);
     });
+    this.setSelectsDefaultValues();
+    this.toolMeasurementLevelDefinitionForm.reset();
+    this.toolMeasurementLevelDefinitionForm.controls.ValueMin.setValue(0);
+
   }
 
-  ngOnChanges(): void {
-    console.log(this.toolId);
-    if(this.toolId){
+  onToolFamilyIdChange(value: number){
+    console.log("onToolFamilyIdChange");
+    
+    const tool = this.toolsDefinitionService.toolFamilyDefinitions?.find(tool => tool.ToolFamilyLevelDefinitionID === +value);
+    console.log(tool);
+    
+    if(tool){
+      this.subTechnologies = this.toolsDefinitionService.subTechnologies;
+      this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
+      this.toolFamilies = this.toolsDefinitionService.toolFamilyDefinitions;
+      this.toolMeasurementLevelDefinitionForm.controls.ToolTopLevelDefinitionID.setValue(tool.ToolTopLevelDefinitionID, {emitEvent: false});
+      this.toolMeasurementLevelDefinitionForm.controls.SubTechID.setValue(tool.ToolTopLevelDefinition.SubTechID, {emitEvent: false});
+      this.toolMeasurementLevelDefinitionForm.controls.TechID.setValue(tool.ToolTopLevelDefinition.SubTechnology.SubTechnologyID, {emitEvent: false});
+      console.log(this.toolMeasurementLevelDefinitionForm.value);
+      // the html doesn't render properly so we need to do it manually
+      // this.toolMeasurementLevelDefinitionForm.controls.ToolTopLevelDefinitionID.updateValueAndValidity();
+      // this.toolMeasurementLevelDefinitionForm.controls.SubTechID.updateValueAndValidity();
+      // this.toolMeasurementLevelDefinitionForm.controls.TechID.updateValueAndValidity();
+      this.toolMeasurementLevelDefinitionForm.updateValueAndValidity();
+    }
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(
+      changes['toolId'] && 
+      changes['toolId'].currentValue !== changes['toolId'].previousValue && 
+      this.toolsDefinitionService.toolMeasurementLevelDefinitions && 
+      this.toolId
+    ){
       const tool = this.toolsDefinitionService.toolMeasurementLevelDefinitions.find(tool => tool.ToolMeasurementLevelDefinitionID == this.toolId);
       
       this.toolMeasurementLevelDefinitionForm.setValue({
@@ -103,6 +121,17 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
         ValueUnitID: tool.ValueUnitID,
         MCode: tool.MCode,
       });
+    }
+
+    if(changes['toolFamilyLevelDefinitionId']){
+      console.log('toolFamilyLevelDefinitionId');
+      
+      console.log(this.toolFamilyLevelDefinitionId);
+      
+      this.toolMeasurementLevelDefinitionForm.controls.ToolFamilyLevelDefinitionID.setValue(this.toolFamilyLevelDefinitionId);
+      this.toolMeasurementLevelDefinitionForm.controls.ToolFamilyLevelDefinitionID.updateValueAndValidity();
+
+      this.onToolFamilyIdChange(this.toolFamilyLevelDefinitionId);
     }
   }
 
@@ -137,7 +166,10 @@ export class ToolMeasurementLevelDefinitionFormComponent implements OnChanges, O
     }
     this.toolId = null;
 
-    this.resetForm();
+    this.toolMeasurementLevelDefinitionForm.controls.MCode.setValue(null);
+    this.toolMeasurementLevelDefinitionForm.controls.ValueMax.setValue(null);
+    this.toolMeasurementLevelDefinitionForm.controls.MCode.setErrors(null);
+    this.toolMeasurementLevelDefinitionForm.controls.ValueMax.setErrors(null);
   }
 
   resetForm() {

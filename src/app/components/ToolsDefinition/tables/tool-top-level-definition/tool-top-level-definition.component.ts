@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from 'angular-toastify';
 import { ToolTopLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-top-level-definition';
-import { ToolDefinitionURLs } from 'src/app/services/app-config.service';
 import { ToolsDefinitionService } from 'src/app/services/tools-definition.service';
 
 @Component({
@@ -19,7 +18,7 @@ export class ToolTopLevelDefinitionComponent implements OnInit {
 
 
   public toolId: number = null;
-  public toolTopId: number = null;
+  public subTechId: number = null;
   public toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions;
 
   ngOnInit(): void {
@@ -28,7 +27,9 @@ export class ToolTopLevelDefinitionComponent implements OnInit {
     });
 
     this.route.params.subscribe(params => {
-      this.toolTopId = +params['id'];
+      this.subTechId = +params['id'];
+      console.log(this.subTechId);
+      
       this.setToolTopLevelDefinitions();
     });
 
@@ -36,9 +37,9 @@ export class ToolTopLevelDefinitionComponent implements OnInit {
   }
 
   setToolTopLevelDefinitions(){    
-    if(this.toolTopId && this.toolsDefinitionService.toolTopLevelDefinitions){
+    if(this.subTechId && this.toolsDefinitionService.toolTopLevelDefinitions){
       this.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions
-        .filter(x => x.ToolTopLevelDefinitionID == this.toolTopId)
+        .filter(x => x.SubTechID == this.subTechId)
         .sort((a, b) => a.IsoProcedure.MCode - b.IsoProcedure.MCode);
     } else {
       this.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions;
@@ -49,25 +50,8 @@ export class ToolTopLevelDefinitionComponent implements OnInit {
     this.toolId = toolId;
   }
 
-  // async deleteToolTopLevelDefinition(toolId: number): Promise<void> {
-  //   const tool = this.toolsDefinitionService.toolMeasurementLevelDefinition.find(tool => tool.ToolTopLevelDefinitionID === toolId);
-  //   if(tool){
-  //     this.toastService.error(" אי אפשר למחוק את הכלי הזה כי הוא בשימוש ");
-  //     return;
-  //   }
-  //   try {
-  //     await this.toolsDefinitionService.deleteToolDefinition("ToolTopLevelDefinition", toolId);
-      
-  //     this.toolsDefinitionService.toolTopLevelDefinitions = this.toolsDefinitionService.toolTopLevelDefinitions.filter(toolTopLevelDefinition => toolTopLevelDefinition.ToolTopLevelDefinitionID !== toolId);
-  //     this.toolsDefinitionService.dataSubject.next(true);
-  //     this.toastService.success(" כלי נמחק בהצלחה :)");
-  //   } catch (error: any) {
-  //     console.error(error);
-  //   }
-  // }
-  
-  resolutionToolTipStr(tool: ToolTopLevelDefinition){
-    return tool.Resolutions.map((resolutions => resolutions.Value)).join(", ");
+  testDefinitionGroupsToolTipStr(tool: ToolTopLevelDefinition): string{
+    return tool.TestDefinitionGroups.map((testTemplates => testTemplates.TestDefinitionGroupName)).join(", ");    
   }
 
 }

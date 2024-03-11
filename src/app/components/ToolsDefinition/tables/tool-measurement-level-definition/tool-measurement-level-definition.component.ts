@@ -33,9 +33,9 @@ export class ToolMeasurementLevelDefinitionComponent implements OnInit {
   }
 
   setToolMeasurementLevelDefinitions(){
-    if(this.toolId && this.toolsDefinitionService.toolMeasurementLevelDefinitions){
+    if(this.toolFamilyLevelDefinitionId && this.toolsDefinitionService.toolMeasurementLevelDefinitions){
       this.toolMeasurementLevelDefinitions = this.toolsDefinitionService.toolMeasurementLevelDefinitions
-        .filter(x => x.ToolFamilyLevelDefinitionID == this.toolId)
+        .filter(x => x.ToolFamilyLevelDefinitionID == this.toolFamilyLevelDefinitionId)
     } else {
       this.toolMeasurementLevelDefinitions = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
     }

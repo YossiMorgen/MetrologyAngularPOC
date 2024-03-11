@@ -3,23 +3,23 @@ import { TestTemplate } from "./test-template";
 
 export class TestTemplatesDefinition {
     
-    TestTemplatesDefinitionID: number;
+    TestTemplateDefinitionID: number;
     TestTemplateID: number;
     TestDefinitionID: number;
 
     TestTemplate: TestTemplate;
     TestDefinition: TestDefinition;
 
-    constructor(TestTemplateID: number, TestDefinitionID: number, TestTemplatesDefinitionID?: number) {
+    constructor(TestTemplateID: number, TestDefinitionID: number = 0, TestTemplateDefinitionID: number = 0) {
         this.TestTemplateID = TestTemplateID;
         this.TestDefinitionID = TestDefinitionID;
-        this.TestTemplatesDefinitionID = TestTemplatesDefinitionID;
+        this.TestTemplateDefinitionID = TestTemplateDefinitionID;
     }
 }
 
 export class TestTemplatesDefinitionResponse extends TestTemplatesDefinition {
 
     $action: 'DELETE' | 'INSERT' | 'UPDATE';
-    TestTemplatesDefinitionID1: number;
+    TestTemplateDefinitionID1: number;
 
 }

@@ -16,6 +16,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatStepperModule} from '@angular/material/stepper';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,6 +47,8 @@ import { MeasurementUnitFormComponent } from './components/ToolsDefinition/forms
 import { ConfirmDialogComponent } from './components/dashboard/confirm-dialog/confirm-dialog.component';
 import { ToolFamilyLevelDefinitionTableComponent } from './components/ToolsDefinition/tables/tool-family-level-definition-table/tool-family-level-definition-table.component';
 import { ToolFamilyLevelDefinitionFormComponent } from './components/ToolsDefinition/forms/tool-family-level-definition-form/tool-family-level-definition-form.component';
+import { TavrigimFormComponent } from './components/TestDefinition/forms/tavrigim-form/tavrigim-form.component';
+import { TavrigimTableComponent } from './components/TestDefinition/tables/tavrigim-table/tavrigim-table.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +77,8 @@ import { ToolFamilyLevelDefinitionFormComponent } from './components/ToolsDefini
     ConfirmDialogComponent,
     ToolFamilyLevelDefinitionTableComponent,
     ToolFamilyLevelDefinitionFormComponent,
+    TavrigimFormComponent,
+    TavrigimTableComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -98,6 +103,7 @@ import { ToolFamilyLevelDefinitionFormComponent } from './components/ToolsDefini
     MatCheckboxModule,
     MatSlideToggleModule,
     MatDialogModule,
+    MatStepperModule,
   ],
   providers: [
     ToastService,

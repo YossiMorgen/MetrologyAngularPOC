@@ -36,7 +36,7 @@ export class ToolFamilyLevelDefinitionTableComponent implements OnInit {
 
   setToolFamilyLevelDefinitions(): void {
     if(this.ToolTopId ){
-      this.toolFamilyLevelDefinitions = this.toolsDefinitionService.toolFamilyDefinitions.filter(x => x.ToolTopLevelDefinitionID == this.ToolTopId);
+      this.toolFamilyLevelDefinitions = this.toolsDefinitionService.toolFamilyDefinitions?.filter(x => x.ToolTopLevelDefinitionID == this.ToolTopId);
     } else {
       this.toolFamilyLevelDefinitions = this.toolsDefinitionService.toolFamilyDefinitions;
     }

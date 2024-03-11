@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ToastService } from 'angular-toastify';
 import { ConfirmDialogComponent } from 'src/app/components/dashboard/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogModel } from 'src/app/models/confirm-dialog';
@@ -15,41 +16,39 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
 export class SubTechnologyFormComponent implements OnChanges, OnInit {
   @Input() public toolId: number = null;
   @Input() public techID: number = null;
+  @Input() public subTechnologies: SubTechnology[] = [];
   @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
-  public filteredSubTechnologies: SubTechnology[] = this.toolsDefinitionService.subTechnologies || [];
 
   constructor(
     public toolsDefinitionService: ToolsDefinitionService,
     private formBuilder : FormBuilder,
     private dialog: MatDialog,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.initialForm();
+    this.subTechnologies = this.toolsDefinitionService.subTechnologies;
 
     this.toolsDefinitionService.dataSubject.subscribe(() => {
-      this.filteredSubTechnologies = this.toolsDefinitionService.subTechnologies;
       this.initialForm();
     });
 
     this.subTechnologyForm.controls.TechID.valueChanges.subscribe((value) => {
+      console.log(value);
+      
       if(!value){
-        this.filteredSubTechnologies = this.toolsDefinitionService.subTechnologies;
         return;
       }
-      this.filteredSubTechnologies = this.toolsDefinitionService.subTechnologies.filter(tool => tool.TechID === this.subTechnologyForm.value.TechID);
+      this.router.navigate([`/tool_definitions/sub_technology/${value}`]);
       this.initialForm();
     });
   }
 
   initialForm(){
-    if(this.filteredSubTechnologies.length > 0){
-      const highestMCode = this.filteredSubTechnologies?.reduce((prev, current) => (prev.MCode > current.MCode) ? prev : current)?.MCode;
-      this.subTechnologyForm.controls.MCode.setValue(highestMCode + 1 || null);
-      console.log(this.subTechnologyForm.controls.MCode.value);
-      
-    }
+    const MCodes = this.subTechnologies?.map(subTechnology => subTechnology.MCode);
+    this.subTechnologyForm.controls.MCode.setValue(this.toolsDefinitionService.getNextMCode(MCodes || []));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -1,0 +1,135 @@
+<div class="width50percent">
+    <form class="testTemplateForm" [formGroup]="testTemplateForm" (ngSubmit)="onSubmit()">
+        <mat-form-field>
+            <mat-label> בחר טכנולוגיה </mat-label>
+            <mat-select formControlName="TechID">
+                <mat-option *ngFor="let technology of toolsDefinitionService.technologies" [value]="technology.TechnologyID">
+                    {{ technology.TechnologyName }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> בחר תת טכנולוגיה </mat-label>
+            <mat-select formControlName="SubTechID">
+                <mat-option *ngFor="let subTechnology of subTechnologies" [value]="subTechnology.SubTechnologyID">
+                    {{ subTechnology.SubTechnologyName }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> בחר שם כלי </mat-label>
+            <mat-select formControlName="ToolTopLevelDefinitionID">
+                <mat-option *ngFor="let ToolTopLevelDefinition of toolTopLevelDefinitions" [value]="ToolTopLevelDefinition.ToolTopLevelDefinitionID">
+                    {{ ToolTopLevelDefinition.ToolTopLevelDefinitionName }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> בחר סוג כלי </mat-label>
+            <mat-select formControlName="toolFamilyDefinitionID">
+                <mat-option *ngFor="let tool of toolFamilyDefinitions" [value]="tool.ToolFamilyLevelDefinitionID">
+                    {{ tool.ToolFamilyLevelDefinitionName }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> בחר טווח מדידה </mat-label>
+            <mat-select formControlName="ToolMeasurementLevelDefinitionID">
+                <mat-option *ngFor="let tool of toolMeasurementLevelDefinitions" [value]="tool.ToolMeasurementLevelDefinitionID">
+                    {{ tool.ValueMax + "-" + tool.ValueMin }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> בחר גודל כלי </mat-label>
+            <mat-select formControlName="ToolLowLevelDefinitionID">
+                <mat-option *ngFor="let tool of toolLowLevelDefinitions" [value]="tool.ToolLowLevelDefinitionID">
+                    {{ tool.ValueMax + "-" + tool.ValueMin }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> רוחב חוט </mat-label>
+            <input matInput type="number" placeholder="רוחב חוט" formControlName="Wire">
+            <mat-error *ngIf="testTemplateForm.get('Wire').hasError('required')">
+                יש להזין רוחב חוט
+            </mat-error>
+            <mat-error *ngIf="testTemplateForm.get('Wire').hasError('min')">
+                רוחב חוט חייב להיות גדול מ-0
+            </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> ערך GO</mat-label>
+            <input matInput type="number" placeholder="ערך GO" formControlName="Go">
+            <mat-error *ngIf="testTemplateForm.get('Go').hasError('required')">
+                יש להזין ערך GO
+            </mat-error>
+            <mat-error *ngIf="testTemplateForm.get('Go').hasError('min')">
+                ערך GOחייב להיות גדול מ-0
+            </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label> ערך NOGO</mat-label>
+            <input matInput type="number" placeholder="ערך NOGO" formControlName="NoGo">
+            <mat-error *ngIf="testTemplateForm.get('NoGo').hasError('required')">
+                יש להזין ערך NOGO
+            </mat-error>
+            <mat-error *ngIf="testTemplateForm.get('NoGo').hasError('min')">
+                ערך NOGO חייב להיות גדול מ-0
+            </mat-error>
+        </mat-form-field>
+    
+        <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!testTemplateForm.valid || !TestDefinitionsForm.valid"
+        >
+            שמור
+        </button>
+    </form>
+
+    <div class="testFormRowContainer">    
+        <ng-container *ngFor="let test of TestDefinitionsForm.controls">
+            <h3>{{test.controls.TestDefinitionGroupName.value || 'Empty'}}</h3>
+            <div class="testFormRow" [formGroup]="test">
+                <mat-form-field appearance="fill">
+                    <mat-label> ערך נדרש </mat-label>
+                    <input matInput type="number" placeholder="ערך נדרש" formControlName="ValueRequired">
+                    <mat-error *ngIf="test.get('ValueRequired').hasError('required')">
+                        יש להזין ערך נדרש
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label> סיבולת </mat-label>
+                    <input matInput type="number" placeholder="סיבולת" formControlName="ValueEndurance">
+                    <mat-error *ngIf="test.get('ValueEndurance').hasError('required')">
+                        יש להזין סיבולת
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label> ערך אי ודאות </mat-label>
+                    <input matInput type="number" placeholder="ערך אי ודאות" formControlName="ValueUncertainty">
+                    <mat-error *ngIf="test.get('ValueUncertainty').hasError('required')">
+                        יש להזין ערך אי ודאות
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-slide-toggle formControlName="IsIso17025" color="primary">
+                    Iso 17025
+                </mat-slide-toggle>
+            </div>
+        </ng-container>
+    </div>
+    
+</div>

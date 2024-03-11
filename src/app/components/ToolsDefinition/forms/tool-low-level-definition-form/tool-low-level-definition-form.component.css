@@ -5,3 +5,7 @@
     cursor: pointer;
     margin-bottom: 10px;
 }
+
+small{
+    font-size: 0.8em;
+}

@@ -19,14 +19,14 @@ export class Endurance {
         ValueEnduranceDown: number,
         TestDefinition?: TestDefinition,
         Resolution_ToolTopLevelDefinition?: ResolutionToolTopLevelDefinition, 
-        EnduranceID?: number
+        EnduranceID?: number,
     ) {
-        this.TestDefinitionID = TestDefinitionID;
-        this.Resolution_ToolTopLevelDefinitionID = Resolution_ToolTopLevelDefinitionID;
+        this.TestDefinitionID = TestDefinitionID || 0;
+        this.Resolution_ToolTopLevelDefinitionID = Resolution_ToolTopLevelDefinitionID || 0;
         this.ValueEnduranceUp = ValueEnduranceUp;
         this.ValueEnduranceDown = ValueEnduranceDown;
         this.TestDefinition = TestDefinition;
         this.Resolution_ToolTopLevelDefinition = Resolution_ToolTopLevelDefinition;
-        this.EnduranceID = EnduranceID;
+        this.EnduranceID = EnduranceID || 0;
     }
 }

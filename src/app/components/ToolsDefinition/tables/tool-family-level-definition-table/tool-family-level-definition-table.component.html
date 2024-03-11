@@ -10,7 +10,7 @@
         </tr>
         <tr *ngFor="let toolFamilyLevelDefinition of toolFamilyLevelDefinitions">
             <td>
-                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/tool_top_level_definition/' + toolFamilyLevelDefinition.ToolFamilyLevelDefinitionID " >
+                <a class="navToChildren" mat-button [routerLink]="'/tool_definitions/tool_measurement_level_definition/' + toolFamilyLevelDefinition.ToolFamilyLevelDefinitionID " >
                     {{toolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.Technology?.MCode + "." + toolFamilyLevelDefinition.ToolTopLevelDefinition?.SubTechnology?.MCode + "." + toolFamilyLevelDefinition.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
                 </a>
             </td>

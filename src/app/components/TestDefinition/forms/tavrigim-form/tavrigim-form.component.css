@@ -1,0 +1,23 @@
+.testTemplateForm {
+    margin: 40px 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    place-items: center;
+    gap: 10px;
+}
+.testTemplateForm mat-form-field{
+    width: 150px;
+}
+.testFormRow{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    place-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.testFormRow > input, .testFormRow > mat-form-field {
+    width: 150px;
+}

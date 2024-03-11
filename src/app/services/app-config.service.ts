@@ -11,6 +11,7 @@ export class AppConfigService {
   public TestDefinitionGroupURL = this.toolDefinitionURL + '/TestDefinitionGroup';
   public TestDefinitionURL = this.toolDefinitionURL + '/TestDefinition';
   public TestTemplateURL = this.toolDefinitionURL + '/TestTemplate';
+  public TavrigURL = this.toolDefinitionURL + '/Tavrig';
 }
 
 export enum ToolDefinitionURLs {

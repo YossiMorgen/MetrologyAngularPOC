@@ -9,7 +9,7 @@ export class Resolution {
     ResolutionToolTopLevelDefinitions: ResolutionToolTopLevelDefinition[] = [];
     ToolTopLevelDefinitions: ToolTopLevelDefinition[] = [];
 
-    constructor(Value: number, ResolutionID?: number) {
+    constructor(Value: number, ResolutionID: number = 0) {
         this.Value = Value;
         this.ResolutionID = ResolutionID;
     }

@@ -14,10 +14,6 @@ export class ToolTopLevelDefinition {
     
     public ValueUnitID: number;
     public MeasurementUnit: MeasurementUnit;
-    
-    public CovertOpsJsonTool: string;
-    public CovertOpsJsonToolJson: object;
-
     public IsoProcedure: IsoProcedure;
     
     public Resolutions: Resolution[] = [];
@@ -30,13 +26,10 @@ export class ToolTopLevelDefinition {
         SubTechID: number, 
         ToolTopLevelDefinitionID?: number,
         ValueUnitID: number = 0,
-        CovertOpsJsonTool: string = "",
     ) {
         this.ToolTopLevelDefinitionID = ToolTopLevelDefinitionID;
         this.ToolTopLevelDefinitionName = ToolTopLevelDefinitionName;
         this.SubTechID = SubTechID;
         this.ValueUnitID = ValueUnitID;
-        this.CovertOpsJsonTool = CovertOpsJsonTool;
-        this.CovertOpsJsonToolJson = CovertOpsJsonTool ?  JSON.parse(CovertOpsJsonTool) : {};
     }
 }

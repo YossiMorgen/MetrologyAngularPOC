@@ -2,6 +2,13 @@ import { TestTemplate } from "../TestDefinition/test-template";
 import { MeasurementUnit } from "./measurement-unit";
 import { ToolMeasurementLevelDefinition } from "./tool-measurement-level-definition";
 
+export class CovertOpsJsonToolJsons {
+    order: number;
+    name: string;
+    key: string;
+    value: number;
+}
+
 export class ToolLowLevelDefinition {
     public ToolLowLevelDefinitionID: number;
     public ToolLowLevelDefinitionName: string;
@@ -10,6 +17,9 @@ export class ToolLowLevelDefinition {
     public ToolMeasurementLevelDefinition: ToolMeasurementLevelDefinition;
     public ValueMin: number;
     public ValueMax: number;
+    
+    public CovertOpsJsonTool: string;
+    public CovertOpsJsonToolJson: CovertOpsJsonToolJsons[];
 
     public TestTemplates: TestTemplate[] = [];
 
@@ -19,7 +29,8 @@ export class ToolLowLevelDefinition {
         ValueMin: number, 
         ValueMax: number, 
         ToolLowLevelDefinitionName: string = "",
-        ToolLowLevelDefinitionID?: number
+        ToolLowLevelDefinitionID?: number,
+        CovertOpsJsonTool: string = "",
     ) {
         this.ToolLowLevelDefinitionID = ToolLowLevelDefinitionID;
         this.ToolLowLevelDefinitionName = ToolLowLevelDefinitionName;
@@ -27,5 +38,7 @@ export class ToolLowLevelDefinition {
         this.ToolMeasurementLevelDefinitionID = ToolMeasurementLevelDefinitionID;
         this.ValueMin = ValueMin;
         this.ValueMax = ValueMax;
+        this.CovertOpsJsonTool = CovertOpsJsonTool;
+        this.CovertOpsJsonToolJson = CovertOpsJsonTool ?  JSON.parse(CovertOpsJsonTool) : {};
     }
 }

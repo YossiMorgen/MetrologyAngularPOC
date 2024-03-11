@@ -57,7 +57,8 @@
         <mat-label> תחום מדידה </mat-label>
         <mat-select placeholder=" תחום מדידה " formControlName="ToolMeasurementLevelDefinitionID">
             <mat-option *ngFor="let toolMeasurementLevel of toolMeasurementLevels" [value]="toolMeasurementLevel.ToolMeasurementLevelDefinitionID">
-                {{toolMeasurementLevel.ValueUnit?.Symbol + " " + toolMeasurementLevel.ValueMax + "-" + toolMeasurementLevel.ValueMin}}
+                {{toolMeasurementLevel.ValueMax + "-" + toolMeasurementLevel.ValueMin}}
+                <small> {{toolMeasurementLevel.ValueUnit?.Symbol}}</small>
             </mat-option>
         </mat-select>
     </mat-form-field>

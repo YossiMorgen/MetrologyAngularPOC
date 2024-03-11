@@ -5,9 +5,6 @@
                 MCode
             </th>
             <th>
-                נוהל
-            </th>
-            <th>
                 תחום מדידה
             </th>
             <th>
@@ -35,9 +32,6 @@
                 </a>
             </td>
             <td>
-                {{tool.ToolFamilyLevelDefinition.ToolTopLevelDefinition?.IsoProcedure?.MCode}}
-            </td>
-            <td>
                 {{(tool.ValueMin != tool.ValueMax && tool.ValueMin + ' - ') +tool.ValueMax + ' ' + tool.ValueUnit?.Symbol}}
             </td>
             <td>
@@ -55,14 +49,9 @@
                         edit
                     </mat-icon>
                 </button>
-                <!-- <button mat-mini-fab color="warn" (click)="deleteToolMeasurementLevelDefinition(tool.ToolMeasurementLevelDefinitionID)">
-                    <mat-icon>
-                        delete
-                    </mat-icon>
-                </button> -->
             </td>
         </tr>
     </table>
 
-    <app-tool-measurement-level-definition-form [toolFamilyLevelDefinitionId]="1" [toolId]="toolId"></app-tool-measurement-level-definition-form>
+    <app-tool-measurement-level-definition-form [toolMeasurementLevelDefinitions]="toolMeasurementLevelDefinitions" [toolFamilyLevelDefinitionId]="toolFamilyLevelDefinitionId" [toolId]="toolId"></app-tool-measurement-level-definition-form>
 </div>

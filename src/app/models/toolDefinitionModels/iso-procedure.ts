@@ -15,8 +15,8 @@ export class IsoProcedure {
         WordFileLink: string, 
         CertificateText: string, 
         Description: string, 
-        ToolTopLevelDefinitionID: number, 
-        IsoProcedureID?: number
+        ToolTopLevelDefinitionID: number = 0, 
+        IsoProcedureID: number = 0
     ) {
         this.IsoProcedureID = IsoProcedureID;
         this.MCode = MCode;

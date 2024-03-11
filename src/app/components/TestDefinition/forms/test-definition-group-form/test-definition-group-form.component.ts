@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from 'angular-toastify';
@@ -17,7 +17,8 @@ import { ToolsDefinitionService } from 'src/app/services/tools-definition.servic
 })
 export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
   @Input() testDefinitionGroupInput: TestDefinitionGroup = null;
-  @Input() triggerChanges: boolean = false;
+  @Input() public toolTopId: number = null;
+
   @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
   public keepEditing = new FormControl(true);
   subTechnologies: SubTechnology[];
@@ -39,7 +40,7 @@ export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
     this.toolsDefinitionService.dataSubject.subscribe(() => {
       this.subTechnologies = this.toolsDefinitionService.subTechnologies;
       this.toolTopLevels = this.toolsDefinitionService.toolTopLevelDefinitions;
-
+      this.testDefinitionGroupForm.controls.ToolTopLevelDefinitionID.setValue(this.toolTopId);
     });
 
     this.testDefinitionGroupForm.controls.TechID.valueChanges.subscribe((value: number) => {
@@ -82,25 +83,21 @@ export class TestDefinitionGroupFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(
-    changes: { [propKey: string]: any }
+    changes: SimpleChanges,
   ): void {    
-    
-    if(changes['triggerChanges']){
-      if(this.triggerChanges == null){
-        this.testDefinitionGroupInput = null;
-        this.formDirective?.resetForm();
-        this.testDefinitionGroupForm?.reset();
-        return;
-      }
-    } 
+    if(changes['testDefinitionGroupInput'] && this.testDefinitionGroupInput){
+      this.testDefinitionGroupForm.setValue({
+        TechID: this.testDefinitionGroupInput?.ToolTopLevelDefinition?.SubTechnology?.TechID || null,
+        SubTechID: this.testDefinitionGroupInput?.ToolTopLevelDefinition?.SubTechID || null,
+        ToolTopLevelDefinitionID: this.testDefinitionGroupInput?.ToolTopLevelDefinitionID || null,
+        TestDefinitionGroupName: this.testDefinitionGroupInput?.TestDefinitionGroupName || null,
+        DeviationCalcType: this.testDefinitionGroupInput?.DeviationCalcType || null,
+      });
+    }
 
-    this.testDefinitionGroupForm.setValue({
-      TechID: this.testDefinitionGroupInput?.ToolTopLevelDefinition?.SubTechnology?.TechID || null,
-      SubTechID: this.testDefinitionGroupInput?.ToolTopLevelDefinition?.SubTechID || null,
-      ToolTopLevelDefinitionID: this.testDefinitionGroupInput?.ToolTopLevelDefinitionID || null,
-      TestDefinitionGroupName: this.testDefinitionGroupInput?.TestDefinitionGroupName || null,
-      DeviationCalcType: this.testDefinitionGroupInput?.DeviationCalcType || null,
-    });
+    if(changes['toolTopId'] && this.toolTopId && this.toolsDefinitionService.toolTopLevelDefinitions){
+      this.testDefinitionGroupForm.controls.ToolTopLevelDefinitionID.setValue(this.toolTopId);
+    }
   }
 
   testDefinitionGroupForm = this.formBuilder.group({

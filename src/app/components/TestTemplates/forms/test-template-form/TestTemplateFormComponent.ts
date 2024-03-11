@@ -4,6 +4,7 @@ import { ToastService } from 'angular-toastify';
 import { TestDefinition } from 'src/app/models/TestDefinition/test-definition';
 import { TestDefinitionGroup } from 'src/app/models/TestDefinition/test-definition-group';
 import { TestTemplate } from 'src/app/models/TestDefinition/test-template';
+import { TestTemplatesDefinition } from 'src/app/models/TestDefinition/test-templates-definition';
 import { ToolFamilyLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-family-level-definition';
 import { ToolLowLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-low-level-definition';
 import { ToolMeasurementLevelDefinition } from 'src/app/models/toolDefinitionModels/tool-measurement-level-definition';
@@ -25,11 +26,11 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
   ) { }
 
   @Input() testTemplateInput: TestTemplate = null
+  @Input() public toolLowLevelId: number = null;
 
   public testDefinitionIDs: number[] = [];
   public testDefinitionGroup: TestDefinitionGroup = null;
 
-  // public testDefinitions: TestDefinition[] = [];
   
   public toolLowLevelDefinitions: ToolLowLevelDefinition[] = [];
   public toolMeasurementLevelDefinitions: ToolMeasurementLevelDefinition[] = [];
@@ -81,11 +82,11 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
     this.testTemplateForm.controls.ToolLowLevelDefinitionID.valueChanges.subscribe((value: number) => {
       if(!value) return;
       const low = this.toolLowLevelDefinitions.find(low => low.ToolLowLevelDefinitionID === value);
-      this.testTemplateForm.controls.toolFamilyDefinitionID.setValue(low.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinitionID, { emitEvent: false });
-      this.testTemplateForm.controls.ToolTopLevelDefinitionID.setValue(low.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinitionID, { emitEvent: false });
-      this.testTemplateForm.controls.ToolMeasurementLevelDefinitionID.setValue(low.ToolMeasurementLevelDefinitionID, { emitEvent: false })
-
-      console.log(this.selectedTestDefinitionGroup);
+      if(low){
+        this.testTemplateForm.controls.toolFamilyDefinitionID.setValue(low.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinitionID, { emitEvent: false });
+        this.testTemplateForm.controls.ToolTopLevelDefinitionID.setValue(low.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinitionID, { emitEvent: false });
+        this.testTemplateForm.controls.ToolMeasurementLevelDefinitionID.setValue(low.ToolMeasurementLevelDefinitionID, { emitEvent: false })
+      }
       
       if(this.selectedTestDefinitionGroup){
         this.selectTheTestTemplateDefinitions();
@@ -120,19 +121,21 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
       this.testTemplateForm.controls.TestTemplateID.setValue(testTemplate?.TestTemplateID || 0);
       if(testTemplate){
         console.log("testTemplate");
+        console.log(testTemplate);
         
-        this.testDefinitionIDs = testTemplate.TestTemplatesDefinitions.map(testTemplateDefinition => testTemplateDefinition.TestDefinitionID);
+        this.testDefinitionIDs = testTemplate.TestDefinitions.map(testDefinition => testDefinition.TestDefinitionID);
+        // this.testDefinitionIDs = testTemplate.TestTemplatesDefinitions.map(testTemplateDefinition => testTemplateDefinition.TestDefinitionID);
       }
     }
     console.log(this.testDefinitionIDs);
     
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     console.log("change");
     console.log(this.testTemplateInput);
     
-    if(this.testTemplateInput){
+    if(this.testTemplateInput && changes['testTemplateInput']){
       this.testTemplateForm.setValue(
         {
           ToolTopLevelDefinitionID: this.testTemplateInput?.ToolLowLevelDefinition?.ToolMeasurementLevelDefinition?.ToolFamilyLevelDefinition?.ToolTopLevelDefinitionID || 0,
@@ -148,6 +151,11 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
 
       // trigger TestDefinitionGroupID.valueChanges
       this.testTemplateForm.controls.TestDefinitionGroupID.setValue(this.testTemplateInput.TestDefinitions?.[0]?.TestDefinitionGroupID || 0);
+    }
+
+    if(changes['toolLowLevelId'] && this.toolLowLevelId){
+      console.log("toolLowLevelId");      
+      this.testTemplateForm.controls.ToolLowLevelDefinitionID.setValue(this.toolLowLevelId);
     }
   }
 
@@ -226,10 +234,13 @@ export class TestTemplateFormComponent implements OnInit, OnChanges {
   // organize SelectsValues -----------------------------------------------------------------------------------
 
   setDefaultSelectsValues(){
-    this.filteredTestDefinitionGroups = this.toolsDefinitionService.testDefinitionGroups;
-    this.toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinitions;
-    this.toolMeasurementLevelDefinitions = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
-    this.toolFamilyDefinitions = this.toolsDefinitionService.toolFamilyDefinitions;
+    if(this.toolsDefinitionService.toolTopLevelDefinitions){
+      this.filteredTestDefinitionGroups = this.toolsDefinitionService.testDefinitionGroups;
+      this.toolLowLevelDefinitions = this.toolsDefinitionService.toolLowLevelDefinitions;
+      this.toolMeasurementLevelDefinitions = this.toolsDefinitionService.toolMeasurementLevelDefinitions;
+      this.toolFamilyDefinitions = this.toolsDefinitionService.toolFamilyDefinitions;
+      this.testTemplateForm.controls.ToolLowLevelDefinitionID.setValue(this.toolLowLevelId);
+    }
   }
 
   updateToolFamilyDefinitions(familyDefinitions: ToolFamilyLevelDefinition[]): void {
